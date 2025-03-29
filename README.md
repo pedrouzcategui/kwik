@@ -13,3 +13,9 @@ Si tú:
 
 Kwik es una aplicación para tí.
 Esta aplicación hecha en Laravel + React (Inertia).
+
+## Como arrancar el proyecto
+
+1. `composer run dev` -> Para ejecutar el Frontend
+2. `php artisan dev` -> Para ejecutar el Backend
+3. Visita `http://127.0.0.1:8000/`
