@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
+
+class Contact extends Model
+{
+    // When using UUIDs as Primary Keys in Laravel, you must use this trait.
+    use HasUuids;
+
+    protected $table = 'contacts';
+    protected $primaryKey = 'id';
+    public $incrementing = false; // Because we're using UUIDs
+    protected $keyType = 'string'; // Becaue we're using UUIDs;
+}
