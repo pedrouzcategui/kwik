@@ -12,7 +12,7 @@ class ContactController extends Controller
      */
     public function index()
     {
-        //
+        return Contact::all()->toJson();
     }
 
     /**
