@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Contact extends Model
 {
@@ -14,4 +15,9 @@ class Contact extends Model
     protected $primaryKey = 'id';
     public $incrementing = false; // Because we're using UUIDs
     protected $keyType = 'string'; // Becaue we're using UUIDs;
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
