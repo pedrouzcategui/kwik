@@ -10,9 +10,9 @@ class ContactController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Contact::all()->toJson();
+        return response()->json($request->user()->contacts);
     }
 
     /**
@@ -34,10 +34,16 @@ class ContactController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Contact $contact)
+    public function show(Request $request, Contact $contact)
     {
-        //
+
+        if ($contact->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        return response()->json($contact);
     }
+
 
     /**
      * Show the form for editing the specified resource.
