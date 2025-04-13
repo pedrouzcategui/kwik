@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreContactRequest;
+use App\Http\Requests\UpdateContactRequest;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 
@@ -63,16 +64,21 @@ class ContactController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Contact $contact)
+    public function update(UpdateContactRequest $request, Contact $contact)
     {
-        //
+        // Ensure the logged-in user owns this contact
+        if ($request->user()->id !== $contact->user_id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        // Update the model
+        $contact->update($request->validated());
+
+        return response()->json($contact);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Contact $contact)
-    {
-        //
-    }
+    public function destroy(Contact $contact) {}
 }
