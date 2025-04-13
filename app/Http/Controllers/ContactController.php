@@ -80,5 +80,15 @@ class ContactController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Contact $contact) {}
+    public function destroy(Request $request, Contact $contact)
+    {
+        // 🛡️ Check ownership | This can be replaced with a policy tbh
+        if ($contact->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        $contact->delete();
+
+        return response()->json(['message' => 'Contact deleted']);
+    }
 }

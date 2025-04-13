@@ -31,4 +31,5 @@ Route::prefix('contacts')->middleware('auth:sanctum')->group(function () {
     Route::get('/{contact}', [ContactController::class, 'show']);    // /contacts/{id}
     Route::post('/', [ContactController::class, 'store']);
     Route::put('/{contact}', [ContactController::class, 'update']);    // /contacts/{id}
+    Route::delete('/{contact}', [ContactController::class, 'destroy']);
 });
