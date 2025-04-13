@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Contact extends Model
 {
     // When using UUIDs as Primary Keys in Laravel, you must use this trait.
-    use HasUuids;
+    use HasFactory, HasUuids;
 
     protected $table = 'contacts';
     protected $primaryKey = 'id';
