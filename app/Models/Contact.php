@@ -12,6 +12,8 @@ class Contact extends Model
     // When using UUIDs as Primary Keys in Laravel, you must use this trait.
     use HasFactory, HasUuids;
 
+    protected $fillable = ['full_name', 'email', 'phone'];
+
     protected $table = 'contacts';
     protected $primaryKey = 'id';
     public $incrementing = false; // Because we're using UUIDs

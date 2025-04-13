@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreContactRequest;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 
@@ -26,9 +27,15 @@ class ContactController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreContactRequest $request)
     {
-        //
+        // Mmm. I don't get this line
+        $contact = new Contact($request->validated());
+        // Also, this line does automatically check the Personal Access Token?
+        $contact->user_id = $request->user()->id;
+        $contact->save();
+
+        return response()->json($contact, 201);
     }
 
     /**

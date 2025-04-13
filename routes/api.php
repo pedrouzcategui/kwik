@@ -29,4 +29,5 @@ Route::prefix('contacts')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [ContactController::class, 'index']);       // /contacts
     // THIS IS CALLED ROUTE MODEL BINDING!!! PLEASE DON'T CHANGE THIS SHIT!
     Route::get('/{contact}', [ContactController::class, 'show']);    // /contacts/{id}
+    Route::post('/', [ContactController::class, 'store']);
 });
