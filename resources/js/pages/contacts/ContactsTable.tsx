@@ -1,5 +1,7 @@
+import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Contact } from '@/types/contact';
+import { Link } from '@inertiajs/react';
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import React from 'react';
 
@@ -25,7 +27,17 @@ const columns = [
     columnHelper.display({
         id: 'actions',
         header: () => <span>Acciones</span>,
-        cell: (props) => <div></div>,
+        cell: (props) => {
+            let contact: Contact = props.row.original;
+            return (
+                <div className="flex gap-2">
+                    <Link href={`/contacts/${contact.id}`}>
+                        <Button size={'sm'}>Editar</Button>
+                    </Link>
+                    <Button size={'sm'}>Eliminar</Button>
+                </div>
+            );
+        },
     }),
 ];
 interface ContactTableProps {
