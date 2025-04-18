@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PhoneInput } from '@/components/ui/phone-input';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Contact } from '@/types/contact';
@@ -58,7 +59,7 @@ export default function ContactForm({ contact }: ContactFormComponentProps) {
                 </div>
                 <div>
                     <Label>Teléfono</Label>
-                    <Input name="phone" type="phone" value={data.phone} onChange={(e) => setData('phone', e.target.value)} />
+                    <PhoneInput name="phone" type="phone" value={data.phone} onChange={(value) => setData('phone', value)} />
                 </div>
                 <Button disabled={processing} type="submit">
                     {contact ? 'Editar' : 'Crear'} Contacto
