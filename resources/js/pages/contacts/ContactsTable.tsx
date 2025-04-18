@@ -22,6 +22,11 @@ const columns = [
         header: () => <span>Telefono</span>,
         cell: (info) => info.getValue(),
     }),
+    columnHelper.display({
+        id: 'actions',
+        header: () => <span>Acciones</span>,
+        cell: (props) => <div></div>,
+    }),
 ];
 interface ContactTableProps {
     contacts: Contact[];
