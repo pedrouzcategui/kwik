@@ -13,7 +13,7 @@ class Contact extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = ['full_name', 'email', 'phone'];
-
+    protected $hidden = ['user_id']; // I don't need to show this shit to the user
     protected $table = 'contacts';
     protected $primaryKey = 'id';
     public $incrementing = false; // Because we're using UUIDs

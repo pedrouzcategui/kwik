@@ -6,6 +6,7 @@ use App\Http\Requests\StoreContactRequest;
 use App\Http\Requests\UpdateContactRequest;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ContactController extends Controller
 {
@@ -14,7 +15,10 @@ class ContactController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json($request->user()->contacts);
+        $contacts = response()->json($request->user()->contacts);
+        return Inertia::render('contacts/index', [
+            'contacts' => $contacts
+        ]);
     }
 
     /**
