@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
+import { Contact } from '@/types/contact';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 
@@ -19,16 +20,24 @@ type ContactForm = {
     phone?: string;
 };
 
-export default function create() {
-    const { data, setData, post, processing, errors, wasSuccessful, reset } = useForm<ContactForm>({
-        full_name: '',
-        email: '',
-        phone: '',
+type ContactFormComponentProps = {
+    contact?: Contact;
+};
+
+export default function ContactForm({ contact }: ContactFormComponentProps) {
+    const { data, setData, post, put, processing, errors, wasSuccessful, reset } = useForm<ContactForm>({
+        full_name: contact?.full_name ?? '',
+        email: contact?.email ?? '',
+        phone: contact?.phone ?? '',
     });
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
-        post('/contacts');
+        if (contact) {
+            put(`/contacts/${contact.id}`);
+        } else {
+            post('/contacts');
+        }
         if (wasSuccessful) {
             reset();
             console.log('Contacto Creado!');
@@ -52,7 +61,7 @@ export default function create() {
                     <Input name="phone" type="phone" value={data.phone} onChange={(e) => setData('phone', e.target.value)} />
                 </div>
                 <Button disabled={processing} type="submit">
-                    Crear Contacto
+                    {contact ? 'Editar' : 'Crear'} Contacto
                 </Button>
             </form>
         </AppLayout>

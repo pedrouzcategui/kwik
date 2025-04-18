@@ -1,10 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Contact } from '@/types/contact';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import React from 'react';
-
 const columnHelper = createColumnHelper<Contact>();
 
 const columns = [
@@ -34,7 +33,15 @@ const columns = [
                     <Link href={`/contacts/${contact.id}`}>
                         <Button size={'sm'}>Editar</Button>
                     </Link>
-                    <Button size={'sm'}>Eliminar</Button>
+                    <Button
+                        onClick={() => {
+                            router.delete(`/contacts/${contact.id}`);
+                            location.reload();
+                        }}
+                        size={'sm'}
+                    >
+                        Eliminar
+                    </Button>
                 </div>
             );
         },

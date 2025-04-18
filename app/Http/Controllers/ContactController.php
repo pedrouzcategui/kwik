@@ -26,7 +26,7 @@ class ContactController extends Controller
      */
     public function create()
     {
-        return Inertia::render('contacts/create');
+        return Inertia::render('contacts/form');
     }
 
     /**
@@ -62,7 +62,9 @@ class ContactController extends Controller
      */
     public function edit(Contact $contact)
     {
-        //
+        return Inertia::render('contacts/form', [
+            'contact' => $contact
+        ]);
     }
 
     /**
@@ -78,7 +80,7 @@ class ContactController extends Controller
         // Update the model
         $contact->update($request->validated());
 
-        return response()->json($contact);
+        return to_route('contacts.index');
     }
 
     /**
@@ -92,7 +94,7 @@ class ContactController extends Controller
         }
 
         $contact->delete();
-
-        return response()->json(['message' => 'Contact deleted']);
+        // TODO: Flash session here
+        // return to_route("contacts.index");
     }
 }

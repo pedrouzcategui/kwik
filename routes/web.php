@@ -18,6 +18,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [ContactController::class, 'index'])->name('contacts.index');
         Route::get('/add', [ContactController::class, 'create']);
         Route::post('/', [ContactController::class, 'store']);
+        Route::get('/{contact}', [ContactController::class, 'edit']);
+        Route::put('/{contact}', [ContactController::class, 'update']);
+        Route::delete('/{contact}', [ContactController::class, 'destroy']);
     });
 });
 
