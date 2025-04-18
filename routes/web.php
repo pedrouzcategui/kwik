@@ -15,8 +15,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::prefix('contacts')->group(function () {
-        Route::get('/', [ContactController::class, 'index']);
+        Route::get('/', [ContactController::class, 'index'])->name('contacts.index');
         Route::get('/add', [ContactController::class, 'create']);
+        Route::post('/', [ContactController::class, 'store']);
     });
 });
 

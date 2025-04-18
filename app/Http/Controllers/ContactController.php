@@ -40,7 +40,7 @@ class ContactController extends Controller
         $contact->user_id = $request->user()->id;
         $contact->save();
 
-        return response()->json($contact, 201);
+        return to_route('contacts.index');
     }
 
     /**

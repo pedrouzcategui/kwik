@@ -3,8 +3,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
-import React, { ChangeEvent, FormEvent } from 'react';
+import { Head, useForm } from '@inertiajs/react';
+import { FormEvent } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,24 +20,19 @@ type ContactForm = {
 };
 
 export default function create() {
-    const [contact, setContact] = React.useState<ContactForm>({
+    const { data, setData, post, processing, errors, wasSuccessful, reset } = useForm<ContactForm>({
         full_name: '',
         email: '',
         phone: '',
     });
 
-    function handleChange(e: ChangeEvent<HTMLInputElement>) {
-        setContact((prevState) => {
-            return {
-                ...prevState,
-                [e.target.name]: e.target.value,
-            };
-        });
-    }
-
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
-        router.post('/api/contacts', contact);
+        post('/contacts');
+        if (wasSuccessful) {
+            reset();
+            console.log('Contacto Creado!');
+        }
     }
 
     return (
@@ -46,17 +41,19 @@ export default function create() {
             <form onSubmit={handleSubmit}>
                 <div>
                     <Label>Nombre Completo</Label>
-                    <Input name="full_name" type="text" value={contact.full_name} onChange={handleChange} />
+                    <Input name="full_name" type="text" value={data.full_name} onChange={(e) => setData('full_name', e.target.value)} />
                 </div>
                 <div>
                     <Label>Email</Label>
-                    <Input name="email" type="email" value={contact.email} onChange={handleChange} />
+                    <Input name="email" type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} />
                 </div>
                 <div>
                     <Label>Teléfono</Label>
-                    <Input name="phone" type="phone" value={contact.phone} onChange={handleChange} />
+                    <Input name="phone" type="phone" value={data.phone} onChange={(e) => setData('phone', e.target.value)} />
                 </div>
-                <Button type="submit">Crear Contacto</Button>
+                <Button disabled={processing} type="submit">
+                    Crear Contacto
+                </Button>
             </form>
         </AppLayout>
     );
