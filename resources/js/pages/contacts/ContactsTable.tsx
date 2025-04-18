@@ -6,10 +6,10 @@ import React from 'react';
 const columnHelper = createColumnHelper<Contact>();
 
 const columns = [
-    columnHelper.accessor('id', {
-        header: () => <span>ID</span>,
-        cell: (info) => info.getValue(),
-    }),
+    // columnHelper.accessor('id', {
+    //     header: () => <span>ID</span>,
+    //     cell: (info) => info.getValue(),
+    // }),
     columnHelper.accessor('full_name', {
         header: () => <span>Nombre Completo</span>,
         cell: (info) => info.getValue(),
