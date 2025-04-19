@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
+            $table->enum('currency', ['USD', 'EUR', 'VEF']);
             $table->enum('type', ['CHECKING', 'SAVINGS', 'INVESTMENT', 'CRYPTO']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
