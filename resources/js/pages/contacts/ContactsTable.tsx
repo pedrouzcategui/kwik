@@ -41,7 +41,7 @@ const columns = [
             const contact: Contact = props.row.original;
             return (
                 <div className="flex gap-2">
-                    <Link href={`/contacts/${contact.id}`}>
+                    <Link href={`/contacts/${contact.id}/edit`}>
                         <Button size="sm">Editar</Button>
                     </Link>
                     <Button
