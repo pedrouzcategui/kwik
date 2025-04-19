@@ -31,7 +31,11 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $request->session()->put('user_id', Auth::user()->id);
         $request->session()->regenerate();
+        // Using the global session helper to set user ID manually since it is UUID instead of bigInt auto increment
+        // TODO: This might change
+        $request->user()->createToken('api-token');
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
@@ -42,7 +46,6 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
