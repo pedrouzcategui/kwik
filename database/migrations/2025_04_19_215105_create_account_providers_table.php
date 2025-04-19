@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('account_providers', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('user_id');
             $table->string('name');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
