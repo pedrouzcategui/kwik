@@ -1,6 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Link } from '@inertiajs/react';
 import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
 import React from 'react';
+import { Button } from './ui/button';
 
 type BaseTableProps<T> = {
     data: T[];
@@ -36,8 +38,10 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder }: BaseTab
                     placeholder={globalFilterPlaceholder ?? 'Buscar...'}
                     className="w-full rounded border p-2 md:w-96"
                 />
+                <Button asChild size={'lg'}>
+                    <Link href="/contacts/create">Add New ?</Link>
+                </Button>
             </div>
-
             <Table>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
