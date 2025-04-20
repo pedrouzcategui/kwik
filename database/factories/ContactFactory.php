@@ -25,8 +25,8 @@ class ContactFactory extends Factory
             'id' => fake()->unique()->uuid(),
             'user_id' => User::factory(),
             'full_name' => fake()->name(),
-            'email' => fake()->unique()->optional()->safeEmail(),
-            'phone' => fake()->unique()->optional()->phoneNumber(),
+            'email' => fake()->safeEmail(),
+            'phone' => fake()->phoneNumber(),
             'created_at' => now(),
             'updated_at' => now(),
         ];

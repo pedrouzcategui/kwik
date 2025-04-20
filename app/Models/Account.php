@@ -10,6 +10,8 @@ class Account extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $fillable = ['name', 'currency', 'type', 'account_provider_id'];
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountProviderController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

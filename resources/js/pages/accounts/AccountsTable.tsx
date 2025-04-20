@@ -64,8 +64,10 @@ const columns = [
                     </Link>
                     <Button
                         onClick={() => {
-                            router.delete(`/accounts/${account.id}`);
-                            location.reload();
+                            router.delete(`/accounts/${account.id}`, {
+                                preserveScroll: true,
+                                onSuccess: () => router.reload({ only: ['accounts'] }),
+                            });
                         }}
                         size="sm"
                     >
@@ -83,5 +85,5 @@ interface AccountsTableProps {
 }
 
 export default function AccountsTable({ accounts }: AccountsTableProps) {
-    return <BaseTable data={accounts} columns={columns} globalFilterPlaceholder="Busca tu cuenta" />;
+    return <BaseTable data={accounts} columns={columns} globalFilterPlaceholder="Busca tu cuenta" modelName="account" />;
 }

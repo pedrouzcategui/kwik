@@ -26,7 +26,7 @@ type ContactFormComponentProps = {
 };
 
 export default function ContactForm({ contact }: ContactFormComponentProps) {
-    const { data, setData, post, put, processing, errors, wasSuccessful, reset } = useForm<ContactForm>({
+    const { data, setData, post, put, processing } = useForm<ContactForm>({
         full_name: contact?.full_name ?? '',
         email: contact?.email ?? '',
         phone: contact?.phone ?? '',
@@ -38,10 +38,6 @@ export default function ContactForm({ contact }: ContactFormComponentProps) {
             put(`/contacts/${contact.id}`);
         } else {
             post('/contacts');
-        }
-        if (wasSuccessful) {
-            reset();
-            console.log('Contacto Creado!');
         }
     }
 

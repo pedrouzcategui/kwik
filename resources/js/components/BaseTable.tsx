@@ -8,9 +8,10 @@ type BaseTableProps<T> = {
     data: T[];
     columns: ColumnDef<T, any>[];
     globalFilterPlaceholder?: string;
+    modelName: string;
 };
 
-export function BaseTable<T>({ data, columns, globalFilterPlaceholder }: BaseTableProps<T>) {
+export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName }: BaseTableProps<T>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = React.useState('');
 
@@ -39,7 +40,9 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder }: BaseTab
                     className="w-full rounded border p-2 md:w-96"
                 />
                 <Button asChild size={'lg'}>
-                    <Link href="/contacts/create">Add New ?</Link>
+                    <Link className={'capitalize'} href={`/${modelName}s/create`}>
+                        Add New {modelName}
+                    </Link>
                 </Button>
             </div>
             <Table>

@@ -12,6 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Index(props: any) {
     let accounts = props.accounts;
+    console.log(accounts);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Contactos" />

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAccountRequest;
+use App\Http\Requests\UpdateAccountRequest;
 use App\Models\Account;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -22,17 +24,25 @@ class AccountController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $providers = $request->user()->accountProviders;
+        return Inertia::render('accounts/form', [
+            'providers' => $providers
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    // TODO: Create Request and Validate
+    public function store(StoreAccountRequest $request)
     {
-        //
+        $account = new Account($request->validated());
+        $account->user_id = $request->user()->id;
+        $account->save();
+
+        return to_route('accounts.index');
     }
 
     /**
@@ -46,24 +56,39 @@ class AccountController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Account $account)
+    public function edit(Request $request, Account $account)
     {
-        //
+        $providers = $request->user()->accountProviders;
+        return Inertia::render('accounts/form', [
+            'providers' => $providers,
+            'account' => $account
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Account $account)
+    public function update(UpdateAccountRequest $request, Account $account)
     {
-        //
+        if ($account->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+        $account->update($request->validated());
+        return to_route('accounts.index')->with('success', 'Cuenta Actualizada');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Account $account)
+    public function destroy(Request $request, Account $account)
     {
-        //
+        // 🛡️ Check ownership | This can be replaced with a policy tbh
+        if ($account->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        $account->delete();
+        // TODO: Flash session here
+        return to_route('accounts.index')->with('success', 'Cuenta Eliminada');
     }
 }

@@ -46,8 +46,10 @@ const columns = [
                     </Link>
                     <Button
                         onClick={() => {
-                            router.delete(`/contacts/${contact.id}`);
-                            location.reload();
+                            router.delete(`/contacts/${contact.id}`, {
+                                preserveScroll: true,
+                                onSuccess: () => router.reload({ only: ['contacts'] }),
+                            });
                         }}
                         size="sm"
                     >
@@ -65,9 +67,13 @@ interface ContactTableProps {
 }
 
 export default function ContactsTable({ contacts }: ContactTableProps) {
-    const [data] = React.useState(() => [...contacts]);
+    const [data, setData] = React.useState<Contact[]>(contacts);
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = React.useState(''); // Input state
+
+    React.useEffect(() => {
+        setData(contacts);
+    }, [contacts]);
 
     const table = useReactTable({
         data,
@@ -94,7 +100,9 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
                     className="w-full rounded border p-2 md:w-96"
                 />
                 <Button asChild size={'lg'}>
-                    <Link href="/contacts/create">Add New Contact</Link>
+                    <Link className="capitalize" href="/contacts/create">
+                        Add New Contact
+                    </Link>
                 </Button>
             </div>
 

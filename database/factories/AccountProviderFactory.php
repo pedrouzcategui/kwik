@@ -19,7 +19,7 @@ class AccountProviderFactory extends Factory
     {
         return [
             'id' => fake()->unique()->uuid(),
-            'name' => fake()->unique()->company(),
+            'name' => fake()->company(),
             'user_id' => User::factory(),
         ];
     }

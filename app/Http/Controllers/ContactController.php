@@ -15,7 +15,7 @@ class ContactController extends Controller
      */
     public function index(Request $request)
     {
-        $contacts = response()->json($request->user()->contacts);
+        $contacts = $request->user()->contacts;
         return Inertia::render('contacts/index', [
             'contacts' => $contacts
         ]);
@@ -95,6 +95,6 @@ class ContactController extends Controller
 
         $contact->delete();
         // TODO: Flash session here
-        // return to_route("contacts.index");
+        return to_route('contacts.index')->with('success', 'Contacto eliminado');
     }
 }

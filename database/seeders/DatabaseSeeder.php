@@ -26,13 +26,13 @@ class DatabaseSeeder extends Seeder
 
         // Create contacts for the user
         Contact::factory()
-            ->count(3)
+            ->count(10)
             ->for($user)
             ->create();
 
         // Create accounts with random providers
         Account::factory()
-            ->count(3)
+            ->count(10)
             ->for($user)
             ->state(function () use ($providers) {
                 return [
