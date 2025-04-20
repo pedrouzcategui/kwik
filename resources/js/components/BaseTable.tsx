@@ -27,7 +27,7 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder }: BaseTab
     });
 
     return (
-        <div>
+        <div className="p-8">
             <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <input
                     type="text"

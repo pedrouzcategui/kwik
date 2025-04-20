@@ -23,6 +23,7 @@ class AccountFactory extends Factory
             'name' => fake()->creditCardDetails()['name'],
             'currency' => fake()->randomElement(["USD", "EUR", "VES"]),
             'type' => fake()->randomElement(["CHECKING", "SAVINGS"]),
+            'amount' => fake()->numberBetween(0, 5000)
         ];
     }
 }

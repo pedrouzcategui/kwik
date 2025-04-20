@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             // ?Should I create a currency table?
             $table->enum('currency', ['USD', 'EUR', 'VES']);
+            $table->float('amount')->default(0);
             $table->enum('type', ['CHECKING', 'SAVINGS', 'INVESTMENT', 'CRYPTO']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
