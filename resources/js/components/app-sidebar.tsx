@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, ContactIcon, CreditCard, Folder } from 'lucide-react';
+import { BookOpen, CircleDollarSign, ContactIcon, CreditCard, Folder } from 'lucide-react';
 
 const mainNavItems: NavItem[] = [
     {
@@ -16,6 +16,11 @@ const mainNavItems: NavItem[] = [
         title: 'Cuentas',
         href: '/accounts',
         icon: CreditCard,
+    },
+    {
+        title: 'Operaciones',
+        href: '/operations',
+        icon: CircleDollarSign,
     },
 ];
 
