@@ -60,6 +60,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Account::class);
     }
+    public function operations(): HasMany
+    {
+        return $this->hasMany(Operation::class);
+    }
     public function accountProviders()
     {
         return $this->hasMany(AccountProvider::class);

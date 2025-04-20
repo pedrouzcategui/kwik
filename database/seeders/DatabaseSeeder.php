@@ -6,7 +6,7 @@ use App\Models\Contact;
 use App\Models\User;
 use App\Models\Account;
 use App\Models\AccountProvider;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Operation;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -25,18 +25,29 @@ class DatabaseSeeder extends Seeder
             ->create();
 
         // Create contacts for the user
-        Contact::factory()
+        $contacts = Contact::factory()
             ->count(10)
             ->for($user)
             ->create();
 
         // Create accounts with random providers
-        Account::factory()
+        $accounts = Account::factory()
             ->count(10)
             ->for($user)
             ->state(function () use ($providers) {
                 return [
                     'account_provider_id' => $providers->random()->id,
+                ];
+            })
+            ->create();
+
+        Operation::factory()
+            ->count(20)
+            ->for($user)
+            ->state(function () use ($contacts, $accounts) {
+                return [
+                    'contact_id' => $contacts->random()->id,
+                    'account_id' => $accounts->random()->id,
                 ];
             })
             ->create();

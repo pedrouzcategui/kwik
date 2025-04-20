@@ -12,8 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('operations', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('user_id');
+            $table->uuid('contact_id');
+            $table->uuid('account_id');
+            $table->uuid('account_target_id')->nullable(true);
+            $table->float('amount');
+            $table->enum('type', ['INCOME', 'EXPENSE', 'TRANSFER']);
+            $table->string('description');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('contact_id')->references('id')->on('contacts');
+            $table->foreign('account_id')->references('id')->on('accounts');
+            $table->foreign('account_target_id')->references('id')->on('accounts');
         });
     }
 

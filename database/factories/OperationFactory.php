@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
+use App\Models\Contact;
+use App\Models\Account;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +20,12 @@ class OperationFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::factory(),
+            'contact_id' => Contact::factory(),
+            'account_id' => Account::factory(),
+            'amount' => fake()->numberBetween(50, 500),
+            'type' => fake()->randomElement(['INCOME', 'EXPENSE']),
+            'description' => fake()->text(250)
         ];
     }
 }
