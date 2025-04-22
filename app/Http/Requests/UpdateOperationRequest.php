@@ -11,7 +11,7 @@ class UpdateOperationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class UpdateOperationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'contact_id' => ['required', 'string'],
+            'account_id' => ['required', 'string'],
+            'type' => ['required', 'string'],
+            'amount' => ['required'],
         ];
     }
 }

@@ -12,8 +12,8 @@ import { FormEvent } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Añadir Operación',
-        href: '/operations/create',
+        title: 'Editar Operación',
+        href: '/operations/edit',
     },
 ];
 
@@ -36,14 +36,13 @@ type OperationForm = {
 
 export default function OperationForm({ user, operation }: OperationFormComponentProps) {
     const { data, setData, post, put, processing } = useForm<OperationForm>({
-        contact_id: operation?.contact.id ?? '',
-        account_id: operation?.account.id ?? '',
-        account_target_id: operation?.targetAccount?.id ?? '',
+        contact_id: operation?.contact_id ?? '',
+        account_id: operation?.account_id ?? '',
+        account_target_id: operation?.target_account_id ?? '',
         amount: operation?.amount ?? 0,
         type: (operation?.type as OperationTypeStringUnion) ?? '',
         description: operation?.description ?? '',
     });
-    console.log(data);
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
         if (operation) {
@@ -94,7 +93,10 @@ export default function OperationForm({ user, operation }: OperationFormComponen
                         <SelectContent>
                             {user.accounts.map((account: Account) => (
                                 <SelectItem key={account.id} value={account.id}>
-                                    {account.name} - {account.currency}
+                                    <div>{account.name} -</div>
+                                    <span className="text-xs">
+                                        {account.currency} {account.amount}
+                                    </span>
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -102,7 +104,7 @@ export default function OperationForm({ user, operation }: OperationFormComponen
                 </div>
                 <div>
                     <Label>Monto</Label>
-                    <Input name="amount" type="number" onChange={(e) => setData('amount', parseInt(e.target.value))} />
+                    <Input name="amount" type="number" value={data.amount} onChange={(e) => setData('amount', parseInt(e.target.value))} />
                 </div>
                 <Button disabled={processing} className="w-full" size={'lg'} type="submit">
                     {operation ? 'Editar' : 'Crear'} Operacion

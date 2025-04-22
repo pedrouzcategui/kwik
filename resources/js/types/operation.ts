@@ -1,6 +1,3 @@
-import { Account } from './account';
-import { Contact } from './contact';
-
 export enum OperationType {
     INCOME = 'INCOME',
     EXPENSE = 'EXPENSE',
@@ -11,9 +8,9 @@ export type OperationTypeStringUnion = `${OperationType}`;
 export type Operation = {
     id: string;
     type: OperationTypeStringUnion;
-    contact: Contact;
-    account: Account;
-    targetAccount?: Account;
+    contact_id: string;
+    account_id: string;
+    target_account_id?: string;
     amount: number;
     description: string;
     created_at: string;

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOperationRequest;
+use App\Http\Requests\UpdateOperationRequest;
 use App\Models\Operation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -54,24 +55,36 @@ class OperationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Operation $operation)
+    public function edit(Request $request, Operation $operation)
     {
-        //
+        $user = $request->user()->with(['accounts', 'contacts'])->first();
+        return Inertia::render('operations/form', [
+            'operation' => $operation,
+            'user' => $user
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Operation $operation)
+    public function update(UpdateOperationRequest $request, Operation $operation)
     {
-        //
+        if ($request->user()->id !== $operation->user_id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+        $operation->update($request->validated());
+        return to_route('operations.index')->with('success', 'Se ha actualizado la operación');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Operation $operation)
+    public function destroy(Request $request, Operation $operation)
     {
-        //
+        if ($request->user()->id !== $operation->user_id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+        $operation->delete();
+        return to_route('operations.index')->with('success', 'Se ha eliminado la operación');
     }
 }
