@@ -41,7 +41,7 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
                 />
                 <Button asChild size={'lg'}>
                     <Link className={'capitalize'} href={`/${modelName}s/create`}>
-                        Add New {modelName}
+                        Crear {modelName}
                     </Link>
                 </Button>
             </div>
