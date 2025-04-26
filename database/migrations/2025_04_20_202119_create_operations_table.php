@@ -15,7 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->uuid('contact_id');
+            // Change name here to
             $table->uuid('account_id');
+            // Change name here
             $table->uuid('account_target_id')->nullable(true);
             $table->float('amount');
             $table->enum('type', ['INCOME', 'EXPENSE', 'TRANSFER']);
