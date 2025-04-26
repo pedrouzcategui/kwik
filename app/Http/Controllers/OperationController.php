@@ -42,7 +42,6 @@ class OperationController extends Controller
         $operation = new Operation($request->validated());
         $operation->user_id = $request->user()->id;
         // Event is dispatched here
-        OperationUpserted::dispatch($operation, "created");
         $operation->save();
         return to_route('operations.index')->with('success', 'Contacto creado exitosamente');
     }
@@ -77,7 +76,6 @@ class OperationController extends Controller
         }
         $operation->amount = $request->input('amount');
         $operation->type = $request->input('type');
-        OperationUpserted::dispatch($operation, "updated");
         $operation->update($request->validated());
         return to_route('operations.index')->with('success', 'Se ha actualizado la operación');
     }
@@ -90,7 +88,6 @@ class OperationController extends Controller
         if ($request->user()->id !== $operation->user_id) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
-        OperationUpserted::dispatch($operation, "deleted");
         $operation->delete();
         return to_route('operations.index')->with('success', 'Se ha eliminado la operación');
     }

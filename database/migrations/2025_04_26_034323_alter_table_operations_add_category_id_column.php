@@ -12,14 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('operations', function(Blueprint $table){
-            $table->uuid('category_id')->after('type');
+            $table->uuid('category_id')->after('type')->nullable();
             $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('operations', function (Blueprint $table) {
