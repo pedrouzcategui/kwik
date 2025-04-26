@@ -22,10 +22,10 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('contact_id')->references('id')->on('contacts');
-            $table->foreign('account_id')->references('id')->on('accounts');
-            $table->foreign('account_target_id')->references('id')->on('accounts');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('contact_id')->references('id')->on('contacts')->onDelete('cascade');
+            $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
+            $table->foreign('account_target_id')->references('id')->on('accounts')->onDelete('cascade');
         });
     }
 

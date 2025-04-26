@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
-            $table->string('name');
-            // ?Should I create a currency table?
+            // TODO: Rename as "label" and make it optional.
+            $table->string('name')->nullable();
             $table->enum('currency', ['USD', 'EUR', 'VES']);
             $table->float('amount')->default(0);
             $table->enum('type', ['CHECKING', 'SAVINGS', 'INVESTMENT', 'CRYPTO']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+            //$table->softDeletes();
         });
     }
 
