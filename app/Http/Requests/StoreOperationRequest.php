@@ -24,6 +24,7 @@ class StoreOperationRequest extends FormRequest
         return [
             'contact_id' => ['required', 'string'],
             'account_id' => ['required', 'string'],
+            'category_id' => ['required', 'string'],
             'type' => ['required', 'string'],
             'amount' => ['required'],
             // TODO: Add optional transfer account

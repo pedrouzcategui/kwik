@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
 #[ObservedBy([OperationObserver::class])]
@@ -18,6 +17,7 @@ class Operation extends Model
     protected $fillable = [
         'contact_id',
         'account_id',
+        'category_id',
         'amount',
         'type',
     ];

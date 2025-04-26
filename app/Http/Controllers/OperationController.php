@@ -8,6 +8,7 @@ use App\Models\Operation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Events\OperationUpserted;
+use App\Models\Category;
 
 class OperationController extends Controller
 {
@@ -29,8 +30,10 @@ class OperationController extends Controller
     {
         // ?Difference between a query builder and this load method?
         $user = $request->user()->load(['contacts', 'accounts']);
+        $categories = Category::all();
         return Inertia::render("operations/form", [
-            'user' => $user
+            'user' => $user,
+            'categories' => $categories
         ]);
     }
 
@@ -60,9 +63,11 @@ class OperationController extends Controller
     public function edit(Request $request, Operation $operation)
     {
         $user = $request->user()->with(['accounts', 'contacts'])->first();
+        $categories = Category::all();
         return Inertia::render('operations/form', [
             'operation' => $operation,
-            'user' => $user
+            'categories' => $categories,
+           'user' => $user
         ]);
     }
 

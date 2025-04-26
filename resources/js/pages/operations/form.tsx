@@ -2,9 +2,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Account } from '@/types/account';
+import { Category } from '@/types/category';
 import { Contact } from '@/types/contact';
 import { Operation, OperationTypeStringUnion } from '@/types/operation';
 import { Head, useForm } from '@inertiajs/react';
@@ -22,11 +24,13 @@ type OperationFormComponentProps = {
         contacts: Contact[];
         accounts: Account[];
     };
+    categories: Category[];
     operation?: Operation;
 };
 
 type OperationForm = {
     contact_id: string;
+    category_id: string;
     account_id: string;
     account_target_id?: string;
     amount: number;
@@ -34,7 +38,7 @@ type OperationForm = {
     description?: string;
 };
 
-export default function OperationForm({ user, operation }: OperationFormComponentProps) {
+export default function OperationForm({ user, operation, categories}: OperationFormComponentProps) {
     const { data, setData, post, put, processing } = useForm<OperationForm>({
         contact_id: operation?.contact_id ?? '',
         account_id: operation?.account_id ?? '',
@@ -42,6 +46,7 @@ export default function OperationForm({ user, operation }: OperationFormComponen
         amount: operation?.amount ?? 0,
         type: (operation?.type as OperationTypeStringUnion) ?? '',
         description: operation?.description ?? '',
+        category_id: operation?.category_id ?? ''
     });
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
@@ -85,6 +90,21 @@ export default function OperationForm({ user, operation }: OperationFormComponen
                     </Select>
                 </div>
                 <div>
+                    <Label className="mb-2 block">Categoria</Label>
+                    <Select value={data.category_id} onValueChange={(category_id) => setData('category_id', category_id)}>
+                        <SelectTrigger>
+                            <SelectValue placeholder={'Selecciona la categoria de tu operacion'} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {categories.map((category: Category) => (
+                                <SelectItem key={category.id} value={category.id}>
+                                    <div>{category.name}</div>
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div>
                     <Label className="mb-2 block">Cuenta Origen</Label>
                     <Select value={data.account_id} onValueChange={(account_id) => setData('account_id', account_id)}>
                         <SelectTrigger>
@@ -105,6 +125,10 @@ export default function OperationForm({ user, operation }: OperationFormComponen
                 <div>
                     <Label>Monto</Label>
                     <Input name="amount" type="number" value={data.amount} onChange={(e) => setData('amount', parseInt(e.target.value))} />
+                </div>
+                <div>
+                    <Label>Descripcion</Label>
+                    <Textarea name="amount" ></Textarea>
                 </div>
                 <Button disabled={processing} className="w-full" size={'lg'} type="submit">
                     {operation ? 'Editar' : 'Crear'} Operacion

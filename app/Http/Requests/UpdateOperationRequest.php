@@ -24,6 +24,7 @@ class UpdateOperationRequest extends FormRequest
         return [
             'contact_id' => ['required', 'string'],
             'account_id' => ['required', 'string'],
+            'category_id' => ['required', 'string'],
             'type' => ['required', 'string'],
             'amount' => ['required'],
         ];

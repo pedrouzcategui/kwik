@@ -28,9 +28,7 @@ class OperationObserver
             $newAmount = $operation->amount;
             $oldType   = $operation->getOriginal('type');
             $newType   = $operation->type;
-       
-       //     dd($oldAmount, $newAmount, $oldType, $newType);
-
+        
             if ($oldType === 'INCOME' && $newType === 'INCOME') {
                 // (Old - New)
                 $operation->account->amount -= ($oldAmount - $newAmount);

@@ -10,6 +10,7 @@ export type Operation = {
     type: OperationTypeStringUnion;
     contact_id: string;
     account_id: string;
+    category_id: string;
     target_account_id?: string;
     amount: number;
     description: string;
