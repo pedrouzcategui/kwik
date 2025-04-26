@@ -16,6 +16,10 @@ Esta aplicación hecha en Laravel + React (Inertia).
 
 ## Como arrancar el proyecto
 
+Copy the environment file
+`php artisan key:generate`
+`composer install` para instalar las dependencias de composer
+`npm install` para instalar las dependencias de node js
 1. `composer run dev` -> Para ejecutar el Frontend
 2. `php artisan dev` -> Para ejecutar el Backend
 3. Visita `http://127.0.0.1:8000/`

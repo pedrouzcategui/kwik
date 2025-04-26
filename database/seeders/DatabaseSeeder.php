@@ -19,37 +19,37 @@ class DatabaseSeeder extends Seeder
         $user = User::factory()->create();
 
         // Create some account providers
-        $providers = AccountProvider::factory()
-            ->count(3)
-            ->for($user)
-            ->create();
+        // $providers = AccountProvider::factory()
+        //     ->count(3)
+        //     ->for($user)
+        //     ->create();
 
-        // Create contacts for the user
-        $contacts = Contact::factory()
-            ->count(10)
-            ->for($user)
-            ->create();
+        // // Create contacts for the user
+        // $contacts = Contact::factory()
+        //     ->count(10)
+        //     ->for($user)
+        //     ->create();
 
-        // Create accounts with random providers
-        $accounts = Account::factory()
-            ->count(10)
-            ->for($user)
-            ->state(function () use ($providers) {
-                return [
-                    'account_provider_id' => $providers->random()->id,
-                ];
-            })
-            ->create();
+        // // Create accounts with random providers
+        // $accounts = Account::factory()
+        //     ->count(10)
+        //     ->for($user)
+        //     ->state(function () use ($providers) {
+        //         return [
+        //             'account_provider_id' => $providers->random()->id,
+        //         ];
+        //     })
+        //     ->create();
 
-        Operation::factory()
-            ->count(20)
-            ->for($user)
-            ->state(function () use ($contacts, $accounts) {
-                return [
-                    'contact_id' => $contacts->random()->id,
-                    'account_id' => $accounts->random()->id,
-                ];
-            })
-            ->create();
+        // Operation::factory()
+        //     ->count(20)
+        //     ->for($user)
+        //     ->state(function () use ($contacts, $accounts) {
+        //         return [
+        //             'contact_id' => $contacts->random()->id,
+        //             'account_id' => $accounts->random()->id,
+        //         ];
+        //     })
+        //     ->create();
     }
 }
