@@ -1,4 +1,5 @@
 import AreaChart from '@/components/analytics/AreaChart';
+import DatePickerWithRange from '@/components/DatePickerWithRange';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import AppLayout from '@/layouts/app-layout';
@@ -33,7 +34,7 @@ export default function Dashboard({ accounts_totals }: DashboardProps) {
             <div className="p-4">
                 <div className="grid lg:grid-cols-4 gap-4">
                     <div>
-                        <Card className='bg-slate-800'>
+                        <Card>
                             <CardHeader>
                                 <CardTitle>Amount per Currency</CardTitle>
                                 <CardDescription>Displays total amount per currency</CardDescription>
