@@ -25,7 +25,8 @@ class OperationFactory extends Factory
             'account_id' => Account::factory(),
             'amount' => fake()->numberBetween(50, 500),
             'type' => fake()->randomElement(['INCOME', 'EXPENSE']),
-            'description' => fake()->text(250)
+            'description' => fake()->text(250),
+            'created_at' => fake()->dateTimeBetween('-4 months', 'now')
         ];
     }
 }

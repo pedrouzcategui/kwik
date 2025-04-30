@@ -4,9 +4,14 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, CircleDollarSign, ContactIcon, CreditCard, Folder } from 'lucide-react';
+import { Banknote, BookOpen, CircleDollarSign, ContactIcon, CreditCard, Folder, LayoutDashboard } from 'lucide-react';
 
 const mainNavItems: NavItem[] = [
+    {
+        title: 'Analiticas',
+        href: '/dashboard',
+        icon: LayoutDashboard,
+    },
     {
         title: 'Contactos',
         href: '/contacts',
@@ -45,7 +50,7 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
                             <Link href="/dashboard" prefetch>
-                                Logo Goes Here
+                               <span className='text-3xl text-center w-full font-bold uppercase'>KWIK</span> 
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>

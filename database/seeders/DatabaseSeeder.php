@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
             ->create();
 
         Operation::factory()
-            ->count(20)
+            ->count(50)
             ->for($user)
             ->state(function () use ($contacts, $accounts, $categories) {
                 return [
