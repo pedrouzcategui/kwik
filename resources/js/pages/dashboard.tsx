@@ -1,13 +1,13 @@
 import AreaChart from '@/components/analytics/AreaChart';
+import AreaChartStacked from '@/components/analytics/AreaChartStacked';
+import BarChart from '@/components/analytics/BarChart';
 import DatePickerWithRange from '@/components/DatePickerWithRange';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Currency } from '@/types/account';
-import { Head } from '@inertiajs/react';
-import { TrendingUp } from 'lucide-react';
-import { Bar, BarChart, Cell, XAxis, YAxis } from 'recharts';
+import { Head, router } from '@inertiajs/react';
+import { useState } from 'react';
+import { DateRange } from 'react-day-picker';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,51 +22,47 @@ interface DashboardProps {
     }[];
 }
 
-const chartConfig = {} satisfies ChartConfig;
-
-const COLORS = ['#34D399', '#60A5FA', '#F472B6'];
-
 export default function Dashboard({ accounts_totals }: DashboardProps) {
+    // Lifting the state up, means that the state lives in the parent component, and then it sends to the children
+    const [date, setDate] = useState<DateRange | undefined>({
+        from: new Date(2025, 0, 1),
+        to: new Date(),
+    });
+
     console.log(accounts_totals);
+
+    const handleDateChange = (newDate: DateRange | undefined) => {
+        setDate(newDate);
+
+        if (newDate?.from && newDate?.to) {
+            router.get(
+                route('dashboard'),
+                {
+                    end_date: newDate.to.toISOString().split('T')[0],
+                    start_date: newDate.from.toISOString().split('T')[0],
+                },
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    replace: true,
+                },
+            );
+        }
+    };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
+            <DatePickerWithRange date={date} onChange={handleDateChange} />
             <div className="p-4">
-                <div className="grid lg:grid-cols-4 gap-4">
+                <div className="grid gap-4 lg:grid-cols-4">
                     <div>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Amount per Currency</CardTitle>
-                                <CardDescription>Displays total amount per currency</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <ChartContainer config={chartConfig} className="h-full w-full">
-                                    <BarChart layout="horizontal" data={accounts_totals}>
-                                        <XAxis type="category" dataKey="currency" />
-                                        <YAxis type="number" />
-                                        <ChartTooltip content={<ChartTooltipContent />} />
-                                        <Bar width={2} dataKey="amount" radius={4}>
-                                            {accounts_totals.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Bar>
-                                    </BarChart>
-                                </ChartContainer>
-                            </CardContent>
-                            <CardFooter>
-                                <div className="flex w-full items-start gap-2 text-sm">
-                                    <div className="grid gap-2">
-                                        <div className="flex items-center gap-2 leading-none font-medium">
-                                            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-                                        </div>
-                                        <div className="text-muted-foreground flex items-center gap-2 leading-none">January - June 2024</div>
-                                    </div>
-                                </div>
-                            </CardFooter>
-                        </Card>
+                        <BarChart data={accounts_totals} />
                     </div>
                     <div>
                         <AreaChart />
+                    </div>
+                    <div>
+                        <AreaChartStacked />
                     </div>
                 </div>
             </div>

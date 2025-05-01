@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
+use Carbon\Carbon;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Account>
@@ -23,7 +24,8 @@ class AccountFactory extends Factory
             'name' => fake()->creditCardDetails()['name'],
             'currency' => fake()->randomElement(["USD", "EUR", "VES"]),
             'type' => fake()->randomElement(["CHECKING", "SAVINGS"]),
-            'amount' => fake()->numberBetween(0, 5000)
+            'amount' => fake()->numberBetween(0, 5000),
+            'created_at' => Carbon::create("2025", 1, 1)
         ];
     }
 }
