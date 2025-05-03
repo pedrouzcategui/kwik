@@ -1,7 +1,7 @@
-import AreaChart from '@/components/analytics/AreaChart';
-import AreaChartStacked from '@/components/analytics/AreaChartStacked';
 import BarChart from '@/components/analytics/BarChart';
+import RadarChartWithDots from '@/components/analytics/RadarChartWithDots';
 import DatePickerWithRange from '@/components/DatePickerWithRange';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Currency } from '@/types/account';
@@ -20,16 +20,18 @@ interface DashboardProps {
         currency: `${Currency}`;
         amount: number;
     }[];
+    expenses_grouped_by_categories: {
+        name: string;
+        total: number;
+    }[];
 }
 
-export default function Dashboard({ accounts_totals }: DashboardProps) {
+export default function Dashboard({ accounts_totals, expenses_grouped_by_categories }: DashboardProps) {
     // Lifting the state up, means that the state lives in the parent component, and then it sends to the children
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(2025, 0, 1),
         to: new Date(),
     });
-
-    console.log(accounts_totals);
 
     const handleDateChange = (newDate: DateRange | undefined) => {
         setDate(newDate);
@@ -49,20 +51,65 @@ export default function Dashboard({ accounts_totals }: DashboardProps) {
             );
         }
     };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <DatePickerWithRange date={date} onChange={handleDateChange} />
-            <div className="p-4">
-                <div className="grid gap-4 lg:grid-cols-4">
+            <div className="grid grid-cols-4 gap-4 pt-2 pb-4">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Total Disponible</CardTitle>
+                        <CardDescription>Convertido a Dolares</CardDescription> 
+                    </CardHeader>
+                    <CardContent>
+                        <span className="text-6xl font-bold">$100,000</span>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Total Disponible</CardTitle>
+                        <CardDescription>Convertido a Dolares</CardDescription> 
+                    </CardHeader>
+                    <CardContent>
+                        <span className="text-6xl font-bold">$100,000</span>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Total Disponible</CardTitle>
+                        <CardDescription>Convertido a Dolares</CardDescription> 
+                    </CardHeader>
+                    <CardContent>
+                        <span className="text-6xl font-bold">$100,000</span>
+                    </CardContent>
+                </Card>
+                <DatePickerWithRange date={date} onChange={handleDateChange} />
+            </div>
+            <div>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                     <div>
-                        <BarChart data={accounts_totals} title='Total en cuentas por moneda' description='Representa el total de dinero agregado de todas las cuentas, agrupado por moneda' />
+                        <BarChart
+                            data={accounts_totals}
+                            title="Total en cuentas por moneda"
+                            description="Representa el total de dinero agregado de todas las cuentas, agrupado por moneda"
+                        />
                     </div>
                     <div>
-                        <AreaChart data={[]} title={"Ingreso vs Egreso"} description={"Demuestra un historico de el ingreso vs egreso agrupado por "}/>
+                        <RadarChartWithDots
+                            name={'Gastos por Categoria'}
+                            description={'Gastos y Total de Gastos ordenados por categoria'}
+                            data={expenses_grouped_by_categories}
+                            dataKey={'name'}
+                        />
                     </div>
                     <div>
-                        <AreaChartStacked />
+                        <Card className='h-full'>
+                            <CardHeader>
+                                <CardTitle>Presupuestado vs Gastado</CardTitle>
+                            </CardHeader>
+                            <CardContent></CardContent>
+                            <CardFooter></CardFooter>
+                        </Card>
                     </div>
                 </div>
             </div>

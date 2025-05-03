@@ -16,11 +16,14 @@ class AnalyticsController extends Controller
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
 
+        // Aggregated amount per operations
         $query = DB::table('operations')
             ->join('accounts', 'operations.account_id', '=', 'accounts.id')
             ->select('accounts.currency', DB::raw('SUM(operations.amount) as amount'))
             ->groupBy('accounts.currency');
 
+
+        // I might group these condtions
         if ($startDate && $endDate) {
             $query->whereBetween('operations.created_at', [$startDate, $endDate]);
         }
@@ -44,9 +47,24 @@ class AnalyticsController extends Controller
 
         $totalsByCurrencyAndType = $totalsByCurrencyAndType->get();
 
+        // Get amounts grouped by categories.
+        $expensesGroupedByCategories = DB::table('operations')
+                                        ->join('categories', 'operations.category_id', '=', 'categories.id')
+                                        ->select('categories.name', DB::raw('SUM(operations.amount) as total'))
+                                        ->where('type','=','EXPENSE')
+                                        ->groupBy('categories.name');
+
+        if ($startDate && $endDate) {
+            $expensesGroupedByCategories->whereBetween('operations.created_at', [$startDate, $endDate]);
+        }
+
+        $expensesGroupedByCategories = $expensesGroupedByCategories->get();
+       
+        //        
 
         return Inertia::render('dashboard', [
-            'accounts_totals' => $accountSumsByCurrency
+            'accounts_totals' => $accountSumsByCurrency,
+            'expenses_grouped_by_categories' => $expensesGroupedByCategories
         ]);
     }
 
