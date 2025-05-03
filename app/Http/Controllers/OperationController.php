@@ -7,7 +7,6 @@ use App\Http\Requests\UpdateOperationRequest;
 use App\Models\Operation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Events\OperationUpserted;
 use App\Models\Category;
 
 class OperationController extends Controller
@@ -17,9 +16,9 @@ class OperationController extends Controller
      */
     public function index(Request $request)
     {
-        $operations = $request->user()->operations()->with(['contact', 'account'])->orderBy('created_at', 'desc')->get();
+        $operations = $request->user()->operations()->with(['contact', 'account', 'category'])->orderBy('created_at', 'desc')->get();
         return Inertia::render('operations/index', [
-            'operations' => $operations
+            'operations' => $operations,
         ]);
     }
 

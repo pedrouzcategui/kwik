@@ -23,18 +23,24 @@ const chartConfig = {
     },
 } satisfies ChartConfig;
 
-export default function Component() {
+interface AreaChartComponentProps<T> {
+    title: string;
+    description: string;
+    data: T[];
+}
+
+export default function AreaChartComponent({title, description, data}: AreaChartComponentProps<any>) {
     return (
         <Card className="h-full">
             <CardHeader>
-                <CardTitle>Area Chart Title</CardTitle>
-                <CardDescription>Showing total visitors for the last 6 months</CardDescription>
+                <CardTitle>{title}</CardTitle>
+                <CardDescription>{description}</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
                     <AreaChart
                         accessibilityLayer
-                        data={chartData}
+                        data={data}
                         margin={{
                             left: 12,
                             right: 12,

@@ -7,18 +7,20 @@ const chartConfig = {} satisfies ChartConfig;
 const COLORS = ['#34D399', '#60A5FA', '#F472B6'];
 
 interface BarChartProps<T> {
+    title: string;
+    description: string;
     data: T[];
 }
 
-export default function BarChartCustom({ data }: BarChartProps<any>) {
+export default function BarChartCustom({ title, description, data }: BarChartProps<any>) {
     return (
         <Card className="h-full">
             <CardHeader>
-                <CardTitle>Bar Chart Title</CardTitle>
-                <CardDescription>Bar Chart Description</CardDescription>
+                <CardTitle>{title}</CardTitle>
+                <CardDescription>{description}</CardDescription>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig} className="h-full w-full">
+                <ChartContainer config={chartConfig} className="min-h-[250px] w-full">
                     <BarChart data={data} layout="horizontal">
                         <XAxis type="category" dataKey="currency" />
                         <YAxis type="number" />
@@ -32,14 +34,14 @@ export default function BarChartCustom({ data }: BarChartProps<any>) {
                 </ChartContainer>
             </CardContent>
             <CardFooter>
-                <div className="flex w-full items-start gap-2 text-sm">
-                    <div className="grid gap-2">
-                        <div className="flex items-center gap-2 leading-none font-medium">
-                            Some Text <TrendingUp className="h-4 w-4" />
-                        </div>
-                        <div className="text-muted-foreground flex items-center gap-2 leading-none">January - June 2024</div>
-                    </div>
-                </div>
+                {/* <div className="flex w-full items-start gap-2 text-sm">*/}
+                    {/* <div className="grid gap-2">*/}
+                        {/* <div className="flex items-center gap-2 leading-none font-medium">*/}
+                            {/* Some Text <TrendingUp className="h-4 w-4" />*/}
+                        {/* </div>*/}
+                        {/* <div className="text-muted-foreground flex items-center gap-2 leading-none">January - June 2024</div>*/}
+                    {/* </div>*/}
+                {/* </div>*/}
             </CardFooter>
         </Card>
     );

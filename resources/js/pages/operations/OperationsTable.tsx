@@ -2,11 +2,11 @@ import { BaseTable } from '@/components/BaseTable';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { currencyMap } from '@/lib/utils';
-import { Operation } from '@/types/operation';
+import {  OperationTableColumns } from '@/types/operation';
 import { Link, router } from '@inertiajs/react';
 import { createColumnHelper } from '@tanstack/react-table';
 
-const columnHelper = createColumnHelper<Operation>();
+const columnHelper = createColumnHelper<OperationTableColumns>();
 
 const columns = [
     columnHelper.accessor('account.name', {
@@ -37,11 +37,17 @@ const columns = [
         sortingFn: 'alphanumeric',
         enableGlobalFilter: true, // This makes the search filter, search using full names
     }),
+    columnHelper.accessor('category.name', {
+        header: () => <span>Categoria de la operacion</span>,
+        cell: (info) => <Badge style={{backgroundColor: info.row.original.category.color}} >{info.getValue()}</Badge>,
+        sortingFn: 'alphanumeric',
+        enableGlobalFilter: true, // This makes the search filter, search using full names
+    }),
     columnHelper.display({
         id: 'actions',
         header: () => <span>Acciones</span>,
         cell: (props) => {
-            const operation: Operation = props.row.original;
+            const operation: OperationTableColumns = props.row.original;
             return (
                 <div className="flex gap-2">
                     <Link href={`/operations/${operation.id}/edit`}>
@@ -69,7 +75,7 @@ const columns = [
 ];
 
 interface OperationsTableProps {
-    operations: Operation[];
+    operations: OperationTableColumns[];
 }
 
 export default function OperationsTable({ operations }: OperationsTableProps) {

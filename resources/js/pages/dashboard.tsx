@@ -56,10 +56,10 @@ export default function Dashboard({ accounts_totals }: DashboardProps) {
             <div className="p-4">
                 <div className="grid gap-4 lg:grid-cols-4">
                     <div>
-                        <BarChart data={accounts_totals} />
+                        <BarChart data={accounts_totals} title='Total en cuentas por moneda' description='Representa el total de dinero agregado de todas las cuentas, agrupado por moneda' />
                     </div>
                     <div>
-                        <AreaChart />
+                        <AreaChart data={[]} title={"Ingreso vs Egreso"} description={"Demuestra un historico de el ingreso vs egreso agrupado por "}/>
                     </div>
                     <div>
                         <AreaChartStacked />
