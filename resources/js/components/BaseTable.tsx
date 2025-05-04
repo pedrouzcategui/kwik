@@ -13,6 +13,7 @@ import {
 import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
 
 type BaseTableProps<T> = {
     data: T[];
@@ -66,12 +67,12 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
             <Table>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow className="bg-secondary" key={headerGroup.id}>
+                        <TableRow className="" key={headerGroup.id}>
                             {headerGroup.headers.map((header) => (
                                 <TableHead key={header.id}>
                                     {header.isPlaceholder ? null : (
                                         <div
-                                            className={'flex ' + (header.column.getCanSort() ? 'cursor-pointer select-none' : '')}
+                                            className={cn('flex items-center gap-2',(header.column.getCanSort() ? 'cursor-pointer select-none' : ''))}
                                             onClick={header.column.getToggleSortingHandler()}
                                             title={
                                                 header.column.getCanSort()
@@ -85,8 +86,8 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
                                         >
                                             {flexRender(header.column.columnDef.header, header.getContext())}
                                             {{
-                                                asc: <ArrowUp />,
-                                                desc: <ArrowDown />,
+                                                asc: <ArrowUp size={16}/>,
+                                                desc: <ArrowDown size={16}/>,
                                             }[header.column.getIsSorted() as string] ?? null}
                                         </div>
                                     )}

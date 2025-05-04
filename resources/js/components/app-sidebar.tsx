@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Banknote, BookOpen, CircleDollarSign, ContactIcon, CreditCard, Folder, LayoutDashboard } from 'lucide-react';
+import { Banknote, BookOpen, CircleDollarSign, ContactIcon, CreditCard, DollarSign, Folder, LayoutDashboard } from 'lucide-react';
 
 const mainNavItems: NavItem[] = [
     {
@@ -31,9 +31,9 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
+        title: 'Valor Histórico del Dólar',
+        href: '#',
+        icon: DollarSign,
     },
     {
         title: 'Documentation',

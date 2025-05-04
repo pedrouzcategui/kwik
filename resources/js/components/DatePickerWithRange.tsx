@@ -11,9 +11,10 @@ type Props = {
     date: DateRange | undefined;
     onChange: (range: DateRange | undefined) => void;
     className?: string;
+    disabledBeforeDate?: Date | undefined
 };
 
-export default function DatePickerWithRange({ date, onChange, className }: Props) {
+export default function DatePickerWithRange({ disabledBeforeDate, date, onChange, className }: Props) {
     const [internalDate, setInternalDate] = useState<DateRange | undefined>(date);
 
     const handleDayClick = (day: Date) => {
@@ -73,6 +74,7 @@ export default function DatePickerWithRange({ date, onChange, className }: Props
                         numberOfMonths={2}
                         onDayClick={handleDayClick}
                         defaultMonth={internalDate?.from}
+                        disabled={{before: disabledBeforeDate,  after: new Date()}}
                     />
                 </PopoverContent>
             </Popover>

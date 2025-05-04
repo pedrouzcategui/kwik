@@ -1,3 +1,4 @@
+import { BaseTable } from '@/components/BaseTable';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Contact } from '@/types/contact';
@@ -90,71 +91,6 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
     });
 
     return (
-        <div className="p-8">
-            <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <input
-                    type="text"
-                    value={globalFilter}
-                    onChange={(e) => setGlobalFilter(e.target.value)}
-                    placeholder="Buscar por nombre, email o teléfono..."
-                    className="w-full rounded border p-2 md:w-96"
-                />
-                <Button asChild size={'lg'}>
-                    <Link className="capitalize" href="/contacts/create">
-                        Add New Contact
-                    </Link>
-                </Button>
-            </div>
-
-            <Table>
-                <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => (
-                                <TableHead key={header.id}>
-                                    {header.isPlaceholder ? null : (
-                                        <div
-                                            className={header.column.getCanSort() ? 'cursor-pointer select-none' : ''}
-                                            onClick={header.column.getToggleSortingHandler()}
-                                            title={
-                                                header.column.getCanSort()
-                                                    ? header.column.getNextSortingOrder() === 'asc'
-                                                        ? 'Sort ascending'
-                                                        : header.column.getNextSortingOrder() === 'desc'
-                                                          ? 'Sort descending'
-                                                          : 'Clear sort'
-                                                    : undefined
-                                            }
-                                        >
-                                            {flexRender(header.column.columnDef.header, header.getContext())}
-                                            {{
-                                                asc: ' 🔼',
-                                                desc: ' 🔽',
-                                            }[header.column.getIsSorted() as string] ?? null}
-                                        </div>
-                                    )}
-                                </TableHead>
-                            ))}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-                <TableBody>
-                    {table.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id}>
-                            {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                            ))}
-                        </TableRow>
-                    ))}
-                    {table.getRowModel().rows.length === 0 && (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="text-center">
-                                No hay resultados
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-        </div>
+           <BaseTable data={contacts} columns={columns} modelName={'Contact'} /> 
     );
 }
