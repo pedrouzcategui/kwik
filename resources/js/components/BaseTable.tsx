@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Link } from '@inertiajs/react';
+import { cn } from '@/lib/utils';
 import {
     ColumnDef,
     flexRender,
@@ -13,16 +13,16 @@ import {
 import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 import { Button } from './ui/button';
-import { cn } from '@/lib/utils';
 
 type BaseTableProps<T> = {
     data: T[];
     columns: ColumnDef<T, any>[];
     globalFilterPlaceholder?: string;
     modelName: string;
+    dialog: React.ReactNode;
 };
 
-export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName }: BaseTableProps<T>) {
+export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName, dialog }: BaseTableProps<T>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = React.useState('');
 
@@ -58,11 +58,7 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
                     placeholder={globalFilterPlaceholder ?? 'Buscar...'}
                     className="w-full rounded border p-2 md:w-96"
                 />
-                <Button asChild size={'lg'}>
-                    <Link className={'capitalize'} href={`/${modelName.toLocaleLowerCase()}s/create`}>
-                        Crear {modelName}
-                    </Link>
-                </Button>
+            {dialog}
             </div>
             <Table>
                 <TableHeader>
@@ -72,7 +68,7 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
                                 <TableHead key={header.id}>
                                     {header.isPlaceholder ? null : (
                                         <div
-                                            className={cn('flex items-center gap-2',(header.column.getCanSort() ? 'cursor-pointer select-none' : ''))}
+                                            className={cn('flex items-center gap-2', header.column.getCanSort() ? 'cursor-pointer select-none' : '')}
                                             onClick={header.column.getToggleSortingHandler()}
                                             title={
                                                 header.column.getCanSort()
@@ -86,8 +82,8 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
                                         >
                                             {flexRender(header.column.columnDef.header, header.getContext())}
                                             {{
-                                                asc: <ArrowUp size={16}/>,
-                                                desc: <ArrowDown size={16}/>,
+                                                asc: <ArrowUp size={16} />,
+                                                desc: <ArrowDown size={16} />,
                                             }[header.column.getIsSorted() as string] ?? null}
                                         </div>
                                     )}

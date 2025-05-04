@@ -27,7 +27,7 @@ class ContactFactory extends Factory
             'full_name' => fake()->name(),
             'email' => fake()->safeEmail(),
             'type' => fake()->randomElement(['NATURAL', 'GOVERNMENT', 'BUSINESS', 'NON-PROFIT', 'INSTITUTIONAL']),
-            'phone' => fake()->phoneNumber(),
+            'phone' => fake()->unique()->e164PhoneNumber(),
             'created_at' => now(),
             'updated_at' => now(),
         ];
