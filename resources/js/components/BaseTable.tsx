@@ -1,6 +1,16 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Link } from '@inertiajs/react';
-import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
+import {
+    ColumnDef,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
+    useReactTable,
+} from '@tanstack/react-table';
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 import { Button } from './ui/button';
 
@@ -27,6 +37,14 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        initialState: {
+            // Esto deberia ser estado de la tabla, no deberia ser asi constante.
+            pagination: {
+                pageIndex: 0,
+                pageSize: 10,
+            },
+        },
     });
 
     return (
@@ -48,12 +66,12 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
             <Table>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
+                        <TableRow className="bg-secondary" key={headerGroup.id}>
                             {headerGroup.headers.map((header) => (
                                 <TableHead key={header.id}>
                                     {header.isPlaceholder ? null : (
                                         <div
-                                            className={header.column.getCanSort() ? 'cursor-pointer select-none' : ''}
+                                            className={'flex ' + (header.column.getCanSort() ? 'cursor-pointer select-none' : '')}
                                             onClick={header.column.getToggleSortingHandler()}
                                             title={
                                                 header.column.getCanSort()
@@ -67,8 +85,8 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
                                         >
                                             {flexRender(header.column.columnDef.header, header.getContext())}
                                             {{
-                                                asc: ' 🔼',
-                                                desc: ' 🔽',
+                                                asc: <ArrowUp />,
+                                                desc: <ArrowDown />,
                                             }[header.column.getIsSorted() as string] ?? null}
                                         </div>
                                     )}
@@ -95,6 +113,23 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
                     )}
                 </TableBody>
             </Table>
+
+            {/* Pagination Controls */}
+            <div className="mt-4 flex items-center justify-between">
+                <div className="text-muted-foreground text-sm">
+                    Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+                </div>
+                <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+                        <ChevronLeft className="h-4 w-4" />
+                        Anterior
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                        Siguiente
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
+                </div>
+            </div>
         </div>
     );
 }

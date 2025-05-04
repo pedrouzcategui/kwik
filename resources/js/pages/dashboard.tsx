@@ -55,11 +55,11 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="grid grid-cols-4 gap-4 pt-2 pb-4">
+            <div className="grid grid-cols-4 gap-4 pt-2 pb-4 lg:grid-cols-2 xl:grid-cols-4">
                 <Card>
                     <CardHeader>
                         <CardTitle>Total Disponible</CardTitle>
-                        <CardDescription>Convertido a Dolares</CardDescription> 
+                        <CardDescription>Convertido a Dolares</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <span className="text-6xl font-bold">$100,000</span>
@@ -68,7 +68,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                 <Card>
                     <CardHeader>
                         <CardTitle>Total Disponible</CardTitle>
-                        <CardDescription>Convertido a Dolares</CardDescription> 
+                        <CardDescription>Convertido a Dolares</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <span className="text-6xl font-bold">$100,000</span>
@@ -77,7 +77,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                 <Card>
                     <CardHeader>
                         <CardTitle>Total Disponible</CardTitle>
-                        <CardDescription>Convertido a Dolares</CardDescription> 
+                        <CardDescription>Convertido a Dolares</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <span className="text-6xl font-bold">$100,000</span>
@@ -86,7 +86,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                 <DatePickerWithRange date={date} onChange={handleDateChange} />
             </div>
             <div>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                     <div>
                         <BarChart
                             data={accounts_totals}
@@ -103,7 +103,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                         />
                     </div>
                     <div>
-                        <Card className='h-full'>
+                        <Card className="h-full">
                             <CardHeader>
                                 <CardTitle>Presupuestado vs Gastado</CardTitle>
                             </CardHeader>
