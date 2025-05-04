@@ -81,6 +81,9 @@
 }
 
 :root {
+    --toast-success-bg: #ecfdf5;    /* light green */
+    --toast-success-text: #065f46;  /* dark green */
+    --toast-success-border: #10b981;
     --background: oklch(1 0 0);
     --foreground: oklch(25% 0 0);
     --card: oklch(1 0 0);

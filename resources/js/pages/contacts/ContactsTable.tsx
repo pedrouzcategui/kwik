@@ -1,18 +1,21 @@
 import { BaseTable } from '@/components/BaseTable';
+import {
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Contact } from '@/types/contact';
 import { Link, router } from '@inertiajs/react';
-import {
-    createColumnHelper,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
-} from '@tanstack/react-table';
+import { AlertDialog } from '@radix-ui/react-alert-dialog';
+import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
+import { PencilIcon, Trash2Icon } from 'lucide-react';
 import React from 'react';
+import { toast } from 'sonner';
 
 const columnHelper = createColumnHelper<Contact>();
 
@@ -40,26 +43,53 @@ const columns = [
         header: () => <span>Acciones</span>,
         cell: (props) => {
             const contact: Contact = props.row.original;
+
             return (
                 <div className="flex gap-2">
                     <Link href={`/contacts/${contact.id}/edit`}>
-                        <Button size="sm">Editar</Button>
+                        <Button size="sm">
+                            {' '}
+                            <PencilIcon />{' '}
+                        </Button>{' '}
                     </Link>
-                    <Button
-                        onClick={() => {
-                            router.delete(`/contacts/${contact.id}`, {
-                                preserveScroll: true,
-                                onSuccess: () => router.reload({ only: ['contacts'] }),
-                            });
-                        }}
-                        size="sm"
-                    >
-                        Eliminar
-                    </Button>
+
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button size="sm" variant="destructive">
+                                <Trash2Icon />
+                            </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle className="text-center text-xl">
+                                    ¿Estás seguro que quieres eliminar a {contact.full_name}?
+                                </AlertDialogTitle>
+                                <span>Esto eliminará todas sus operaciones relacionadas, y es posible que tus cuentas cambien drasticamente.</span>
+                            </AlertDialogHeader>
+
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction
+                                    className="bg-destructive"
+                                    onClick={() =>
+                                        router.delete(`/contacts/${contact.id}`, {
+                                            preserveScroll: true,
+                                            onSuccess: () => {
+                                                router.reload({ only: ['contacts'] });
+                                                toast.success(`Eliminaste a ${contact.full_name}`);
+                                            },
+                                        })
+                                    }
+                                >
+                                    Sí, eliminar
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             );
         },
-        enableGlobalFilter: false, // In this case of course we don't want to search for this
     }),
 ];
 
@@ -90,7 +120,5 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
         getFilteredRowModel: getFilteredRowModel(),
     });
 
-    return (
-           <BaseTable data={contacts} columns={columns} modelName={'Contact'} /> 
-    );
+    return <BaseTable data={contacts} columns={columns} modelName={'Contact'} />;
 }

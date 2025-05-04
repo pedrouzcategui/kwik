@@ -1,8 +1,10 @@
 import { BaseTable } from '@/components/BaseTable';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Account } from '@/types/account';
 import { Link, router } from '@inertiajs/react';
 import { createColumnHelper } from '@tanstack/react-table';
+import { PencilIcon, Trash2Icon } from 'lucide-react';
 
 const columnHelper = createColumnHelper<Account>();
 
@@ -60,19 +62,39 @@ const columns = [
             return (
                 <div className="flex gap-2">
                     <Link href={`/accounts/${account.id}/edit`}>
-                        <Button size="sm">Editar</Button>
+                        <Button size="sm"> <PencilIcon/> </Button>
                     </Link>
-                    <Button
-                        onClick={() => {
-                            router.delete(`/accounts/${account.id}`, {
-                                preserveScroll: true,
-                                onSuccess: () => router.reload({ only: ['accounts'] }),
-                            });
-                        }}
-                        size="sm"
-                    >
-                        Eliminar
-                    </Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button size="sm" variant="destructive">
+                               <Trash2Icon/> 
+                            </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle className="text-center text-xl">
+                                    ¿Estás seguro que quieres eliminar la cuenta {account.name}?
+                                </AlertDialogTitle>
+                                <span>Esto eliminará todas las operaciones asociadas a esta cuenta.</span>
+                            </AlertDialogHeader>
+
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction
+                                    className="bg-destructive"
+                                    onClick={() => {
+                                        router.delete(`/accounts/${account.id}`, {
+                                            preserveScroll: true,
+                                            onSuccess: () => router.reload({ only: ['accounts'] }),
+                                        });
+                                    }}
+                                >
+                                    Sí, eliminar
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             );
         },
