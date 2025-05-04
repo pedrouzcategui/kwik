@@ -59,7 +59,7 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
                     className="w-full rounded border p-2 md:w-96"
                 />
                 <Button asChild size={'lg'}>
-                    <Link className={'capitalize'} href={`/${modelName}s/create`}>
+                    <Link className={'capitalize'} href={`/${modelName.toLocaleLowerCase()}s/create`}>
                         Crear {modelName}
                     </Link>
                 </Button>

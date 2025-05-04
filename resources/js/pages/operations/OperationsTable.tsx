@@ -5,6 +5,7 @@ import { currencyMap } from '@/lib/utils';
 import {  OperationTableColumns } from '@/types/operation';
 import { Link, router } from '@inertiajs/react';
 import { createColumnHelper } from '@tanstack/react-table';
+import { PencilIcon, Trash2Icon } from 'lucide-react';
 
 const columnHelper = createColumnHelper<OperationTableColumns>();
 
@@ -43,6 +44,13 @@ const columns = [
         sortingFn: 'alphanumeric',
         enableGlobalFilter: true, // This makes the search filter, search using full names
     }),
+    columnHelper.accessor('description', {
+        header: () => <span>Descipcion</span>,
+        //Puedo usar truncate tambien o text-wrap
+        cell: (info) => <div className='max-w-[200px] truncate'>{info.getValue()}</div>,
+        sortingFn: 'alphanumeric',
+        enableGlobalFilter: true, // This makes the search filter, search using full names
+    }),
     columnHelper.display({
         id: 'actions',
         header: () => <span>Acciones</span>,
@@ -52,7 +60,7 @@ const columns = [
                 <div className="flex gap-2">
                     <Link href={`/operations/${operation.id}/edit`}>
                         <Button variant={'outline'} size="sm">
-                            Editar
+                            <PencilIcon/>
                         </Button>
                     </Link>
                     <Button
@@ -65,7 +73,7 @@ const columns = [
                         }}
                         size="sm"
                     >
-                        Eliminar
+                       <Trash2Icon/> 
                     </Button>
                 </div>
             );

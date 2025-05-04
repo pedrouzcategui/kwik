@@ -26,6 +26,7 @@ class ContactFactory extends Factory
             'user_id' => User::factory(),
             'full_name' => fake()->name(),
             'email' => fake()->safeEmail(),
+            'type' => fake()->randomElement(['NATURAL', 'GOVERNMENT', 'BUSINESS', 'NON-PROFIT', 'INSTITUTIONAL']),
             'phone' => fake()->phoneNumber(),
             'created_at' => now(),
             'updated_at' => now(),

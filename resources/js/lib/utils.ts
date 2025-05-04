@@ -10,3 +10,9 @@ export const currencyMap = {
     VES: 'Bs.',
     VEF: 'Bs.',
 };
+
+export function getInitials(name: string): string {
+    const words = name.trim().split(/\s+/);
+    const initials = words.map((w) => w[0]?.toUpperCase() || '');
+    return (initials[0] || '') + (initials[1] || initials[0] || '');
+}

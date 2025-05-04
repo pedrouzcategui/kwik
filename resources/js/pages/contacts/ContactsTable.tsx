@@ -8,12 +8,14 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { getInitials } from '@/lib/utils';
 import { Contact } from '@/types/contact';
 import { Link, router } from '@inertiajs/react';
 import { AlertDialog } from '@radix-ui/react-alert-dialog';
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
-import { PencilIcon, Trash2Icon } from 'lucide-react';
+import { Copy, PencilIcon, Trash2Icon } from 'lucide-react';
 import React from 'react';
 import { toast } from 'sonner';
 
@@ -22,19 +24,36 @@ const columnHelper = createColumnHelper<Contact>();
 const columns = [
     columnHelper.accessor('full_name', {
         header: () => <span>Nombre Completo</span>,
-        cell: (info) => info.getValue(),
+        cell: (info) => {
+            return (
+                <div className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8 overflow-hidden rounded-full">
+                        <AvatarFallback className="text-accent bg-primary rounded-lg">{getInitials(info.getValue())}</AvatarFallback>
+                    </Avatar>
+                    <span>{info.getValue()}</span>
+                </div>
+            );
+        },
         sortingFn: 'alphanumeric',
         enableGlobalFilter: true, // This makes the search filter, search using full names
     }),
     columnHelper.accessor('email', {
         header: () => <span>Correo Electronico</span>,
-        cell: (info) => info.getValue(),
+        cell: (info) => (
+            <div className="flex gap-2">
+                <span>{info.getValue()}</span> <Copy size={16} />{' '}
+            </div>
+        ),
         sortingFn: 'alphanumeric',
         enableGlobalFilter: true, // Same as above but with emails
     }),
     columnHelper.accessor('phone', {
         header: () => <span>Telefono</span>,
-        cell: (info) => info.getValue(),
+        cell: (info) => (
+            <div className="flex gap-2">
+                <span>{info.getValue()}</span> <Copy size={16} />{' '}
+            </div>
+        ),
         sortingFn: 'alphanumeric',
         enableGlobalFilter: true,
     }),

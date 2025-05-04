@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("full_name");
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
+            $table->enum('type', ['NATURAL', 'GOVERNMENT', 'BUSINESS', 'NON-PROFIT', 'INSTITUTIONAL'])->default('NATURAL');
             // This is a composite unique constraint, which means, that there cannot exist an equal pair of values.
             $table->unique(['user_id', 'email']);
             $table->unique(['user_id', 'phone']);
