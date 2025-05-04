@@ -1,7 +1,14 @@
 import BarChart from '@/components/analytics/BarChart';
+import { LineChartCustom } from '@/components/analytics/LineChart';
+import TerminalLog from '@/components/analytics/LogTerminal';
 import RadarChartWithDots from '@/components/analytics/RadarChartWithDots';
+import { RadialChartGrid } from '@/components/analytics/RadialChartGrid';
+import TradingViewWidget from '@/components/analytics/TradingViewWidget';
+import HeartbeatCanvas from '@/components/animations/HeartBeatPulse';
 import DatePickerWithRange from '@/components/DatePickerWithRange';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Currency } from '@/types/account';
@@ -55,45 +62,50 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
+            <div className="flex justify-between gap-2 py-2">
+                <div>
+                    <Button variant={'outline'}>Export CSV</Button>
+                    <Button variant={'outline'}>Share Dashboard</Button>
+                </div>
+                <DatePickerWithRange date={date} onChange={handleDateChange} />
+            </div>
             <div className="grid grid-cols-4 gap-4 pt-2 pb-4 lg:grid-cols-2 xl:grid-cols-4">
                 <Card>
                     <CardHeader>
                         <CardTitle>Total Disponible</CardTitle>
-                        <CardDescription>Convertido a Dolares</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <span className="text-6xl font-bold">$100,000</span>
+                    </CardContent>
+                </Card>
+                <Card className="border-success/30 col-span-2">
+                    <CardHeader>
+                        <CardTitle className="flex justify-between">
+                            <span>Estado Financiero: </span> <Badge className="bg-success">Saludable</Badge>{' '}
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="overflow-hidden">
+                        <HeartbeatCanvas status="green" />
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Total Disponible</CardTitle>
-                        <CardDescription>Convertido a Dolares</CardDescription>
+                        <CardTitle>Total sin Presupuestar</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <span className="text-6xl font-bold">$100,000</span>
+                        <span className="text-6xl font-bold">$1000</span>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Total Disponible</CardTitle>
-                        <CardDescription>Convertido a Dolares</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <span className="text-6xl font-bold">$100,000</span>
-                    </CardContent>
-                </Card>
-                <DatePickerWithRange date={date} onChange={handleDateChange} />
             </div>
             <div>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-                    <div>
-                        <BarChart
-                            data={accounts_totals}
-                            title="Total en cuentas por moneda"
-                            description="Representa el total de dinero agregado de todas las cuentas, agrupado por moneda"
-                        />
-                    </div>
+                <div className="grid grid-cols-1 gap-4 pb-4 md:grid-cols-2 xl:grid-cols-4">
+                    <BarChart
+                        className="h-full"
+                        data={accounts_totals}
+                        title="Total en cuentas por moneda"
+                        description="Representa el total de dinero agregado de todas las cuentas, agrupado por moneda"
+                    />
+                    <LineChartCustom />
                     <div>
                         <RadarChartWithDots
                             name={'Gastos por Categoria'}
@@ -102,16 +114,12 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                             dataKey={'name'}
                         />
                     </div>
-                    <div>
-                        <Card className="h-full">
-                            <CardHeader>
-                                <CardTitle>Presupuestado vs Gastado</CardTitle>
-                            </CardHeader>
-                            <CardContent></CardContent>
-                            <CardFooter></CardFooter>
-                        </Card>
-                    </div>
+                    <RadialChartGrid />
                 </div>
+            </div>
+            <div className="grid grid-cols-4 gap-4 pb-4">
+              <TerminalLog/>
+              <TradingViewWidget/> 
             </div>
         </AppLayout>
     );

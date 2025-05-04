@@ -33,7 +33,7 @@ export default function PolygonalChart({ name, description, data, dataKey }: Pol
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
             <CardContent className="pb-0">
-                <ChartContainer config={chartConfig} className="aspect-square max-h-[300px] w-full">
+                <ChartContainer config={chartConfig} className="aspect-square max-h-[250px] w-full">
                     <RadarChart data={data}>
                         <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
                         <PolarAngleAxis dataKey={dataKey} />

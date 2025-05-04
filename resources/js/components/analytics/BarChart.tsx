@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { cn } from '@/lib/utils';
 import { TrendingUp } from 'lucide-react';
 import { Bar, BarChart, Cell, XAxis, YAxis } from 'recharts';
 
@@ -10,17 +11,18 @@ interface BarChartProps<T> {
     title: string;
     description: string;
     data: T[];
+    className?: string;
 }
 
-export default function BarChartCustom({ title, description, data }: BarChartProps<any>) {
+export default function BarChartCustom({ title, description, data, className }: BarChartProps<any>) {
     return (
-        <Card className="h-full">
+        <Card className={cn(className)}>
             <CardHeader>
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig} className="min-h-[250px] w-full">
+                <ChartContainer config={chartConfig} className="min-h-[250px] h-full w-full">
                     <BarChart data={data} layout="horizontal">
                         <XAxis type="category" dataKey="currency" />
                         <YAxis type="number" />
