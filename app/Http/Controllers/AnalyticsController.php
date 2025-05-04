@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -20,7 +21,9 @@ class AnalyticsController extends Controller
         $query = DB::table('operations')
             ->join('accounts', 'operations.account_id', '=', 'accounts.id')
             ->select('accounts.currency', DB::raw('SUM(operations.amount) as amount'))
+            ->where('operations.user_id', '=', Auth::user()->id)
             ->groupBy('accounts.currency');
+
 
 
         // I might group these condtions
@@ -39,6 +42,7 @@ class AnalyticsController extends Controller
                 'operations.type',
                 DB::raw('SUM(operations.amount) as total')
             )
+            ->where('operations.user_id', '=', Auth::user()->id)
             ->groupBy('accounts.currency', 'operations.type');
 
         if ($startDate && $endDate) {
@@ -49,17 +53,18 @@ class AnalyticsController extends Controller
 
         // Get amounts grouped by categories.
         $expensesGroupedByCategories = DB::table('operations')
-                                        ->join('categories', 'operations.category_id', '=', 'categories.id')
-                                        ->select('categories.name', DB::raw('SUM(operations.amount) as total'))
-                                        ->where('type','=','EXPENSE')
-                                        ->groupBy('categories.name');
+            ->join('categories', 'operations.category_id', '=', 'categories.id')
+            ->select('categories.name', DB::raw('SUM(operations.amount) as total'))
+            ->where('type', '=', 'EXPENSE')
+            ->where('operations.user_id', '=', Auth::user()->id)
+            ->groupBy('categories.name');
 
         if ($startDate && $endDate) {
             $expensesGroupedByCategories->whereBetween('operations.created_at', [$startDate, $endDate]);
         }
 
         $expensesGroupedByCategories = $expensesGroupedByCategories->get();
-       
+
         //        
 
         return Inertia::render('dashboard', [
