@@ -1,111 +1,150 @@
 import { BaseTable } from '@/components/BaseTable';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import AccountsTableDialog from '@/components/dialogs/AccountsTableDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Account } from '@/types/account';
-import { Link, router } from '@inertiajs/react';
+import { Account, AccountProvider } from '@/types/account';
+import { router } from '@inertiajs/react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PencilIcon, Trash2Icon } from 'lucide-react';
+import React from 'react';
 
 const columnHelper = createColumnHelper<Account>();
 
-const columns = [
+interface AccountsTableProps {
+  accounts: Account[];
+  providers: AccountProvider[];
+}
+
+export default function AccountsTable({ accounts, providers }: AccountsTableProps) {
+  const [selectedAccount, setSelectedAccount] = React.useState<Account | undefined>();
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+
+  const columns = [
     columnHelper.accessor('name', {
-        header: () => <span>Nombre</span>,
-        cell: (info) => info.getValue(),
-        sortingFn: 'alphanumeric',
-        enableGlobalFilter: true, // This makes the search filter, search using full names
+      header: () => <span>Nombre</span>,
+      cell: (info) => info.getValue(),
+      sortingFn: 'alphanumeric',
+      enableGlobalFilter: true,
     }),
     columnHelper.accessor('currency', {
-        header: () => <span>Moneda</span>,
-        cell: (info) => info.getValue(),
-        sortingFn: 'alphanumeric',
-        enableGlobalFilter: false, // Same as above but with emails
+      header: () => <span>Moneda</span>,
+      cell: (info) => info.getValue(),
+      sortingFn: 'alphanumeric',
+      enableGlobalFilter: false,
     }),
     columnHelper.accessor('type', {
-        header: () => <span>Tipo de cuenta</span>,
-        cell: (info) => info.getValue(),
-        sortingFn: 'alphanumeric',
-        enableGlobalFilter: false,
+      header: () => <span>Tipo de cuenta</span>,
+      cell: (info) => info.getValue(),
+      sortingFn: 'alphanumeric',
+      enableGlobalFilter: false,
     }),
     columnHelper.accessor('amount', {
-        header: () => <span>Monto Disponible</span>,
-        cell: (info) => {
-            const currencyMap = {
-                USD: '$',
-                EUR: '€',
-                VES: 'Bs.',
-                VEF: 'Bs.',
-            };
+      header: () => <span>Monto Disponible</span>,
+      cell: (info) => {
+        const row = info.row.original;
+        const currencyMap = {
+          USD: '$',
+          EUR: '€',
+          VES: 'Bs.',
+          VEF: 'Bs.',
+        };
+        const symbol = currencyMap[row.currency] ?? '';
 
-            const row = info.row.original;
-            const symbol = currencyMap[row.currency] ?? '';
+        const formattedAmount = new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(row.amount);
 
-            const formattedAmount = new Intl.NumberFormat('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-            }).format(row.amount);
-
-            return (
-                <span>
-                    {symbol} {formattedAmount}
-                </span>
-            );
-        },
-        sortingFn: 'alphanumeric',
-        enableGlobalFilter: false,
+        return (
+          <span>
+            {symbol} {formattedAmount}
+          </span>
+        );
+      },
+      sortingFn: 'alphanumeric',
+      enableGlobalFilter: false,
     }),
     columnHelper.display({
-        id: 'actions',
-        header: () => <span>Acciones</span>,
-        cell: (props) => {
-            const account: Account = props.row.original;
-            return (
-                <div className="flex gap-2">
-                    <Link href={`/accounts/${account.id}/edit`}>
-                        <Button size="sm"> <PencilIcon/> </Button>
-                    </Link>
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button size="sm" variant="destructive">
-                               <Trash2Icon/> 
-                            </Button>
-                        </AlertDialogTrigger>
+      id: 'actions',
+      header: () => <span>Acciones</span>,
+      cell: (props) => {
+        const account = props.row.original;
 
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle className="text-center text-xl">
-                                    ¿Estás seguro que quieres eliminar la cuenta {account.name}?
-                                </AlertDialogTitle>
-                                <span>Esto eliminará todas las operaciones asociadas a esta cuenta.</span>
-                            </AlertDialogHeader>
+        return (
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              onClick={() => {
+                setSelectedAccount(account);
+                setIsDialogOpen(true);
+              }}
+            >
+              <PencilIcon />
+            </Button>
 
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                <AlertDialogAction
-                                    className="bg-destructive"
-                                    onClick={() => {
-                                        router.delete(`/accounts/${account.id}`, {
-                                            preserveScroll: true,
-                                            onSuccess: () => router.reload({ only: ['accounts'] }),
-                                        });
-                                    }}
-                                >
-                                    Sí, eliminar
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                </div>
-            );
-        },
-        enableGlobalFilter: false, // In this case of course we don't want to search for this
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button size="sm" variant="destructive">
+                  <Trash2Icon />
+                </Button>
+              </AlertDialogTrigger>
+
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-center text-xl">
+                    ¿Estás seguro que quieres eliminar la cuenta {account.name}?
+                  </AlertDialogTitle>
+                  <span>Esto eliminará todas las operaciones asociadas a esta cuenta.</span>
+                </AlertDialogHeader>
+
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-destructive"
+                    onClick={() =>
+                      router.delete(`/accounts/${account.id}`, {
+                        preserveScroll: true,
+                        onSuccess: () => router.reload({ only: ['accounts'] }),
+                      })
+                    }
+                  >
+                    Sí, eliminar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        );
+      },
+      enableGlobalFilter: false,
     }),
-];
+  ];
 
-interface AccountsTableProps {
-    accounts: Account[];
+  return (
+    <BaseTable
+      data={accounts}
+      columns={columns}
+      globalFilterPlaceholder="Busca tu cuenta"
+      modelName="account"
+      dialog={
+        <AccountsTableDialog
+          isOpen={isDialogOpen}
+          setIsOpen={setIsDialogOpen}
+          setSelectedAccount={setSelectedAccount}
+          providers={providers}
+          account={selectedAccount}
+        />
+      }
+    />
+  );
 }
 
-export default function AccountsTable({ accounts }: AccountsTableProps) {
-    return <BaseTable data={accounts} columns={columns} globalFilterPlaceholder="Busca tu cuenta" modelName="account" />;
-}

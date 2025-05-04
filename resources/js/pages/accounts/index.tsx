@@ -2,6 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import AccountsTable from './AccountsTable';
+import { Account, AccountProvider } from '@/types/account';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -10,13 +11,16 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index(props: any) {
-    let accounts = props.accounts;
-    console.log(accounts);
+type AccountIndexProps = {
+    accounts: Account[];
+    providers: AccountProvider[];
+}
+
+export default function Index({accounts, providers}: AccountIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Contactos" />
-            <AccountsTable accounts={accounts} />
+            <AccountsTable providers={providers} accounts={accounts} />
         </AppLayout>
     );
 }

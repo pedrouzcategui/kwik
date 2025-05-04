@@ -16,8 +16,10 @@ class AccountController extends Controller
     public function index(Request $request)
     {
         $accounts = $request->user()->accounts;
+        $providers = $request->user()->accountProviders;
         return Inertia::render('accounts/index', [
-            'accounts' => $accounts
+            'accounts' => $accounts,
+            'providers' => $providers
         ]);
     }
 
@@ -26,10 +28,6 @@ class AccountController extends Controller
      */
     public function create(Request $request)
     {
-        $providers = $request->user()->accountProviders;
-        return Inertia::render('accounts/form', [
-            'providers' => $providers
-        ]);
     }
 
     /**
