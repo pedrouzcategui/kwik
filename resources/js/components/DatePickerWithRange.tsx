@@ -44,7 +44,7 @@ export default function DatePickerWithRange({ disabledBeforeDate, date, onChange
     };
 
     return (
-        <div className={cn('grid gap-2', className)}>
+        <div className={cn('grid gap-2 rounded border-1 border-white', className)}>
             <Popover>
                 <PopoverTrigger asChild>
                     <Button

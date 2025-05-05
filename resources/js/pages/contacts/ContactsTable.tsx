@@ -11,6 +11,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { getInitials } from '@/lib/utils';
 import { Contact } from '@/types/contact';
@@ -75,6 +76,16 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
       cell: (info) => (
         <div className="flex gap-2">
           <span>{info.getValue()}</span> <Copy size={16} />
+        </div>
+      ),
+      sortingFn: 'alphanumeric',
+      enableGlobalFilter: true,
+    }),
+    columnHelper.accessor('type', {
+      header: () => <span>Tipo</span>,
+      cell: (info) => (
+        <div className="flex gap-2">
+          <Badge variant={'outline'}>{info.getValue()}</Badge> 
         </div>
       ),
       sortingFn: 'alphanumeric',

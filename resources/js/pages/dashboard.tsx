@@ -4,6 +4,7 @@ import TerminalLog from '@/components/analytics/LogTerminal';
 import RadarChartWithDots from '@/components/analytics/RadarChartWithDots';
 import { RadialChartGrid } from '@/components/analytics/RadialChartGrid';
 import TradingViewWidget from '@/components/analytics/TradingViewWidget';
+import DollarTicker from '@/components/animations/DollarTicker';
 import HeartbeatCanvas from '@/components/animations/HeartBeatPulse';
 import DatePickerWithRange from '@/components/DatePickerWithRange';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +14,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Currency } from '@/types/account';
 import { Head, router } from '@inertiajs/react';
+import { File, Link } from 'lucide-react';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
@@ -62,10 +64,15 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex justify-between gap-2 py-2">
-                <div>
-                    <Button variant={'outline'}>Export CSV</Button>
-                    <Button variant={'outline'}>Share Dashboard</Button>
+            <div className="flex items-center justify-between pb-2 gap-4">
+                <Button className="border-1 border-white" variant={'outline'}>
+                    Export CSV <File />{' '}
+                </Button>
+                <Button className="border-1 border-white" variant={'outline'}>
+                    Share Dashboard <Link />{' '}
+                </Button>
+                <div className="grow">
+                    <DollarTicker />
                 </div>
                 <DatePickerWithRange date={date} onChange={handleDateChange} />
             </div>
@@ -118,8 +125,8 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                 </div>
             </div>
             <div className="grid grid-cols-4 gap-4 pb-4">
-              <TerminalLog/>
-              <TradingViewWidget/> 
+                <TerminalLog />
+                <TradingViewWidget />
             </div>
         </AppLayout>
     );
