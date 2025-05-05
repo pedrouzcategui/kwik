@@ -27,6 +27,7 @@ class UpdateOperationRequest extends FormRequest
             'category_id' => ['required', 'string'],
             'type' => ['required', 'string'],
             'amount' => ['required'],
+            'description' => ['string']
         ];
     }
 }

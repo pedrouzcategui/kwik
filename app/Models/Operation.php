@@ -21,6 +21,7 @@ class Operation extends Model
         'category_id',
         'amount',
         'type',
+        'description'
     ];
 
     public function user(): BelongsTo

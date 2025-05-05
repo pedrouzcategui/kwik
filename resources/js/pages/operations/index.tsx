@@ -3,6 +3,9 @@ import { type BreadcrumbItem } from '@/types';
 import { Operation } from '@/types/operation';
 import { Head } from '@inertiajs/react';
 import OperationsTable from './OperationsTable';
+import { Category } from '@/types/category';
+import { Contact } from '@/types/contact';
+import { Account } from '@/types/account';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -11,13 +14,20 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index(props: any) {
-    let operations: Operation[] = props.operations;
-    console.log(operations);
+type OperationsTablePageProps = {
+    operations: Operation[];
+    user: {
+        contacts: Contact[];
+        accounts: Account[];
+    }
+    categories: Category[]; 
+}
+
+export default function Index({operations, user, categories}: OperationsTablePageProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Contactos" />
-            <OperationsTable operations={operations} />
+            <OperationsTable user={user} operations={operations} categories={categories}/>
         </AppLayout>
     );
 }

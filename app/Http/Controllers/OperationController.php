@@ -17,7 +17,11 @@ class OperationController extends Controller
     public function index(Request $request)
     {
         $operations = $request->user()->operations()->with(['contact', 'account', 'category'])->orderBy('created_at', 'desc')->get();
+        $user = $request->user()->load(['contacts', 'accounts']);
+        $categories = Category::all();
         return Inertia::render('operations/index', [
+            'categories' => $categories,
+            'user' => $user,
             'operations' => $operations,
         ]);
     }
@@ -28,12 +32,6 @@ class OperationController extends Controller
     public function create(Request $request)
     {
         // ?Difference between a query builder and this load method?
-        $user = $request->user()->load(['contacts', 'accounts']);
-        $categories = Category::all();
-        return Inertia::render("operations/form", [
-            'user' => $user,
-            'categories' => $categories
-        ]);
     }
 
     /**

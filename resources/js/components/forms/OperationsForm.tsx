@@ -8,9 +8,10 @@ import { BreadcrumbItem } from '@/types';
 import { Account } from '@/types/account';
 import { Category } from '@/types/category';
 import { Contact } from '@/types/contact';
-import { Operation, OperationTypeStringUnion } from '@/types/operation';
+import { Operation, OperationTableColumns, OperationTypeStringUnion } from '@/types/operation';
 import { Head, useForm } from '@inertiajs/react';
-import { FormEvent } from 'react';
+import { Dispatch, FormEvent, SetStateAction } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -25,7 +26,8 @@ type OperationFormComponentProps = {
         accounts: Account[];
     };
     categories: Category[];
-    operation?: Operation;
+    operation?: OperationTableColumns;
+    setIsOpen: Dispatch<SetStateAction<boolean>>
 };
 
 type OperationForm = {
@@ -38,29 +40,40 @@ type OperationForm = {
     description?: string;
 };
 
-export default function OperationForm({ user, operation, categories}: OperationFormComponentProps) {
+export default function OperationForm({ user, operation, categories, setIsOpen}: OperationFormComponentProps) {
     const { data, setData, post, put, processing } = useForm<OperationForm>({
-        contact_id: operation?.contact_id ?? '',
-        account_id: operation?.account_id ?? '',
+        contact_id: operation?.contact.id ?? '',
+        account_id: operation?.account.id ?? '',
         account_target_id: operation?.target_account_id ?? '',
         amount: operation?.amount ?? 0,
         type: (operation?.type as OperationTypeStringUnion) ?? '',
         description: operation?.description ?? '',
-        category_id: operation?.category_id ?? ''
+        category_id: operation?.category.id ?? ''
     });
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
         if (operation) {
-            put(`/operations/${operation.id}`);
+            put(`/operations/${operation.id}`, {
+                onSuccess: () => {
+                    setIsOpen(false);
+                    toast.success('Operacion Actualizada Exitosamente')
+                }
+            });
         } else {
-            post('/operations');
+            post('/operations', {
+                onSuccess: () => {
+                    setIsOpen(false);
+                    toast.success('Operacion Creado Exitosamente')
+                },
+                onError: (e) => {
+                    console.log(e)
+                }
+            });
         }
     }
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Operaciones" />
-            <form onSubmit={handleSubmit} className="mx-auto flex w-1/2 flex-col gap-3 py-24">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                 <div>
                     <Label className="mb-2 block">Contacto</Label>
                     <Select name="contact_id" value={data.contact_id} onValueChange={(contact_id) => setData('contact_id', contact_id)}>
@@ -128,12 +141,11 @@ export default function OperationForm({ user, operation, categories}: OperationF
                 </div>
                 <div>
                     <Label>Descripcion</Label>
-                    <Textarea name="amount" ></Textarea>
+                    <Textarea onChange={(e) => setData('description', e.target.value)} name="description" >{operation?.description}</Textarea>
                 </div>
                 <Button disabled={processing} className="w-full" size={'lg'} type="submit">
                     {operation ? 'Editar' : 'Crear'} Operacion
                 </Button>
             </form>
-        </AppLayout>
     );
 }
