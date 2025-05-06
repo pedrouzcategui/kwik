@@ -3,7 +3,7 @@ import { Category } from '@/types/category';
 import { Contact } from '@/types/contact';
 import { Operation, OperationTableColumns } from '@/types/operation';
 import { Dispatch, SetStateAction } from 'react';
-import OperationForm from '../forms/OperationsForm';
+import OperationForm from '../forms/operations/OperationsForm';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 

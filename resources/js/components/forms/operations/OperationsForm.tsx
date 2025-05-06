@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { BreadcrumbItem } from '@/types';
 import { Account } from '@/types/account';
@@ -11,6 +11,7 @@ import { OperationTableColumns, OperationTypeStringUnion } from '@/types/operati
 import { useForm } from '@inertiajs/react';
 import { Dispatch, FormEvent, SetStateAction } from 'react';
 import { toast } from 'sonner';
+import CategoriesSelect from './CategoriesSelect';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -103,21 +104,7 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
                     </SelectContent>
                 </Select>
             </div>
-            <div>
-                <Label className="mb-2 block">Categoria</Label>
-                <Select value={data.category_id} onValueChange={(category_id) => setData('category_id', category_id)}>
-                    <SelectTrigger>
-                        <SelectValue placeholder={'Selecciona la categoria de tu operacion'} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {categories.map((category: Category) => (
-                            <SelectItem key={category.id} value={category.id}>
-                                <div>{category.name}</div>
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
+            <CategoriesSelect categories={categories} selectedCategoryId={data.category_id} setData={setData} />
             <div>
                 <Label className="mb-2 block">Cuenta Origen</Label>
                 <Select value={data.account_id} onValueChange={(account_id) => setData('account_id', account_id)}>
