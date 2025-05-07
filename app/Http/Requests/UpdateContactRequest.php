@@ -26,6 +26,7 @@ class UpdateContactRequest extends FormRequest
             'full_name' => ['sometimes', 'string', 'max:255'],
             'email'     => ['nullable', 'email'],
             'phone'     => ['nullable', 'string', 'max:20'],
+            'type' => ['required']
         ];
     }
 }
