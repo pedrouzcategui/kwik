@@ -64,7 +64,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex items-center justify-between pb-2 gap-4">
+            <div className="lg:flex items-center justify-between pb-2 gap-4">
                 <Button className="border-1 border-white" variant={'outline'}>
                     Export CSV <File />{' '}
                 </Button>
@@ -82,7 +82,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                         <CardTitle>Total Disponible</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <span className="text-6xl font-bold">$100,000</span>
+                        <span className="md:text-3xl xl:text-6xl font-bold">$100,000</span>
                     </CardContent>
                 </Card>
                 <Card className="border-success/30 col-span-2">
@@ -100,7 +100,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                         <CardTitle>Total sin Presupuestar</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <span className="text-6xl font-bold">$1000</span>
+                        <span className="text-3xl lg:text-6xl font-bold">$1000</span>
                     </CardContent>
                 </Card>
             </div>
