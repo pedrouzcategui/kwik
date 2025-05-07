@@ -10,6 +10,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Account, AccountProvider } from '@/types/account';
 import { router } from '@inertiajs/react';
@@ -44,7 +45,7 @@ export default function AccountsTable({ accounts, providers }: AccountsTableProp
         }),
         columnHelper.accessor('type', {
             header: () => <span>Tipo de cuenta</span>,
-            cell: (info) => info.getValue(),
+            cell: (info) => <Badge variant={'outline'}>{info.getValue()}</Badge> ,
             sortingFn: 'alphanumeric',
             enableGlobalFilter: false,
         }),
