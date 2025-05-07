@@ -35,7 +35,7 @@ class OperationObserver
         
             } elseif ($oldType === 'EXPENSE' && $newType === 'EXPENSE') {
                 // (Old - New), but since it's expense, invert sign
-                $$operation->account->amount += ($oldAmount - $newAmount);
+                $operation->account->amount += ($oldAmount - $newAmount);
         
             } elseif ($oldType === 'INCOME' && $newType === 'EXPENSE') {
                 // Remove income, then apply expense
