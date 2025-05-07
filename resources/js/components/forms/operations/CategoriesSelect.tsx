@@ -1,68 +1,107 @@
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Category } from '@/types/category';
 import { router } from '@inertiajs/react';
+import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 type CategorySelectProps = {
     categories: Category[];
     selectedCategoryId: string;
-    setData: (x: string, y: any) => any
-}
+    setData: (x: string, y: any) => any;
+};
 
-export default function CategoriesSelect({ categories, selectedCategoryId, setData}: CategorySelectProps) {
+export default function CategoriesSelect({ categories, selectedCategoryId, setData }: CategorySelectProps) {
     const [newCategoryName, setNewCategoryName] = useState('');
-    const [showInput, setShowInput] = useState(false);
+    const [newCategoryColor, setNewCategoryColor] = useState('#FF0000');
+    const [open, setOpen] = useState(false);
+
+    const handleSelectCategory = (id: string) => {
+        setData('category_id', id);
+    };
 
     const handleCreateCategory = async () => {
         if (!newCategoryName.trim()) return;
-
-        const newCategory = await router.post("/categories"); // expects { id, name }
-        setNewCategoryName(''); // Reset!
-        setShowInput(false);
-    };
-
+      
+        try {
+          const response = await axios.post('/categories', {
+            name: newCategoryName,
+            color: newCategoryColor,
+          });
+      
+          const newCategory: Category = response.data;
+          toast.success(`La categoria ${newCategory.name} ha sido creada`);
+          setData('category_id', newCategory.id);
+          setNewCategoryName('');
+          setNewCategoryColor('#FF0000');
+          setOpen(false);
+          router.reload({ only: ['categories'] });
+        } catch (error) {
+            // how the fuck this works
+            const err = error as AxiosError;
+          if (err.response?.status === 422) {
+            console.log('Validation errors:', err.response.data);
+          } else {
+            console.error('Unexpected error:', error);
+          }
+        }
+      };
     return (
-        <div>
-            <Label className="mb-2 block">Categoría</Label>
-            <Select value={selectedCategoryId} onValueChange={(id) => setData('category_id', id)}>
-                <SelectTrigger>
-                    <SelectValue placeholder={'Selecciona o crea una categoría'} />
-                </SelectTrigger>
-                <SelectContent>
-                    {categories.map((category: Category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                            <div>{category.name}</div>
-                        </SelectItem>
-                    ))}
+        <div className="space-y-2">
+            <Label className="block">Categoría</Label>
+            <div className="flex items-end gap-2">
+                <Select  value={selectedCategoryId} onValueChange={handleSelectCategory}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Selecciona una categoría" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {categories.map((category: Category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                                <Badge style={{ backgroundColor: category.color }}>{category.name}</Badge>
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
 
-                    <div className="px-2 py-2 border-t border-muted">
-                        {!showInput ? (
-                            <button
-                                onClick={() => setShowInput(true)}
-                                className="text-sm text-blue-500 hover:underline"
-                            >
-                                + Crear nueva categoría
-                            </button>
-                        ) : (
-                            <div className="flex gap-2">
+                <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger asChild>
+                        <Button type="button" variant="outline">
+                            + Nueva categoría
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Crear nueva categoría</DialogTitle>
+                        </DialogHeader>
+                        <div className="flex flex-col gap-4 py-2">
+                            <Input
+                                value={newCategoryName}
+                                onChange={(e) => setNewCategoryName(e.target.value)}
+                                placeholder="Nombre de la categoría"
+                            />
+                            <div className="flex items-center gap-2">
+                                <Label>Color:</Label>
                                 <input
-                                    className="text-sm border px-2 py-1 w-full rounded"
-                                    value={newCategoryName}
-                                    onChange={(e) => setNewCategoryName(e.target.value)}
-                                    placeholder="Nueva categoría..."
+                                    type="color"
+                                    value={newCategoryColor}
+                                    onChange={(e) => setNewCategoryColor(e.target.value)}
+                                    className="h-10 w-10 rounded border"
                                 />
-                                <button
-                                    onClick={handleCreateCategory}
-                                    className="text-sm bg-blue-500 text-white px-2 py-1 rounded"
-                                >
-                                    Crear
-                                </button>
                             </div>
-                        )}
-                    </div>
-                </SelectContent>
-            </Select>
+                        </div>
+                        <DialogFooter>
+                            <Button type="button" onClick={handleCreateCategory}>
+                                Crear categoría
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            </div>
         </div>
     );
 }

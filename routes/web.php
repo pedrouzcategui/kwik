@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\OperationController;
 use Illuminate\Support\Facades\Route;
@@ -12,11 +13,11 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth'])->group(function () {
-
     Route::get('dashboard', [AnalyticsController::class,'index'])->name('dashboard');
     Route::resource('contacts', ContactController::class);
     Route::resource('accounts', AccountController::class);
     Route::resource('operations', OperationController::class);
+    Route::post('categories', [CategoryController::class, 'store']);
 });
 
 require __DIR__ . '/settings.php';
