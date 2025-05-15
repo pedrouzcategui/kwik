@@ -100,7 +100,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                         <CardTitle>Total sin Presupuestar</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <span className="text-3xl lg:text-6xl font-bold">$1000</span>
+                        <span className="text-3xl lg:text-6xl font-bold">$1,000</span>
                     </CardContent>
                 </Card>
             </div>

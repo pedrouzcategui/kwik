@@ -42,7 +42,7 @@ const HeartbeatCanvas: React.FC<HeartbeatCanvasProps> = ({
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
     
-      tickCounter++;
+      tickCounter += 0.5;
     
       if (tickCounter % 1 === 0) { // ⏳ Add new point only every 3rd frame (tweak this)
         // Update buffer

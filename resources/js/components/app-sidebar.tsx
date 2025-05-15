@@ -49,13 +49,13 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
     return (
-        <Sidebar collapsible="icon" variant="sidebar">
+        <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
                             <Link href="/dashboard" prefetch>
-                               <span className='text-3xl text-center w-full font-bold uppercase'>KWIK</span> 
+                               <span className='text-3xl text-center w-full font-bold uppercase'>RUBIKATE</span> 
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
