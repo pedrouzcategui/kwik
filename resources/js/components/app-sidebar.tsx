@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Banknote, BookOpen, CircleDollarSign, ContactIcon, CreditCard, DollarSign, Folder, LayoutDashboard, LineChart } from 'lucide-react';
+import { BookOpen, CircleDollarSign, ContactIcon, CreditCard, DollarSign, LayoutDashboard, PiggyBank } from 'lucide-react';
 
 const mainNavItems: NavItem[] = [
     {
@@ -27,11 +27,11 @@ const mainNavItems: NavItem[] = [
         href: '/operations',
         icon: CircleDollarSign,
     },
-    // {
-        // title: 'Trading View',
-        // href: '/trading-view',
-        // icon: LineChart,
-    // },
+    {
+        title: 'Presupuestos',
+        href: '/budgets',
+        icon: PiggyBank,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
@@ -55,7 +55,7 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
                             <Link href="/dashboard" prefetch>
-                               <span className='text-3xl text-center w-full font-bold uppercase'>RUBIKATE</span> 
+                                <span className="w-full text-center text-3xl font-bold uppercase">RUBIKATE</span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>

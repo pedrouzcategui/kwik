@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\OperationController;
@@ -17,6 +18,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('contacts', ContactController::class);
     Route::resource('accounts', AccountController::class);
     Route::resource('operations', OperationController::class);
+    Route::resource('budgets', BudgetController::class);
     Route::post('categories', [CategoryController::class, 'store']);
 });
 
