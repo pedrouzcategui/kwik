@@ -19,10 +19,12 @@ class OperationController extends Controller
         $operations = $request->user()->operations()->with(['contact', 'account', 'category'])->orderBy('created_at', 'desc')->get();
         $user = $request->user()->load(['contacts', 'accounts']);
         $categories = Category::all();
+        $contacts = $request->user()->contacts;
         return Inertia::render('operations/index', [
             'categories' => $categories,
             'user' => $user,
             'operations' => $operations,
+            'contacts' => $contacts,
         ]);
     }
 

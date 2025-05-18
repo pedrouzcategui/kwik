@@ -1,18 +1,31 @@
-import { BaseTable } from '@/components/table/BaseTable';
 import OperationsTableDialog from '@/components/dialogs/OperationsTableDialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { BaseTable } from '@/components/table/BaseTable';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { currencyMap } from '@/lib/utils';
 import { Account } from '@/types/account';
 import { Category } from '@/types/category';
 import { Contact } from '@/types/contact';
-import { Operation, OperationTableColumns } from '@/types/operation';
+import { OperationTableColumns } from '@/types/operation';
 import { router } from '@inertiajs/react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PencilIcon, Trash2Icon } from 'lucide-react';
 import React from 'react';
 import { toast } from 'sonner';
+import { ContactFilter } from './filters/ContactFilter';
+import { CategoryFilter } from './filters/CategoryFilter';
+import { ExportCsvButton } from '@/components/table/ExportCSVButton';
+import { OperationTypeFilter } from './filters/OperationTypeFilter';
 
 const columnHelper = createColumnHelper<OperationTableColumns>();
 
@@ -23,9 +36,10 @@ interface OperationsTableProps {
         accounts: Account[];
     };
     categories: Category[];
+    contacts: Contact[];
 }
 
-export default function OperationsTable({ operations, user, categories }: OperationsTableProps) {
+export default function OperationsTable({ operations, user, categories, contacts }: OperationsTableProps) {
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
     const [selectedOperation, setSelectedOperation] = React.useState<OperationTableColumns>();
     const columns = [
@@ -35,29 +49,50 @@ export default function OperationsTable({ operations, user, categories }: Operat
             sortingFn: 'alphanumeric',
             enableGlobalFilter: true, // This makes the search filter, search using full names
         }),
-        columnHelper.accessor('amount', {
-            header: () => <span>Monto de la opearcion</span>,
-            cell: (info) => {
-                let symbol = currencyMap[info.row.original.account.currency];
-                return (
-                    <Badge variant={info.row.original.type == 'INCOME' ? 'success' : 'destructive'}>
-                        <b>
-                            {info.row.original.type == 'INCOME' ? '+' : '-'} {symbol}
-                        </b>
-                        {info.getValue()}
-                    </Badge>
-                );
-            },
-            sortingFn: 'alphanumeric',
-            enableGlobalFilter: true, // This makes the search filter, search using full names
+        columnHelper.accessor('type', {
+            id: 'hidden_type',
+            header: () => <span>Tipo</span>,
+            cell: (info) => info.getValue(),
+            enableGlobalFilter: false,
         }),
+        columnHelper.accessor(
+            /* 1️⃣  Return a *signed* number  */
+            (row) => (row.type === 'EXPENSE' ? -Number(row.amount) : Number(row.amount)),
+            {
+                id: 'amount', // stable key for filters/sorts
+
+                header: () => <span>Monto</span>,
+
+                /* 2️⃣  Presentational badge — keeps the sign for the user */
+                cell: ({ row }) => {
+                    const { amount, type, account } = row.original;
+                    const symbol = currencyMap[account.currency];
+                    const signed = type === 'EXPENSE' ? '-' : '+';
+
+                    return (
+                        <Badge variant={type === 'INCOME' ? 'success' : 'destructive'}>
+                            <b>{signed}</b> {symbol}
+                            {amount}
+                        </Badge>
+                    );
+                },
+
+                sortingFn: 'basic',
+
+                sortDescFirst: true, // first click → ▼
+
+                enableGlobalFilter: true,
+            },
+        ),
         columnHelper.accessor('contact.full_name', {
             header: () => <span>Contacto</span>,
+            id: 'contact_name',
             cell: (info) => info.getValue(),
             sortingFn: 'alphanumeric',
             enableGlobalFilter: true, // This makes the search filter, search using full names
         }),
         columnHelper.accessor('category.name', {
+            id: 'category_name',
             header: () => <span>Categoria de la operacion</span>,
             cell: (info) => <Badge style={{ backgroundColor: info.row.original.category.color }}>{info.getValue()}</Badge>,
             sortingFn: 'alphanumeric',
@@ -127,12 +162,20 @@ export default function OperationsTable({ operations, user, categories }: Operat
             enableGlobalFilter: false, // In this case of course we don't want to search for this
         }),
     ];
+
+    console.log('contacts', contacts);
     return (
         <BaseTable
             data={operations}
             columns={columns}
             globalFilterPlaceholder="Busca tu operacion"
-            modelName="operation"
+            renderToolbarRight={(table) => (
+                <>
+                    <ContactFilter table={table} contacts={contacts} />
+                    <CategoryFilter table={table} categories={categories} />
+                    <OperationTypeFilter table={table}/>
+                </>
+            )}
             dialog={
                 <OperationsTableDialog
                     isOpen={isDialogOpen}

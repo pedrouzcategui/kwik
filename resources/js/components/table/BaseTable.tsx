@@ -42,6 +42,7 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder = 'Buscarâ
         getPaginationRowModel: getPaginationRowModel(),
         initialState: {
             pagination: { pageIndex: 0, pageSize: 10 },
+            columnVisibility: {'hidden_type': false }, // Hide the column by defaultdd
         },
     });
 

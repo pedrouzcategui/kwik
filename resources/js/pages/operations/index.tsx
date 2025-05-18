@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Operation } from '@/types/operation';
+import { Operation, OperationTableColumns } from '@/types/operation';
 import { Head } from '@inertiajs/react';
 import OperationsTable from './OperationsTable';
 import { Category } from '@/types/category';
@@ -15,7 +15,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type OperationsTablePageProps = {
-    operations: Operation[];
+    operations: OperationTableColumns[];
     user: {
         contacts: Contact[];
         accounts: Account[];
@@ -27,7 +27,7 @@ export default function Index({operations, user, categories}: OperationsTablePag
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Contactos" />
-            <OperationsTable user={user} operations={operations} categories={categories}/>
+            <OperationsTable contacts={user.contacts} user={user} operations={operations} categories={categories}/>
         </AppLayout>
     );
 }
