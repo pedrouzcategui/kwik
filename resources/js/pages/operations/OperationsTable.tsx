@@ -163,7 +163,6 @@ export default function OperationsTable({ operations, user, categories, contacts
         }),
     ];
 
-    console.log('contacts', contacts);
     return (
         <BaseTable
             data={operations}
@@ -173,7 +172,13 @@ export default function OperationsTable({ operations, user, categories, contacts
                 <>
                     <ContactFilter table={table} contacts={contacts} />
                     <CategoryFilter table={table} categories={categories} />
-                    <OperationTypeFilter table={table}/>
+                    <OperationTypeFilter table={table} />
+                    {/*}
+                    <ExportCsvButton
+                        table={table}
+                        filename='operations'
+                        headers={['account', 'type', 'amount', 'contact', 'category', 'description']}
+                    />*/}
                 </>
             )}
             dialog={
