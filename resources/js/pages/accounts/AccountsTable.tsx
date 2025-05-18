@@ -1,4 +1,4 @@
-import { BaseTable } from '@/components/BaseTable';
+import { BaseTable } from '@/components/table/BaseTable';
 import AccountsTableDialog from '@/components/dialogs/AccountsTableDialog';
 import {
     AlertDialog,

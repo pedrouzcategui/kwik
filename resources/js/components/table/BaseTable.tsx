@@ -12,7 +12,8 @@ import {
 } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 type BaseTableProps<T> = {
     data: T[];
@@ -51,14 +52,16 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder, modelName
     return (
         <div className="p-8">
             <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <input
-                    type="text"
-                    value={globalFilter}
-                    onChange={(e) => setGlobalFilter(e.target.value)}
-                    placeholder={globalFilterPlaceholder ?? 'Buscar...'}
-                    className="w-full rounded border p-2 md:w-96"
-                />
-            {dialog}
+                <div className='flex gap-2'>
+                    <input
+                        type="text"
+                        value={globalFilter}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
+                        placeholder={globalFilterPlaceholder ?? 'Buscar...'}
+                        className="w-full rounded border p-2 md:w-96"
+                    />
+                </div>
+                <div>{dialog}</div>
             </div>
             <Table>
                 <TableHeader>

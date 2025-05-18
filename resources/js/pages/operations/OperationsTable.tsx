@@ -1,4 +1,4 @@
-import { BaseTable } from '@/components/BaseTable';
+import { BaseTable } from '@/components/table/BaseTable';
 import OperationsTableDialog from '@/components/dialogs/OperationsTableDialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';

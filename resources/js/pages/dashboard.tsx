@@ -85,6 +85,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                         <span className="md:text-3xl xl:text-6xl font-bold">$100,000</span>
                     </CardContent>
                 </Card>
+                {/* This needs to be a component */}
                 <Card className="border-success/30 col-span-2">
                     <CardHeader>
                         <CardTitle className="flex justify-between">
@@ -103,6 +104,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                         <span className="text-3xl lg:text-6xl font-bold">$1,000</span>
                     </CardContent>
                 </Card>
+                {/* END: This needs to be a component */}
             </div>
             <div>
                 <div className="grid grid-cols-1 gap-4 pb-4 md:grid-cols-2 xl:grid-cols-4">
