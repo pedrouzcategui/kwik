@@ -1,5 +1,5 @@
-import { BaseTable } from '@/components/table/BaseTable';
 import ContactTableDialog from '@/components/dialogs/ContactTableDialog';
+import { BaseTable } from '@/components/table/BaseTable';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -16,10 +16,12 @@ import { Button } from '@/components/ui/button';
 import { getInitials } from '@/lib/utils';
 import { Contact } from '@/types/contact';
 import { router } from '@inertiajs/react';
-import { createColumnHelper, SortingState } from '@tanstack/react-table';
+import { createColumnHelper } from '@tanstack/react-table';
 import { Copy, EyeIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 import React from 'react';
 import { toast } from 'sonner';
+import { ContactTypeFilter } from './ContactTypeFilter';
+import { ExportCsvButton } from '@/components/table/ExportCSVButton';
 
 const columnHelper = createColumnHelper<Contact>();
 
@@ -29,8 +31,6 @@ interface ContactTableProps {
 
 export default function ContactsTable({ contacts }: ContactTableProps) {
     const [data, setData] = React.useState<Contact[]>(contacts);
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [globalFilter, setGlobalFilter] = React.useState('');
     const [selectedContact, setSelectedContact] = React.useState<Contact | undefined>();
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
@@ -81,6 +81,7 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
             ),
             sortingFn: 'alphanumeric',
             enableGlobalFilter: true,
+            filterFn: 'equals',
         }),
         columnHelper.display({
             id: 'actions',
@@ -187,18 +188,18 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
                                         <strong>Tipo:</strong> {contact.type}
                                     </p>
                                     {(contact.email || contact.phone) && (
-                                            <Button
-                                                className='w-full mt-4'
-                                                onClick={() => {
-                                                    const contactInfo = `Nombre: ${contact.full_name}\n${
-                                                        contact.email ? `Email: ${contact.email}\n` : ''
-                                                    }${contact.phone ? `Teléfono: ${contact.phone}` : ''}`;
-                                                    navigator.clipboard.writeText(contactInfo);
-                                                    toast.success('Información del contacto copiada al portapapeles');
-                                                }}
-                                            >
-                                                Copiar toda la información
-                                            </Button>
+                                        <Button
+                                            className="mt-4 w-full"
+                                            onClick={() => {
+                                                const contactInfo = `Nombre: ${contact.full_name}\n${
+                                                    contact.email ? `Email: ${contact.email}\n` : ''
+                                                }${contact.phone ? `Teléfono: ${contact.phone}` : ''}`;
+                                                navigator.clipboard.writeText(contactInfo);
+                                                toast.success('Información del contacto copiada al portapapeles');
+                                            }}
+                                        >
+                                            Copiar toda la información
+                                        </Button>
                                     )}
                                 </div>
                                 <AlertDialogFooter>
@@ -213,20 +214,24 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
     ];
 
     return (
-        <>
-            <BaseTable
-                data={contacts}
-                columns={columns}
-                modelName="Contact"
-                dialog={
-                    <ContactTableDialog
-                        contact={selectedContact}
-                        setSelectedContact={setSelectedContact}
-                        isOpen={isDialogOpen}
-                        setIsOpen={setIsDialogOpen}
-                    />
-                }
-            />
-        </>
+        <BaseTable
+            data={data} /* use local state if you mutate, else contacts */
+            columns={columns}
+            /* Put BOTH the custom filter */
+            renderToolbarRight={(table) => (
+                <>
+                    <ContactTypeFilter table={table} />
+                    <ExportCsvButton table={table} filename="contacts" headers={['full_name', 'email', 'phone', 'type']} />
+                </>
+            )}
+            dialog={
+                <ContactTableDialog
+                    contact={selectedContact}
+                    setSelectedContact={setSelectedContact}
+                    isOpen={isDialogOpen}
+                    setIsOpen={setIsDialogOpen}
+                />
+            }
+        />
     );
 }
