@@ -15,9 +15,12 @@ import { Button } from '@/components/ui/button';
 import { Account, AccountProvider } from '@/types/account';
 import { router } from '@inertiajs/react';
 import { createColumnHelper } from '@tanstack/react-table';
-import { PencilIcon, Trash2Icon } from 'lucide-react';
+import { Currency, PencilIcon, Trash2Icon } from 'lucide-react';
 import React from 'react';
 import { toast } from 'sonner';
+import { CurrencyTypeFilter } from './filters/CurrencyTypeFilter';
+import { ExportCsvButton } from '@/components/table/ExportCSVButton';
+import { AccountTypeFilter } from './filters/AccountTypeFilter';
 
 const columnHelper = createColumnHelper<Account>();
 
@@ -138,8 +141,13 @@ export default function AccountsTable({ accounts, providers }: AccountsTableProp
         <BaseTable
             data={accounts}
             columns={columns}
-            globalFilterPlaceholder="Busca tu cuenta"
-            modelName="account"
+            renderToolbarRight={(table) => (
+                <>
+                    <CurrencyTypeFilter table={table} />
+                    <AccountTypeFilter table={table} />
+                    <ExportCsvButton table={table} filename="accounts" headers={['name', 'currency', 'type', 'amount']} />
+                </>
+            )}
             dialog={
                 <AccountsTableDialog
                     isOpen={isDialogOpen}
