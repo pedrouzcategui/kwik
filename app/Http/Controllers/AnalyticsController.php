@@ -66,10 +66,17 @@ class AnalyticsController extends Controller
         $expensesGroupedByCategories = $expensesGroupedByCategories->get();
 
         //        
+        // Get all system logs
+        $systemLogs = DB::table('system_logs')
+            ->select('id', 'description', 'module', 'created_at')
+            ->orderBy('created_at', 'desc')
+            ->limit(30)
+            ->get();
 
         return Inertia::render('dashboard', [
             'accounts_totals' => $accountSumsByCurrency,
-            'expenses_grouped_by_categories' => $expensesGroupedByCategories
+            'expenses_grouped_by_categories' => $expensesGroupedByCategories,
+            'logs' => $systemLogs,
         ]);
     }
 

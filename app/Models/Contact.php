@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\ContactObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[ObservedBy([ContactObserver::class])]
 class Contact extends Model
 {
     // When using UUIDs as Primary Keys in Laravel, you must use this trait.

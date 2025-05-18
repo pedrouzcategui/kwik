@@ -33,9 +33,10 @@ interface DashboardProps {
         name: string;
         total: number;
     }[];
+    logs: Log[];
 }
 
-export default function Dashboard({ accounts_totals, expenses_grouped_by_categories }: DashboardProps) {
+export default function Dashboard({ accounts_totals, expenses_grouped_by_categories, logs }: DashboardProps) {
     // Lifting the state up, means that the state lives in the parent component, and then it sends to the children
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(2025, 0, 1),
@@ -127,7 +128,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                 </div>
             </div>
             <div className="grid grid-cols-4 gap-4 pb-4">
-                <TerminalLog />
+                <TerminalLog logs={logs}/>
                 <TradingViewWidget />
             </div>
         </AppLayout>
