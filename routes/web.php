@@ -12,12 +12,15 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+// Todas estas rutas están protegidas por el middleware de autenticación,
+// lo que significa que solo los usuarios autenticados pueden acceder a ellas.
 Route::middleware(['auth'])->group(function () {
-    Route::get('dashboard', [AnalyticsController::class,'index'])->name('dashboard');
+    // Este controlador resource SOLO tiene el método index, los demás métodos no funcionarán
+    Route::resource('dashboard', AnalyticsController::class)->only(['index']);
     Route::resource('contacts', ContactController::class);
     Route::resource('accounts', AccountController::class);
     Route::resource('operations', OperationController::class);
-    Route::post('categories', [CategoryController::class, 'store']);
+    Route::resource('categories', CategoryController::class);
 });
 
 require __DIR__ . '/settings.php';

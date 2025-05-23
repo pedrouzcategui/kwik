@@ -12,7 +12,7 @@ use Inertia\Response;
 class PasswordResetLinkController extends Controller
 {
     /**
-     * Show the password reset link request page.
+     * Muestra la página de solicitud de enlace para restablecer la contraseña.
      */
     public function create(Request $request): Response
     {
@@ -22,7 +22,7 @@ class PasswordResetLinkController extends Controller
     }
 
     /**
-     * Handle an incoming password reset link request.
+     * Maneja una solicitud entrante de enlace para restablecer la contraseña.
      *
      * @throws \Illuminate\Validation\ValidationException
      */

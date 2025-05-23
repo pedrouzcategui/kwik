@@ -12,7 +12,7 @@ use App\Models\Category;
 class OperationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra una lista de las operaciones.
      */
     public function index(Request $request)
     {
@@ -29,27 +29,27 @@ class OperationController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear una nueva operación.
      */
     public function create(Request $request)
     {
-        // ?Difference between a query builder and this load method?
+        // ¿Diferencia entre un query builder y este método load?
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Almacena una nueva operación en la base de datos.
      */
     public function store(StoreOperationRequest $request)
     {
         $operation = new Operation($request->validated());
         $operation->user_id = $request->user()->id;
-        // Event is dispatched here
+        // Se dispara un evento aquí
         $operation->save();
         return to_route('operations.index')->with('success', 'Contacto creado exitosamente');
     }
 
     /**
-     * Display the specified resource.
+     * Muestra la operación especificada.
      */
     public function show(Operation $operation)
     {
@@ -57,7 +57,7 @@ class OperationController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulario para editar la operación especificada.
      */
     public function edit(Request $request, Operation $operation)
     {
@@ -66,17 +66,17 @@ class OperationController extends Controller
         return Inertia::render('operations/form', [
             'operation' => $operation,
             'categories' => $categories,
-           'user' => $user
+            'user' => $user
         ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza la operación especificada en la base de datos.
      */
     public function update(UpdateOperationRequest $request, Operation $operation)
     {
         if ($request->user()->id !== $operation->user_id) {
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json(['message' => 'Prohibido'], 403);
         }
         $operation->amount = $request->input('amount');
         $operation->type = $request->input('type');
@@ -85,12 +85,12 @@ class OperationController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina la operación especificada de la base de datos.
      */
     public function destroy(Request $request, Operation $operation)
     {
         if ($request->user()->id !== $operation->user_id) {
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json(['message' => 'Prohibido'], 403);
         }
         $operation->delete();
         return to_route('operations.index')->with('success', 'Se ha eliminado la operación');

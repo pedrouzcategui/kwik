@@ -7,21 +7,21 @@ use Illuminate\Console\Command;
 class FlushAndSeed extends Command
 {
     /**
-     * The name and signature of the console command.
+     * Este es un comando custom que se ejecuta para popular la base de datos con información falsa, usando la librería "faker" de php.
      *
      * @var string
      */
     protected $signature = 'custom:flush-and-seed';
 
     /**
-     * The console command description.
+     * Este comando elimina todas las tablas, y re-ejecuta la migración con los seeders
      *
      * @var string
      */
     protected $description = 'Drops all tables, re-migrates the database, and seeds it';
 
     /**
-     * Execute the console command.
+     * Mensajes al ejecutar el comando
      */
     public function handle()
     {

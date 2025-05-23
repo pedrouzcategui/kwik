@@ -10,21 +10,20 @@ use Inertia\Inertia;
 class AnalyticsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Tabla de Analíticas
      */
     public function index(Request $request)
     {
+        // 1. Se obtiene el rango de fechas a consultar.
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
 
-        // Aggregated amount per operations
+        // 2. Se obtienen las cuentas y operaciones del usuario.
         $query = DB::table('operations')
             ->join('accounts', 'operations.account_id', '=', 'accounts.id')
             ->select('accounts.currency', DB::raw('SUM(operations.amount) as amount'))
             ->where('operations.user_id', '=', Auth::user()->id)
             ->groupBy('accounts.currency');
-
-
 
         // I might group these condtions
         if ($startDate && $endDate) {
@@ -33,8 +32,7 @@ class AnalyticsController extends Controller
 
         $accountSumsByCurrency = $query->get();
 
-        // Income vs Expense, for this I'll need to query the operations table
-        // I need to normalize this probably, or separate it by currency
+        // 3. Se obtiene el total por cuenta y tipo de operación.
         $totalsByCurrencyAndType = DB::table('operations')
             ->join('accounts', 'operations.account_id', '=', 'accounts.id')
             ->select(
@@ -51,7 +49,7 @@ class AnalyticsController extends Controller
 
         $totalsByCurrencyAndType = $totalsByCurrencyAndType->get();
 
-        // Get amounts grouped by categories.
+        // 4. Se obtiene el total de gastos por categoría.
         $expensesGroupedByCategories = DB::table('operations')
             ->join('categories', 'operations.category_id', '=', 'categories.id')
             ->select('categories.name', DB::raw('SUM(operations.amount) as total'))
@@ -65,66 +63,18 @@ class AnalyticsController extends Controller
 
         $expensesGroupedByCategories = $expensesGroupedByCategories->get();
 
-        //        
-        // Get all system logs
+        // 5. Se obtienen los ultimos 30 logs del usuario.
         $systemLogs = DB::table('system_logs')
             ->select('id', 'description', 'module', 'created_at')
             ->orderBy('created_at', 'desc')
             ->limit(30)
             ->get();
 
+        // 6. Se renderiza el dashboard con la información solicitada.
         return Inertia::render('dashboard', [
             'accounts_totals' => $accountSumsByCurrency,
             'expenses_grouped_by_categories' => $expensesGroupedByCategories,
             'logs' => $systemLogs,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

@@ -14,7 +14,7 @@ use Inertia\Response;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Show the login page.
+     * Muestra la página del login.
      */
     public function create(Request $request): Response
     {
@@ -25,7 +25,7 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Autentica al usuario y genera (o regenera) una sesión.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -33,8 +33,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->put('user_id', Auth::user()->id);
         $request->session()->regenerate();
-        // Using the global session helper to set user ID manually since it is UUID instead of bigInt auto increment
-        // TODO: This might change
+        // Se crea un token para la API, si no existe uno.
         $request->user()->createToken('api-token');
 
         return redirect()->intended(route('dashboard', absolute: false));
@@ -48,7 +47,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return redirect('/');
     }
 }

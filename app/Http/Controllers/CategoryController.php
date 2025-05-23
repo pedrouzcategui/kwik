@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 class CategoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra una lista de las categorías.
      */
     public function index()
     {
@@ -18,7 +18,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear una nueva categoría.
      */
     public function create()
     {
@@ -26,18 +26,18 @@ class CategoryController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Almacena una nueva categoría en la base de datos.
      */
     public function store(StoreCategoryRequest $request)
     {
         $category = new Category($request->validated());
         $category->save();
-    
-        return response()->json($category); // ✅ this returns the ID, name, etc
+
+        return response()->json($category); // ✅ esto retorna el ID, nombre, etc.
     }
-    
+
     /**
-     * Display the specified resource.
+     * Muestra la categoría especificada.
      */
     public function show(Category $category)
     {
@@ -45,7 +45,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulario para editar la categoría especificada.
      */
     public function edit(Category $category)
     {
@@ -53,7 +53,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza la categoría especificada en la base de datos.
      */
     public function update(Request $request, Category $category)
     {
@@ -61,7 +61,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina la categoría especificada de la base de datos.
      */
     public function destroy(Category $category)
     {

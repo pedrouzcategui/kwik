@@ -11,7 +11,7 @@ use Inertia\Inertia;
 class ContactController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra una lista de los contactos.
      */
     public function index(Request $request)
     {
@@ -22,7 +22,7 @@ class ContactController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear un nuevo contacto.
      */
     public function create()
     {
@@ -30,13 +30,13 @@ class ContactController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Almacena un nuevo contacto en la base de datos.
      */
     public function store(StoreContactRequest $request)
     {
-        // Mmm. I don't get this line
+        // Crea una nueva instancia de Contacto con los datos validados
         $contact = new Contact($request->validated());
-        // Also, this line does automatically check the Personal Access Token?
+        // Asigna el usuario autenticado al contacto
         $contact->user_id = $request->user()->id;
         $contact->save();
 
@@ -44,21 +44,20 @@ class ContactController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Muestra un contacto específico.
      */
     public function show(Request $request, Contact $contact)
     {
-
+        // Verifica que el usuario autenticado sea el dueño del contacto
         if ($contact->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json(['message' => 'Prohibido'], 403);
         }
 
         return response()->json($contact);
     }
 
-
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulario para editar un contacto específico.
      */
     public function edit(Contact $contact)
     {
@@ -68,33 +67,33 @@ class ContactController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza un contacto específico en la base de datos.
      */
     public function update(UpdateContactRequest $request, Contact $contact)
     {
-        // Ensure the logged-in user owns this contact
+        // Verifica que el usuario autenticado sea el dueño del contacto
         if ($request->user()->id !== $contact->user_id) {
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json(['message' => 'Prohibido'], 403);
         }
 
-        // Update the model
+        // Actualiza el modelo Contacto
         $contact->update($request->validated());
 
         return to_route('contacts.index');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina un contacto específico de la base de datos.
      */
     public function destroy(Request $request, Contact $contact)
     {
-        // 🛡️ Check ownership | This can be replaced with a policy tbh
+        // 🛡️ Verifica que el usuario autenticado sea el dueño del contacto | Esto se puede reemplazar por una policy
         if ($contact->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json(['message' => 'Prohibido'], 403);
         }
 
         $contact->delete();
-        // TODO: Flash session here
+        // TODO: Agregar mensaje flash a la sesión
         return to_route('contacts.index')->with('success', 'Contacto eliminado');
     }
 }

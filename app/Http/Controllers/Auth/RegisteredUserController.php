@@ -16,7 +16,7 @@ use Inertia\Response;
 class RegisteredUserController extends Controller
 {
     /**
-     * Show the registration page.
+     * Mostrar la página de registro.
      */
     public function create(): Response
     {
@@ -24,7 +24,7 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
+     * Manejar una solicitud de registro entrante.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -46,7 +46,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // TODO: This might change
         $request->user()->createToken('api-token');
 
         return to_route('dashboard');

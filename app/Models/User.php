@@ -14,10 +14,15 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasUuids, HasApiTokens;
+    // Traits usados:
+    use HasFactory, // Permite la generación de instancias de User usando factories (útil para tests y seeders)
+        Notifiable, // Habilita el envío de notificaciones al usuario
+        HasUuids,   // Hace que la clave primaria sea un UUID en vez de un entero autoincremental
+        HasApiTokens; // Permite la autenticación vía tokens API usando Laravel Sanctum
 
     protected $keyType = 'string';
     public $incrementing = false;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -52,18 +57,33 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Relación uno a muchos: Un usuario puede tener muchos contactos.
+     */
     public function contacts(): HasMany
     {
         return $this->hasMany(Contact::class);
     }
+
+    /**
+     * Relación uno a muchos: Un usuario puede tener muchas cuentas.
+     */
     public function accounts(): HasMany
     {
         return $this->hasMany(Account::class);
     }
+
+    /**
+     * Relación uno a muchos: Un usuario puede tener muchas operaciones.
+     */
     public function operations(): HasMany
     {
         return $this->hasMany(Operation::class);
     }
+
+    /**
+     * Relación uno a muchos: Un usuario puede tener muchos proveedores de cuenta.
+     */
     public function accountProviders()
     {
         return $this->hasMany(AccountProvider::class);
