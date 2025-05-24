@@ -16,7 +16,7 @@ Route::get('/', function () {
 // lo que significa que solo los usuarios autenticados pueden acceder a ellas.
 Route::middleware(['auth'])->group(function () {
     // Este controlador resource SOLO tiene el método index, los demás métodos no funcionarán
-    Route::resource('dashboard', AnalyticsController::class)->only(['index']);
+    Route::get('dashboard', [AnalyticsController::class, 'index'])->name('dashboard');
     Route::resource('contacts', ContactController::class);
     Route::resource('accounts', AccountController::class);
     Route::resource('operations', OperationController::class);
