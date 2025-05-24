@@ -13,7 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Currency } from '@/types/account';
-import { Head, router } from '@inertiajs/react';
+import { ExchangeRate } from '@/types/exchange-rate';
+import { Head, router, usePage } from '@inertiajs/react';
 import { File, Link } from 'lucide-react';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
@@ -34,12 +35,15 @@ interface DashboardProps {
         total: number;
     }[];
     logs: Log[];
+    dollar_rates: ExchangeRate[];
 }
 
-export default function Dashboard({ accounts_totals, expenses_grouped_by_categories, logs }: DashboardProps) {
+export default function Dashboard({ accounts_totals, expenses_grouped_by_categories, logs, dollar_rates }: DashboardProps) {
     // Lifting the state up, means that the state lives in the parent component, and then it sends to the children
+    const { auth } = usePage().props;
+    console.log(dollar_rates);
     const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(2025, 0, 1),
+        from: new Date(auth.user.created_at),
         to: new Date(),
     });
 
@@ -65,7 +69,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="lg:flex items-center justify-between pb-2 gap-4">
+            <div className="items-center justify-between gap-4 pb-2 lg:flex">
                 <Button className="border-1 border-white" variant={'outline'}>
                     Export CSV <File />{' '}
                 </Button>
@@ -73,9 +77,9 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                     Share Dashboard <Link />{' '}
                 </Button>
                 <div className="grow">
-                    <DollarTicker />
+                    <DollarTicker rates={dollar_rates} />
                 </div>
-                <DatePickerWithRange date={date} onChange={handleDateChange} />
+                <DatePickerWithRange disabledBeforeDate={new Date(auth.user.created_at)} date={date} onChange={handleDateChange} />
             </div>
             <div className="grid grid-cols-4 gap-4 pt-2 pb-4 lg:grid-cols-2 xl:grid-cols-4">
                 <Card>
@@ -83,7 +87,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                         <CardTitle>Total Disponible</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <span className="md:text-3xl xl:text-6xl font-bold">$100,000</span>
+                        <span className="font-bold md:text-3xl xl:text-6xl">$100,000</span>
                     </CardContent>
                 </Card>
                 {/* This needs to be a component */}
@@ -102,7 +106,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                         <CardTitle>Total sin Presupuestar</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <span className="text-3xl lg:text-6xl font-bold">$1,000</span>
+                        <span className="text-3xl font-bold lg:text-6xl">$1,000</span>
                     </CardContent>
                 </Card>
                 {/* END: This needs to be a component */}
@@ -128,7 +132,7 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                 </div>
             </div>
             <div className="grid grid-cols-4 gap-4 pb-4">
-                <TerminalLog logs={logs}/>
+                <TerminalLog logs={logs} />
                 <TradingViewWidget />
             </div>
         </AppLayout>

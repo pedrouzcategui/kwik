@@ -14,7 +14,7 @@ class FetchExchangeRates extends Command
     public function handle()
     {
         $this->info("Fetching and storing exchange rates...");
-        $service = new PydolarveApiService();
+        $service = new PyDolarVeApiService();
         $service->fetchAndStoreInDatabase();
         $this->info("Done! USD Exchange rate stored in database.");
         $this->info("Fetching and storing Euro exchange rates...");

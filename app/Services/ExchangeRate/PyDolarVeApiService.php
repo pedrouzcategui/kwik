@@ -38,7 +38,11 @@ class PyDolarVeApiService
             }
 
             $price = $monitors[$monitorKey]['price'];
-            $title = $monitors[$monitorKey]['title'] ?? strtoupper($monitorKey);
+            if ($sourceType === 'official') {
+                $title = 'BCV';
+            } else {
+                $title = $monitors[$monitorKey]['title'] ?? strtoupper($monitorKey);
+            }
 
             ExchangeRate::updateOrCreate(
                 [

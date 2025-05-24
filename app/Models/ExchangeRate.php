@@ -14,6 +14,10 @@ class ExchangeRate extends Model
         'source',
     ];
 
+    protected $hidden = [
+        'id'
+    ];
+
     protected $casts = [
         'effective_date' => 'date',
     ];

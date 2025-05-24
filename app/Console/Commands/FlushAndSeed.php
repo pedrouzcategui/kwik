@@ -27,6 +27,7 @@ class FlushAndSeed extends Command
     {
         $this->warn('Flushing database...');
         $this->call('migrate:fresh', ['--seed' => true]);
+        $this->call('custom:fetch-exchange-rates');
         $this->info('Database flushed and seeded successfully! 🚀');
     }
 }

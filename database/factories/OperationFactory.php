@@ -26,7 +26,7 @@ class OperationFactory extends Factory
             'amount' => fake()->numberBetween(50, 500),
             'type' => fake()->randomElement(['INCOME', 'EXPENSE']),
             'description' => fake()->text(250),
-            'created_at' => fake()->dateTimeBetween('-4 months', 'now')
+            'created_at' => fake()->dateTime('now', 'America/New_York')
         ];
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use App\Models\ExchangeRate;
 
 class AnalyticsController extends Controller
 {
@@ -70,11 +71,26 @@ class AnalyticsController extends Controller
             ->limit(30)
             ->get();
 
+        // Obtener el último dolar bcv y dolar paralelo disponibles
+        $dolarBcv = ExchangeRate::where('currency_code', 'VES')
+            ->where('source_type', 'official')
+            ->orderBy('effective_date', 'desc')
+            ->first();
+
+        $dolarParalelo = ExchangeRate::where('currency_code', 'VES')
+            ->where('source_type', 'black_market')
+            ->orderBy('effective_date', 'desc')
+            ->first();
+
         // 6. Se renderiza el dashboard con la información solicitada.
         return Inertia::render('dashboard', [
             'accounts_totals' => $accountSumsByCurrency,
             'expenses_grouped_by_categories' => $expensesGroupedByCategories,
             'logs' => $systemLogs,
+            'dollar_rates' => [
+                $dolarBcv,
+                $dolarParalelo,
+            ],
         ]);
     }
 }
