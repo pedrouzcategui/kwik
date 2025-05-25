@@ -88,4 +88,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(AccountProvider::class);
     }
+
+    public function getTotalAccountBalanceInUSD(): float
+    {
+        $accounts = $this->accounts()->select('amount', 'currency')->get();
+
+        $rates = ExchangeRate::where('source_type', 'official')
+            ->select('currency_code', 'rate_to_usd')
+            ->get()
+            ->unique('currency_code')
+            ->pluck('rate_to_usd', 'currency_code');
+
+        return round($accounts->reduce(function ($total, $account) use ($rates) {
+            $rate = $rates[$account->currency] ?? 1;
+            return $total + ($account->amount * $rate);
+        }, 0), 2);
+    }
 }

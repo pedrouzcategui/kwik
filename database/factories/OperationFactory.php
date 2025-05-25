@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\User;
 use App\Models\Contact;
 use App\Models\Account;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,7 +27,7 @@ class OperationFactory extends Factory
             'amount' => fake()->numberBetween(50, 500),
             'type' => fake()->randomElement(['INCOME', 'EXPENSE']),
             'description' => fake()->text(250),
-            'created_at' => fake()->dateTime('now', 'America/New_York')
+            'created_at' => Carbon::now()
         ];
     }
 }

@@ -20,8 +20,12 @@ class FawazAhmedEuroService
         $date = $date ?? now()->format('Y-m-d');
 
         $url = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@{$date}/v1/currencies/usd.json";
-
         $response = Http::get($url);
+
+        if ($response->status() === 404) {
+            Log::warning("[FawazAhmedEuroService] Data not found (404) for date {$date}.");
+            return null;
+        }
 
         if (! $response->successful()) {
             Log::warning("[FawazAhmedEuroService] Failed to fetch data for date {$date}: HTTP " . $response->status());

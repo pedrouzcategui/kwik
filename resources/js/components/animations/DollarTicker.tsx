@@ -8,8 +8,6 @@ type AnimatedExchangeTickerProps = {
 export default function AnimatedExchangeTicker({ rates }: AnimatedExchangeTickerProps) {
     const [index, setIndex] = React.useState(0);
     const current = rates[index];
-    const isUp = current.diff >= 0;
-    const now = new Date();
 
     React.useEffect(() => {
         const timer = setInterval(() => {

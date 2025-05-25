@@ -8,14 +8,12 @@ import DollarTicker from '@/components/animations/DollarTicker';
 import HeartbeatCanvas from '@/components/animations/HeartBeatPulse';
 import DatePickerWithRange from '@/components/DatePickerWithRange';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Currency } from '@/types/account';
 import { ExchangeRate } from '@/types/exchange-rate';
 import { Head, router, usePage } from '@inertiajs/react';
-import { File, Link } from 'lucide-react';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
@@ -36,12 +34,18 @@ interface DashboardProps {
     }[];
     logs: Log[];
     dollar_rates: ExchangeRate[];
+    total_account_amount_in_usd: number;
 }
 
-export default function Dashboard({ accounts_totals, expenses_grouped_by_categories, logs, dollar_rates }: DashboardProps) {
+export default function Dashboard({
+    accounts_totals,
+    expenses_grouped_by_categories,
+    logs,
+    dollar_rates,
+    total_account_amount_in_usd,
+}: DashboardProps) {
     // Lifting the state up, means that the state lives in the parent component, and then it sends to the children
     const { auth } = usePage().props;
-    console.log(dollar_rates);
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(auth.user.created_at),
         to: new Date(),
@@ -70,12 +74,12 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="items-center justify-between gap-4 pb-2 lg:flex">
-                <Button className="border-1 border-white" variant={'outline'}>
+                {/* <Button className="border-1 border-white" variant={'outline'}>
                     Export CSV <File />{' '}
                 </Button>
                 <Button className="border-1 border-white" variant={'outline'}>
                     Share Dashboard <Link />{' '}
-                </Button>
+                </Button> */}
                 <div className="grow">
                     <DollarTicker rates={dollar_rates} />
                 </div>
@@ -85,9 +89,12 @@ export default function Dashboard({ accounts_totals, expenses_grouped_by_categor
                 <Card>
                     <CardHeader>
                         <CardTitle>Total Disponible</CardTitle>
+                        <CardDescription>Operaciones normalizadas a dólar a tasa oficial</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <span className="font-bold md:text-3xl xl:text-6xl">$100,000</span>
+                        <span className="text-2xl font-bold text-wrap sm:text-3xl lg:text-4xl xl:text-5xl">
+                            ${total_account_amount_in_usd.toLocaleString()}
+                        </span>
                     </CardContent>
                 </Card>
                 {/* This needs to be a component */}

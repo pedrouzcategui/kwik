@@ -19,7 +19,6 @@ class FetchExchangeRates extends Command
         $this->info("Done! USD Exchange rate stored in database.");
         $this->info("Fetching and storing Euro exchange rates...");
         $euroService = new FawazAhmedEuroService();
-        // Store exchange rate for today
         $euroService->fetchAndStoreInDatabase();
         $this->info("Done! Euro Exchange rate stored in database.");
         return 0;

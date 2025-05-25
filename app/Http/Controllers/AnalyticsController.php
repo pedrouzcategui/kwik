@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Models\ExchangeRate;
+use App\Models\User;
 
 class AnalyticsController extends Controller
 {
@@ -18,6 +19,15 @@ class AnalyticsController extends Controller
         // 1. Se obtiene el rango de fechas a consultar.
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
+
+        if (empty($startDate) || empty($endDate)) {
+            $startDate = now()->subWeek()->toDateString();
+            $endDate = now()->toDateString();
+        }
+
+        // Asegura que $endDate sea EOD (23:59:59)
+        $startDate = \Carbon\Carbon::parse($startDate)->startOfDay()->toDateTimeString();
+        $endDate = \Carbon\Carbon::parse($endDate)->endOfDay()->toDateTimeString();
 
         // 2. Se obtienen las cuentas y operaciones del usuario.
         $query = DB::table('operations')
@@ -32,6 +42,36 @@ class AnalyticsController extends Controller
         }
 
         $accountSumsByCurrency = $query->get();
+
+        // Get total account balance in USD
+        $operations = Auth::user()
+            ->operations()
+            ->with('account')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->select('amount', 'account_id', 'type') // include type!
+            ->get();
+
+        $rates = ExchangeRate::where('source_type', 'official')
+            ->select('currency_code', 'rate_to_usd')
+            ->get()
+            ->unique('currency_code')
+            ->pluck('rate_to_usd', 'currency_code');
+
+        $total_accounts_amount_in_usd = round($operations->reduce(function ($total, $op) use ($rates) {
+            $currency = $op->account?->currency ?? 'USD';
+            $rate = $rates[$currency] ?? 1;
+
+            $signedAmount = $op->tipo_operacion === 'E' ? -1 * $op->amount : $op->amount;
+
+            // Convert to USD
+            $convertedAmount = $currency === 'USD' ? $signedAmount : $signedAmount / $rate;
+
+            return $total + $convertedAmount;
+        }, 0), 2);
+
+        //
+
+
 
         // 3. Se obtiene el total por cuenta y tipo de operación.
         $totalsByCurrencyAndType = DB::table('operations')
@@ -91,6 +131,7 @@ class AnalyticsController extends Controller
                 $dolarBcv,
                 $dolarParalelo,
             ],
+            'total_account_amount_in_usd' => $total_accounts_amount_in_usd,
         ]);
     }
 }
