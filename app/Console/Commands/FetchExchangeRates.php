@@ -13,7 +13,6 @@ class FetchExchangeRates extends Command
 
     public function handle()
     {
-        $date = $this->option('date');
         $this->info("Fetching and storing exchange rates...");
         $service = new PyDolarVeApiService();
         $service->fetchAndStoreInDatabase();

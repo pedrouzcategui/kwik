@@ -14,7 +14,7 @@ class FawazAhmedEuroService
      * @param string|null $date Date in 'Y-m-d' format. Defaults to today's date.
      * @return float|null Returns the exchange rate or null if unavailable.
      */
-    public function fetch(?string $date = null): ?float
+    public function fetch(): ?float
     {
         // Set default date to today if not provided
         $date = $date ?? now()->format('Y-m-d');
