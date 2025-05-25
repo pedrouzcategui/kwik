@@ -8,19 +8,19 @@ use App\Services\ExchangeRate\FawazAhmedEuroService;
 
 class FetchExchangeRates extends Command
 {
-    protected $signature = 'custom:fetch-exchange-rates {--date=latest}';
+    protected $signature = 'custom:fetch-exchange-rates';
     protected $description = 'Fetch and store exchange rates from multiple APIs';
 
     public function handle()
     {
         $date = $this->option('date');
-        $this->info("Fetching and storing exchange rates..." . ($date ? " for date: $date" : ""));
+        $this->info("Fetching and storing exchange rates...");
         $service = new PyDolarVeApiService();
-        $service->fetchAndStoreInDatabase($date);
+        $service->fetchAndStoreInDatabase();
         $this->info("Done! USD Exchange rate stored in database.");
         $this->info("Fetching and storing Euro exchange rates...");
         $euroService = new FawazAhmedEuroService();
-        $euroService->fetchAndStoreInDatabase($date);
+        $euroService->fetchAndStoreInDatabase();
         $this->info("Done! Euro Exchange rate stored in database.");
         return 0;
     }
