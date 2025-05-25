@@ -24,7 +24,7 @@ Esta aplicación hecha en Laravel + React (Inertia).
 ## PASOS PARA ARRANCAR EL PROYECTO
 
 - En phpmyadmin, crea una base de datos llamada `kwik`.
-- Crea un archivo .env basado en el archivo `.env.example`
+- Crea un archivo .env basado en el archivo `.env.example` (debes crear un servicio en https://pydolarve.org/ y usarlo como API_DOLAR_TOKEN)
 - Ejecuta `composer install`
 - Ejecuta `npm install --legacy-peer-deps`
 - Ejecuta `php artisan key:generate`
