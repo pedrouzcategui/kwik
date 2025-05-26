@@ -20,7 +20,7 @@ return new class extends Migration
             // Change name here
             $table->uuid('account_target_id')->nullable(true);
             $table->float('amount');
-            $table->enum('type', ['INCOME', 'EXPENSE', 'TRANSFER']);
+            $table->enum('type', ['INCOME', 'EXPENSE']);
             $table->string('description')->nullable();
             $table->timestamps();
 

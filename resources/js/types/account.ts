@@ -4,11 +4,10 @@ export enum Currency {
     VES = 'VES',
 }
 export enum AccountType {
-    CHECKING = 'CHECKING',
-    SAVINGS = 'SAVINGS',
-    INVESTMENT = 'INVESTMENT',
-    CRYPTO = 'CRYPTO',
+    CORRIENTE = 'Corriente',
+    AHORROS = 'Ahorros',
 }
+
 export type AccountProvider = {
     id: string;
     name: string;

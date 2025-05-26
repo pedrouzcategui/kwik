@@ -21,7 +21,7 @@ export default function Appearance() {
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Appearance settings" description="Update your account's appearance settings" />
+                    <HeadingSmall title="Configuración de Aparencia" description="Actualiza la apariencia de la aplicación" />
                     <AppearanceTabs />
                 </div>
             </SettingsLayout>

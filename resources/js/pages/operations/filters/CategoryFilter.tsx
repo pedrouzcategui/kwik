@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Category } from '@/types/category';
-import type { Table } from '@tanstack/react-table';
 import { OperationTableColumns } from '@/types/operation';
+import type { Table } from '@tanstack/react-table';
+import { useState } from 'react';
 
 // filepath: /Applications/XAMPP/xamppfiles/htdocs/kwik/resources/js/pages/operations/filters/CategoryFilter.tsx
 
@@ -16,7 +16,7 @@ export function CategoryFilter({ table, categories }: { table: Table<OperationTa
 
     return (
         <Select value={selectedCategory} onValueChange={handleValueChange}>
-            <SelectTrigger className='px-4'>
+            <SelectTrigger className="min-w-[290px] px-4">
                 <SelectValue placeholder="Categoría" />
             </SelectTrigger>
 

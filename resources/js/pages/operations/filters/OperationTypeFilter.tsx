@@ -8,19 +8,23 @@ export function OperationTypeFilter({ table }: { table: Table<OperationTableColu
     // Use "all" as the sentinel when NO filter is active
     const value = (col?.getFilterValue() as string | undefined) ?? 'all';
 
-    const operationTypes = ['Expense', 'Income'];
+    // Map internal values to display labels
+    const operationTypes = [
+        { value: 'Expense', label: 'Egreso' },
+        { value: 'Income', label: 'Ingreso' },
+    ];
 
     return (
         <Select value={value} onValueChange={(v) => col?.setFilterValue(v === 'all' ? undefined : v)}>
-            <SelectTrigger className='px-4'>
+            <SelectTrigger className="min-w-[200px] px-4">
                 <SelectValue placeholder="Tipo de Operación" />
             </SelectTrigger>
 
             <SelectContent>
                 <SelectItem value="all">Todos los tipos</SelectItem>
                 {operationTypes.map((type) => (
-                    <SelectItem key={type} value={type.toUpperCase()}>
-                        {type}
+                    <SelectItem key={type.value} value={type.value}>
+                        {type.label}
                     </SelectItem>
                 ))}
             </SelectContent>

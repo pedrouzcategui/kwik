@@ -1,8 +1,8 @@
 import { Contact } from '@/types/contact';
+import { Dispatch, SetStateAction } from 'react';
 import ContactForm from '../forms/ContactForm';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { Dispatch, SetStateAction } from 'react';
 
 type ContactTableDialog = {
     contact?: Contact;
@@ -18,10 +18,10 @@ export default function ContactTableDialog({ contact, setSelectedContact, isOpen
                 asChild
                 onClick={() => {
                     setIsOpen(true);
-                    setSelectedContact(undefined)
+                    setSelectedContact(undefined);
                 }}
             >
-                <Button>Crear Nuevo Recurso</Button>
+                <Button>Crear Nuevo Contacto</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

@@ -19,7 +19,7 @@ import { DateRange } from 'react-day-picker';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Panel de Analíticas',
         href: '/dashboard',
     },
 ];
@@ -72,7 +72,7 @@ export default function Dashboard({
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard" />
+            <Head title="Panel de Analíticas" />
             <div className="items-center justify-between gap-4 pb-2 lg:flex">
                 {/* <Button className="border-1 border-white" variant={'outline'}>
                     Export CSV <File />{' '}
@@ -127,14 +127,12 @@ export default function Dashboard({
                         description="Representa el total de dinero agregado de todas las cuentas, agrupado por moneda"
                     />
                     <LineChartCustom />
-                    <div>
-                        <RadarChartWithDots
-                            name={'Gastos por Categoria'}
-                            description={'Gastos y Total de Gastos ordenados por categoria'}
-                            data={expenses_grouped_by_categories}
-                            dataKey={'name'}
-                        />
-                    </div>
+                    <RadarChartWithDots
+                        name={'Gastos por Categoria'}
+                        description={'Gastos y Total de Gastos ordenados por categoria'}
+                        data={expenses_grouped_by_categories}
+                        dataKey={'name'}
+                    />
                     <RadialChartGrid />
                 </div>
             </div>

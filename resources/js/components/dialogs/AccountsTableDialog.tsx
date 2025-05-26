@@ -1,15 +1,15 @@
 import { Account, AccountProvider } from '@/types/account';
+import { Dispatch, SetStateAction } from 'react';
+import AccountForm from '../forms/AccountForm';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import AccountForm from '../forms/AccountForm';
-import { Dispatch, SetStateAction } from 'react';
 
 type AccountsTableDialogProps = {
     account?: Account;
     providers: AccountProvider[];
     isOpen: boolean;
     setIsOpen: (x: boolean) => any;
-    setSelectedAccount: Dispatch<SetStateAction<Account | undefined>>; 
+    setSelectedAccount: Dispatch<SetStateAction<Account | undefined>>;
 };
 
 export default function AccountsTableDialog({ account, providers, setSelectedAccount, isOpen, setIsOpen }: AccountsTableDialogProps) {
@@ -19,10 +19,10 @@ export default function AccountsTableDialog({ account, providers, setSelectedAcc
                 asChild
                 onClick={() => {
                     setIsOpen(true);
-                    setSelectedAccount(undefined)
+                    setSelectedAccount(undefined);
                 }}
             >
-                <Button>Crear Nuevo Recurso</Button>
+                <Button>Crear Nueva Cuenta</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

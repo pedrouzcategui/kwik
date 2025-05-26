@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Contact } from '@/types/contact';
-import type { Table } from '@tanstack/react-table';
 import { OperationTableColumns } from '@/types/operation';
+import type { Table } from '@tanstack/react-table';
+import { useState } from 'react';
 
 export function ContactFilter({ table, contacts }: { table: Table<OperationTableColumns>; contacts: Contact[] }) {
     const [selectedContact, setSelectedContact] = useState<string | undefined>('all');
@@ -14,7 +14,7 @@ export function ContactFilter({ table, contacts }: { table: Table<OperationTable
 
     return (
         <Select value={selectedContact} onValueChange={handleValueChange}>
-            <SelectTrigger className='px-4'>
+            <SelectTrigger className="min-w-[290px] px-4">
                 <SelectValue placeholder="Contacto" />
             </SelectTrigger>
 

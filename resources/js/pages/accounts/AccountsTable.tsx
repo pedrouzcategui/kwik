@@ -1,5 +1,6 @@
-import { BaseTable } from '@/components/table/BaseTable';
 import AccountsTableDialog from '@/components/dialogs/AccountsTableDialog';
+import { BaseTable } from '@/components/table/BaseTable';
+import { ExportCsvButton } from '@/components/table/ExportCSVButton';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -15,12 +16,11 @@ import { Button } from '@/components/ui/button';
 import { Account, AccountProvider } from '@/types/account';
 import { router } from '@inertiajs/react';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Currency, PencilIcon, Trash2Icon } from 'lucide-react';
+import { PencilIcon, Trash2Icon } from 'lucide-react';
 import React from 'react';
 import { toast } from 'sonner';
-import { CurrencyTypeFilter } from './filters/CurrencyTypeFilter';
-import { ExportCsvButton } from '@/components/table/ExportCSVButton';
 import { AccountTypeFilter } from './filters/AccountTypeFilter';
+import { CurrencyTypeFilter } from './filters/CurrencyTypeFilter';
 
 const columnHelper = createColumnHelper<Account>();
 
@@ -48,7 +48,7 @@ export default function AccountsTable({ accounts, providers }: AccountsTableProp
         }),
         columnHelper.accessor('type', {
             header: () => <span>Tipo de cuenta</span>,
-            cell: (info) => <Badge variant={'outline'}>{info.getValue()}</Badge> ,
+            cell: (info) => <Badge variant={'outline'}>{info.getValue()}</Badge>,
             sortingFn: 'alphanumeric',
             enableGlobalFilter: false,
         }),
@@ -119,7 +119,7 @@ export default function AccountsTable({ accounts, providers }: AccountsTableProp
                                             router.delete(`/accounts/${account.id}`, {
                                                 preserveScroll: true,
                                                 onSuccess: () => {
-                                                    toast.success(`La cuenta ${account.name} ha sido eliminada exitosamente.`)
+                                                    toast.success(`La cuenta ${account.name} ha sido eliminada exitosamente.`);
                                                     router.reload({ only: ['accounts'] });
                                                 },
                                             })

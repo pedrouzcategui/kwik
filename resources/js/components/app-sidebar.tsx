@@ -1,10 +1,11 @@
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Banknote, BookOpen, CircleDollarSign, ContactIcon, CreditCard, DollarSign, Folder, LayoutDashboard, LineChart } from 'lucide-react';
+import { CircleDollarSign, ContactIcon, CreditCard, DollarSign, LayoutDashboard } from 'lucide-react';
+import RubikateLogo from './rubikate-logo.png';
 
 const mainNavItems: NavItem[] = [
     {
@@ -28,9 +29,9 @@ const mainNavItems: NavItem[] = [
         icon: CircleDollarSign,
     },
     // {
-        // title: 'Trading View',
-        // href: '/trading-view',
-        // icon: LineChart,
+    // title: 'Trading View',
+    // href: '/trading-view',
+    // icon: LineChart,
     // },
 ];
 
@@ -40,11 +41,6 @@ const footerNavItems: NavItem[] = [
         href: '#',
         icon: DollarSign,
     },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits',
-        icon: BookOpen,
-    },
 ];
 
 export function AppSidebar() {
@@ -52,13 +48,13 @@ export function AppSidebar() {
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href="/dashboard" prefetch>
-                               <span className='text-3xl text-center w-full font-bold uppercase'>RUBIKATE</span> 
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
+                    {/* <SidebarMenuItem>
+                        <SidebarMenuButton> */}
+                    <Link href="/dashboard" prefetch>
+                        <img src={RubikateLogo} className="w-full object-contain" />
+                    </Link>
+                    {/* </SidebarMenuButton>
+                    </SidebarMenuItem> */}
                 </SidebarMenu>
             </SidebarHeader>
 

@@ -1,7 +1,7 @@
 import { Account } from '@/types/account';
 import { Category } from '@/types/category';
 import { Contact } from '@/types/contact';
-import { Operation, OperationTableColumns } from '@/types/operation';
+import { OperationTableColumns } from '@/types/operation';
 import { Dispatch, SetStateAction } from 'react';
 import OperationForm from '../forms/operations/OperationsForm';
 import { Button } from '../ui/button';
@@ -35,7 +35,7 @@ export default function OperationsTableDialog({
                     setSelectedOperation(undefined);
                 }}
             >
-                <Button>Crear Nuevo Recurso</Button>
+                <Button>Crear Nueva Operación</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
