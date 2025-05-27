@@ -15,7 +15,7 @@ const HeartBeatHealthComponent: React.FC<HeartBeatHealthComponentProps> = ({ sta
             case 'yellow':
                 return { text: 'Requiere Atención', badgeClass: 'bg-yellow-600' };
             case 'red':
-                return { text: 'Peligro', badgeClass: 'bg-danger' };
+                return { text: 'Peligro', badgeClass: 'bg-red-600' };
             default:
                 return { text: 'Neutral', badgeClass: 'bg-neutral' };
         }
