@@ -40,6 +40,7 @@ interface OperationsTableProps {
 }
 
 export default function OperationsTable({ operations, user, categories, contacts }: OperationsTableProps) {
+    router.reload({ only: ['accounts'] }); // Reload the accounts to ensure the latest data is available
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
     const [selectedOperation, setSelectedOperation] = React.useState<OperationTableColumns>();
     const columns = [

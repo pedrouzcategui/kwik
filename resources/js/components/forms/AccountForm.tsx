@@ -1,5 +1,5 @@
 import { Account, AccountProvider, AccountType, Currency } from '@/types/account';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
@@ -51,7 +51,9 @@ export default function AccountForm({ account, providers, setIsOpen }: AccountFo
                 onSuccess: () => {
                     setIsOpen(false);
                     toast.success('Cuenta Editada Exitosamente');
+                    router.reload({only: ['accounts']}); // Reload the page to reflect changes
                 },
+                
             });
         } else {
             post('/accounts', {
