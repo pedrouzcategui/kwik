@@ -14,7 +14,7 @@ export function ContactFilter({ table, contacts }: { table: Table<OperationTable
 
     return (
         <Select value={selectedContact} onValueChange={handleValueChange}>
-            <SelectTrigger className="min-w-[290px] px-4">
+            <SelectTrigger className="min-w-[200px] px-4">
                 <SelectValue placeholder="Contacto" />
             </SelectTrigger>
 

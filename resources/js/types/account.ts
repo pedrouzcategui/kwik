@@ -4,14 +4,16 @@ export enum Currency {
     VES = 'VES',
 }
 export enum AccountType {
-    CORRIENTE = 'Corriente',
-    AHORROS = 'Ahorros',
+    CHECKING = 'CHECKING',
+    SAVINGS = 'SAVINGS',
 }
 
 export type AccountProvider = {
     id: string;
+    code: string;
     name: string;
 };
+
 export type Account = {
     id: string;
     name: string;
@@ -19,4 +21,5 @@ export type Account = {
     type: AccountType;
     amount: number;
     account_provider_id: string;
+    account_provider?: AccountProvider;
 };

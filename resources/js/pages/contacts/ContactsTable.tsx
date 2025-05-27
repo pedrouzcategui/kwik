@@ -54,21 +54,51 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
         }),
         columnHelper.accessor('email', {
             header: () => <span>Correo Electrónico</span>,
-            cell: (info) => (
-                <div className="flex gap-2">
-                    <span>{info.getValue()}</span> <Copy size={16} />
-                </div>
-            ),
+            cell: (info) => {
+                const email = info.getValue();
+                return (
+                    <div className="flex justify-between items-center gap-2">
+                        <span>{email}</span>
+                        {email && (
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(email);
+                                    toast.success('Correo electrónico copiado al portapapeles');
+                                }}
+                            >
+                                <Copy size={16} />
+                            </Button>
+                        )}
+                    </div>
+                );
+            },
             sortingFn: 'alphanumeric',
             enableGlobalFilter: true,
         }),
         columnHelper.accessor('phone', {
             header: () => <span>Teléfono</span>,
-            cell: (info) => (
-                <div className="flex gap-2">
-                    <span>{info.getValue()}</span> <Copy size={16} />
-                </div>
-            ),
+            cell: (info) => {
+                const phone = info.getValue();
+                return (
+                    <div className="flex justify-between items-center gap-2">
+                        <span>{phone}</span>
+                        {phone && (
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(phone);
+                                    toast.success('Teléfono copiado al portapapeles');
+                                }}
+                            >
+                                <Copy size={16} />
+                            </Button>
+                        )}
+                    </div>
+                );
+            },
             sortingFn: 'alphanumeric',
             enableGlobalFilter: true,
         }),

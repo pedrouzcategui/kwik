@@ -27,4 +27,8 @@ class Account extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function account_provider()
+    {
+        return $this->belongsTo(AccountProvider::class, 'account_provider_id');
+    }
 }

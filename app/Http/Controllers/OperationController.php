@@ -43,7 +43,6 @@ class OperationController extends Controller
     {
         $operation = new Operation($request->validated());
         $operation->user_id = $request->user()->id;
-        // Se dispara un evento aquí
         $operation->save();
         return to_route('operations.index')->with('success', 'Contacto creado exitosamente');
     }

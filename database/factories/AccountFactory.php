@@ -23,9 +23,9 @@ class AccountFactory extends Factory
             'user_id' => User::factory(),
             'name' => fake()->creditCardDetails()['name'],
             'currency' => fake()->randomElement(["USD", "EUR", "VES"]),
-            'type' => fake()->randomElement(["CORRIENTE", "AHORROS"]),
+            'type' => fake()->randomElement(["CHECKING", "SAVINGS"]),
             'amount' => fake()->numberBetween(0, 5000),
-            'created_at' => Carbon::create("2025", 1, 1)
+            'created_at' => Carbon::now()
         ];
     }
 }

@@ -18,13 +18,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $user = User::factory()->create();
-
-        //  Create some account providers
-        $providers = AccountProvider::factory()
-            ->count(3)
-            ->for($user)
-            ->create();
-
+        $this->call(AccountProviderSeeder::class);
+        $providers = AccountProvider::all();
         // Create contacts for the user
         $contacts = Contact::factory()
             ->count(10)
@@ -42,9 +37,8 @@ class DatabaseSeeder extends Seeder
             })
             ->create();
 
-        $categories = Category::factory()
-            ->count(5)
-            ->create();
+        $this->call(CategorySeeder::class);
+        $categories = Category::all();
 
         Operation::factory()
             ->count(50)

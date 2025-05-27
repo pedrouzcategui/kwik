@@ -1,11 +1,11 @@
 import { Account, AccountProvider, AccountType, Currency } from '@/types/account';
+import { useForm } from '@inertiajs/react';
+import { FormEvent } from 'react';
+import { toast } from 'sonner';
+import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useForm } from '@inertiajs/react';
-import { FormEvent } from 'react';
-import { Button } from '../ui/button';
-import { toast } from 'sonner';
 
 // To convert Enum into STRING UNIONS we do this
 // enum AuthMethods {
@@ -34,13 +34,15 @@ type AccountFormComponentProps = {
     setIsOpen: (x: boolean) => any;
 };
 
-export default function AccountForm({account, providers, setIsOpen}: AccountFormComponentProps) {
+export default function AccountForm({ account, providers, setIsOpen }: AccountFormComponentProps) {
+    
     const { data, setData, processing, post, put } = useForm<AccountForm>({
         name: account?.name ?? '',
         currency: account?.currency ?? 'USD',
         type: account?.type ?? 'CHECKING',
-        account_provider_id: account?.account_provider_id ?? '',
+        account_provider_id: account?.account_provider_id.toString() ?? '',
     });
+    console.log(account, data);
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
@@ -48,15 +50,15 @@ export default function AccountForm({account, providers, setIsOpen}: AccountForm
             put(`/accounts/${account.id}`, {
                 onSuccess: () => {
                     setIsOpen(false);
-                    toast.success('Cuenta Editada Exitosamente')
-                }
+                    toast.success('Cuenta Editada Exitosamente');
+                },
             });
         } else {
             post('/accounts', {
                 onSuccess: () => {
                     setIsOpen(false);
-                    toast.success('Cuenta Creada Exitosamente')
-                }
+                    toast.success('Cuenta Creada Exitosamente');
+                },
             });
         }
     }
@@ -68,7 +70,12 @@ export default function AccountForm({account, providers, setIsOpen}: AccountForm
             </div>
             <div>
                 <Label className="mb-2 block">Moneda</Label>
-                <Select name="currency" value={data.currency} onValueChange={(value) => setData('currency', value as CurrencyStrings)}>
+                <Select
+                    name="currency"
+                    value={data.currency}
+                    onValueChange={(value) => setData('currency', value as CurrencyStrings)}
+                    disabled={!!account} // Disable if account is not null
+                >
                     <SelectTrigger>
                         <SelectValue placeholder="Selecciona tu moneda" />
                     </SelectTrigger>
@@ -93,19 +100,27 @@ export default function AccountForm({account, providers, setIsOpen}: AccountForm
             </div>
             <div>
                 <Label className="mb-2 block">Proveedor de la cuenta</Label>
-                <Select name="provider" value={data.account_provider_id} onValueChange={(value) => setData('account_provider_id', value)}>
+                <Select
+                    name="account_provider_id" // ← match your form key!
+                    value={data.account_provider_id}
+                    onValueChange={(value) => setData('account_provider_id', value)}
+                >
                     <SelectTrigger>
                         <SelectValue placeholder="Selecciona tu proveedor de la cuenta" />
                     </SelectTrigger>
                     <SelectContent>
                         {providers.map((provider) => (
-                            <SelectItem key={provider.id} value={provider.id}>
+                            <SelectItem
+                                key={provider.id}
+                                value={String(provider.id)} // ← ensure it's a string
+                            >
                                 {provider.name}
                             </SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
             </div>
+
             <Button disabled={processing} className="w-full" size={'lg'} type="submit">
                 {account ? 'Editar' : 'Crear'} Cuenta
             </Button>

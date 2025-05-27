@@ -130,11 +130,11 @@ export default function OperationsTable({ operations, user, categories, contacts
                             </AlertDialogTrigger>
 
                             <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle className="text-center text-xl">
-                                        ¿Estás seguro que quieres eliminar la cuenta {operation.id}?
+                                <AlertDialogHeader className='text-center'>
+                                    <AlertDialogTitle className="text-xl">
+                                        ¿Estás seguro que quieres eliminar la operación {operation.contact.full_name} - {operation.description}?
                                     </AlertDialogTitle>
-                                    <span>Esto eliminará todas las operaciones asociadas a esta cuenta.</span>
+                                    <span>No hay vuelta atrás.</span>
                                 </AlertDialogHeader>
 
                                 <AlertDialogFooter>

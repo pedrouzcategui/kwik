@@ -26,7 +26,7 @@ type OperationsTablePageProps = {
 export default function Index({operations, user, categories}: OperationsTablePageProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Contactos" />
+            <Head title="Operations" />
             <OperationsTable contacts={user.contacts} user={user} operations={operations} categories={categories}/>
         </AppLayout>
     );

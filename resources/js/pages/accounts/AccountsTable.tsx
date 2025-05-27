@@ -32,7 +32,6 @@ interface AccountsTableProps {
 export default function AccountsTable({ accounts, providers }: AccountsTableProps) {
     const [selectedAccount, setSelectedAccount] = React.useState<Account | undefined>();
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-
     const columns = [
         columnHelper.accessor('name', {
             header: () => <span>Nombre</span>,
@@ -46,8 +45,16 @@ export default function AccountsTable({ accounts, providers }: AccountsTableProp
             sortingFn: 'alphanumeric',
             enableGlobalFilter: false,
         }),
+
         columnHelper.accessor('type', {
             header: () => <span>Tipo de cuenta</span>,
+            cell: (info) => <Badge variant={'outline'}>{info.getValue() === "CHECKING" ? "CORRIENTE" : "AHORRO"}</Badge>,
+            sortingFn: 'alphanumeric',
+            enableGlobalFilter: false,
+        }),
+
+        columnHelper.accessor('account_provider.name', {
+            header: () => <span>Proveedor de cuenta</span>,
             cell: (info) => <Badge variant={'outline'}>{info.getValue()}</Badge>,
             sortingFn: 'alphanumeric',
             enableGlobalFilter: false,

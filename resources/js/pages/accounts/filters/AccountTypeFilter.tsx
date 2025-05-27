@@ -5,10 +5,12 @@ import type { Table } from '@tanstack/react-table';
 export function AccountTypeFilter({ table }: { table: Table<Account> }) {
     const col = table.getColumn('type');
 
-    // Use "all" as the sentinel when NO filter is active
     const value = (col?.getFilterValue() as string | undefined) ?? 'all';
 
-    const accountTypes = Object.values(AccountType);
+    const accountTypes = [
+        { name: 'SAVINGS', label: 'Ahorro' },
+        { name: 'CHECKING', label: 'Corriente' },
+    ];
 
     return (
         <Select value={value} onValueChange={(v) => col?.setFilterValue(v === 'all' ? undefined : v)}>
@@ -19,8 +21,8 @@ export function AccountTypeFilter({ table }: { table: Table<Account> }) {
             <SelectContent>
                 <SelectItem value="all">Todos los tipos</SelectItem>
                 {accountTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                        {type}
+                    <SelectItem key={type.name} value={type.name}>
+                        {type.label}
                     </SelectItem>
                 ))}
             </SelectContent>

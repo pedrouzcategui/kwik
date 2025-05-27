@@ -22,18 +22,24 @@ export default function BarChartCustom({ title, description, data, className }: 
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig} className="min-h-[250px] h-full w-full">
-                    <BarChart data={data} layout="horizontal">
-                        <XAxis type="category" dataKey="currency" />
-                        <YAxis type="number" />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar width={2} dataKey="amount" radius={4}>
-                            {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                        </Bar>
-                    </BarChart>
-                </ChartContainer>
+                {data.length > 0 ? (
+                    <ChartContainer config={chartConfig} className="min-h-[250px] h-full w-full">
+                        <BarChart data={data} layout="horizontal">
+                            <XAxis type="category" dataKey="currency" />
+                            <YAxis type="number" />
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <Bar width={2} dataKey="amount" radius={4}>
+                                {data.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ChartContainer>
+                ) : (
+                    <div className="flex items-center justify-center min-h-[250px] text-muted-foreground">
+                        No hay datos por el momento.
+                    </div>
+                )}
             </CardContent>
             <CardFooter>
                 {/* <div className="flex w-full items-start gap-2 text-sm">*/}

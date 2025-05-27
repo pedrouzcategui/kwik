@@ -1,8 +1,8 @@
 import BarChart from '@/components/analytics/BarChart';
-import { LineChartCustom } from '@/components/analytics/LineChart';
+import HeartBeatHealthComponent from '@/components/analytics/HeartBeatHealthComponent';
 import TerminalLog from '@/components/analytics/LogTerminal';
 import RadarChartWithDots from '@/components/analytics/RadarChartWithDots';
-import { RadialChartGrid } from '@/components/analytics/RadialChartGrid';
+import Top5Contacts from '@/components/analytics/Top5Contacts';
 import TradingViewWidget from '@/components/analytics/TradingViewWidget';
 import DollarTicker from '@/components/animations/DollarTicker';
 import HeartbeatCanvas from '@/components/animations/HeartBeatPulse';
@@ -35,6 +35,12 @@ interface DashboardProps {
     logs: Log[];
     dollar_rates: ExchangeRate[];
     total_account_amount_in_usd: number;
+    total_savings_amount: number;
+    top_5_contacts_by_expense: {
+        name: string;
+        total: number;
+    }[];
+    status: 'neutral' | 'green' | 'yellow' | 'red';
 }
 
 export default function Dashboard({
@@ -43,6 +49,9 @@ export default function Dashboard({
     logs,
     dollar_rates,
     total_account_amount_in_usd,
+    total_savings_amount,
+    top_5_contacts_by_expense,
+    status
 }: DashboardProps) {
     // Lifting the state up, means that the state lives in the parent component, and then it sends to the children
     const { auth } = usePage().props;
@@ -93,47 +102,41 @@ export default function Dashboard({
                     </CardHeader>
                     <CardContent>
                         <span className="text-2xl font-bold text-wrap sm:text-3xl lg:text-4xl xl:text-5xl">
-                            ${total_account_amount_in_usd.toLocaleString()}
+                            ${total_account_amount_in_usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                     </CardContent>
                 </Card>
                 {/* This needs to be a component */}
-                <Card className="border-success/30 col-span-2">
-                    <CardHeader>
-                        <CardTitle className="flex justify-between">
-                            <span>Estado Financiero: </span> <Badge className="bg-success">Saludable</Badge>{' '}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="overflow-hidden">
-                        <HeartbeatCanvas status="green" />
-                    </CardContent>
-                </Card>
+               <HeartBeatHealthComponent status={status}/> 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Total sin Presupuestar</CardTitle>
+                        <CardTitle>Total en Ahorros</CardTitle>
+                        <CardDescription>Operaciones normalizadas a dólar a tasa oficial</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <span className="text-3xl font-bold lg:text-6xl">$1,000</span>
+                        <span className="text-3xl font-bold lg:text-5xl">
+                            ${total_savings_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
                     </CardContent>
                 </Card>
                 {/* END: This needs to be a component */}
             </div>
             <div>
-                <div className="grid grid-cols-1 gap-4 pb-4 md:grid-cols-2 xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 pb-4 md:grid-cols-2 xl:grid-cols-3">
                     <BarChart
                         className="h-full"
                         data={accounts_totals}
                         title="Total en cuentas por moneda"
                         description="Representa el total de dinero agregado de todas las cuentas, agrupado por moneda"
                     />
-                    <LineChartCustom />
+                    
                     <RadarChartWithDots
                         name={'Gastos por Categoria'}
                         description={'Gastos y Total de Gastos ordenados por categoria'}
                         data={expenses_grouped_by_categories}
                         dataKey={'name'}
                     />
-                    <RadialChartGrid />
+                <Top5Contacts top_5_contacts_by_expense={top_5_contacts_by_expense}/>
                 </div>
             </div>
             <div className="grid grid-cols-4 gap-4 pb-4">

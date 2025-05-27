@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
 use App\Models\Account;
+use App\Models\AccountProvider;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,8 +16,8 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        $accounts = $request->user()->accounts;
-        $providers = $request->user()->accountProviders;
+        $accounts = $request->user()->accounts()->with('account_provider')->get();
+        $providers = AccountProvider::all();
         return Inertia::render('accounts/index', [
             'accounts' => $accounts,
             'providers' => $providers
@@ -36,7 +37,6 @@ class AccountController extends Controller
         $account = new Account($request->validated());
         $account->user_id = $request->user()->id;
         $account->save();
-        // TODO: Agregar opcion para crear una operacion
         return to_route('accounts.index');
     }
 

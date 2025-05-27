@@ -81,14 +81,6 @@ class User extends Authenticatable
         return $this->hasMany(Operation::class);
     }
 
-    /**
-     * Relación uno a muchos: Un usuario puede tener muchos proveedores de cuenta.
-     */
-    public function accountProviders()
-    {
-        return $this->hasMany(AccountProvider::class);
-    }
-
     public function getTotalAccountBalanceInUSD(): float
     {
         $accounts = $this->accounts()->select('amount', 'currency')->get();

@@ -36,12 +36,12 @@ const mainNavItems: NavItem[] = [
 ];
 
 const footerNavItems: NavItem[] = [
-    {
-        title: 'Valor Histórico del Dólar',
-        href: '#',
-        icon: DollarSign,
-    },
-];
+//     {
+//         title: 'Valor Histórico del Dólar',
+//         href: '#',
+//         icon: DollarSign,
+//     },
+    ];
 
 export function AppSidebar() {
     return (
@@ -51,7 +51,7 @@ export function AppSidebar() {
                     {/* <SidebarMenuItem>
                         <SidebarMenuButton> */}
                     <Link href="/dashboard" prefetch>
-                        <img src={RubikateLogo} className="w-full object-contain" />
+                        <img src={RubikateLogo} className="w-full object-contain mb-4" />
                     </Link>
                     {/* </SidebarMenuButton>
                     </SidebarMenuItem> */}

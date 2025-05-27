@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('account_providers', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('user_id');
+            $table->id();
+            $table->char('code', 4)->unique();
             $table->string('name');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->timestamps();
+            //$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->timestamps();
         });
     }
 

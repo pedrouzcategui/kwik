@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Models\ExchangeRate;
+use App\Models\Operation;
 use App\Models\User;
 
 class AnalyticsController extends Controller
@@ -29,26 +31,23 @@ class AnalyticsController extends Controller
         $startDate = \Carbon\Carbon::parse($startDate)->startOfDay()->toDateTimeString();
         $endDate = \Carbon\Carbon::parse($endDate)->endOfDay()->toDateTimeString();
 
-        // 2. Se obtienen las cuentas y operaciones del usuario.
-        $query = DB::table('operations')
-            ->join('accounts', 'operations.account_id', '=', 'accounts.id')
-            ->select('accounts.currency', DB::raw('SUM(operations.amount) as amount'))
-            ->where('operations.user_id', '=', Auth::user()->id)
-            ->groupBy('accounts.currency');
+        // 2. Se obtienen las cuentas del usuario y sus totales.
+        $query = DB::table('accounts')
+            ->select('currency', DB::raw('SUM(amount) as amount'))
+            ->where('user_id', '=', Auth::user()->id)
+            ->groupBy('currency');
 
-        // I might group these condtions
+        // I might group these conditions
         if ($startDate && $endDate) {
-            $query->whereBetween('operations.created_at', [$startDate, $endDate]);
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
         $accountSumsByCurrency = $query->get();
 
         // Get total account balance in USD
-        $operations = Auth::user()
-            ->operations()
-            ->with('account')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->select('amount', 'account_id', 'type') // include type!
+        $accounts = Auth::user()
+            ->accounts()
+            ->select('amount', 'currency')
             ->get();
 
         $rates = ExchangeRate::where('source_type', 'official')
@@ -57,21 +56,15 @@ class AnalyticsController extends Controller
             ->unique('currency_code')
             ->pluck('rate_to_usd', 'currency_code');
 
-        $total_accounts_amount_in_usd = round($operations->reduce(function ($total, $op) use ($rates) {
-            $currency = $op->account?->currency ?? 'USD';
+        $total_accounts_amount_in_usd = round($accounts->reduce(function ($total, $account) use ($rates) {
+            $currency = $account->currency ?? 'USD';
             $rate = $rates[$currency] ?? 1;
 
-            $signedAmount = $op->tipo_operacion === 'E' ? -1 * $op->amount : $op->amount;
-
             // Convert to USD
-            $convertedAmount = $currency === 'USD' ? $signedAmount : $signedAmount / $rate;
+            $convertedAmount = $currency === 'USD' ? $account->amount : $account->amount / $rate;
 
             return $total + $convertedAmount;
         }, 0), 2);
-
-        //
-
-
 
         // 3. Se obtiene el total por cuenta y tipo de operación.
         $totalsByCurrencyAndType = DB::table('operations')
@@ -90,19 +83,57 @@ class AnalyticsController extends Controller
 
         $totalsByCurrencyAndType = $totalsByCurrencyAndType->get();
 
+        // Calculate total savings amount
+        $rates = ExchangeRate::where('source_type', 'official')
+            ->pluck('rate_to_usd', 'currency_code');
+
+        $total_savings_amount = Account::where('user_id', Auth::id())
+            ->where('type', 'SAVINGS')
+            ->get()
+            ->reduce(function ($sum, Account $acct) use ($rates) {
+                $rate = $rates[$acct->currency] ?? 1;
+                $usd  = $acct->currency === 'USD'
+                    ? $acct->amount
+                    : $acct->amount / $rate;
+                return $sum + $usd;
+            }, 0);
+
+        $total_savings_amount = round($total_savings_amount, 2);
+
+
         // 4. Se obtiene el total de gastos por categoría.
-        $expensesGroupedByCategories = DB::table('operations')
-            ->join('categories', 'operations.category_id', '=', 'categories.id')
-            ->select('categories.name', DB::raw('SUM(operations.amount) as total'))
-            ->where('type', '=', 'EXPENSE')
-            ->where('operations.user_id', '=', Auth::user()->id)
-            ->groupBy('categories.name');
+        $rates = ExchangeRate::where('source_type', 'official')
+            ->pluck('rate_to_usd', 'currency_code');
 
-        if ($startDate && $endDate) {
-            $expensesGroupedByCategories->whereBetween('operations.created_at', [$startDate, $endDate]);
-        }
+        $rows = Operation::with(['category', 'account'])
+            ->where('type', 'EXPENSE')
+            ->where('user_id', Auth::id())
+            ->when(
+                $startDate && $endDate,
+                fn($q) =>
+                $q->whereBetween('created_at', [$startDate, $endDate])
+            )
+            ->get();
 
-        $expensesGroupedByCategories = $expensesGroupedByCategories->get();
+        // Map each operation into a USD-amount + category name
+        $mapped = $rows->map(fn($op) => [
+            'name' => $op->category->name,
+            'usd'  => $op->account->currency === 'USD'
+                ? $op->amount
+                : $op->amount / ($rates[$op->account->currency] ?? 1),
+        ]);
+
+        // Group by category name, sum and round
+        $expensesGroupedByCategories = $mapped
+            ->groupBy('name')
+            ->map(fn($items, $name) => [
+                'name'  => $name,
+                'total' => round(collect($items)->sum('usd'), 2),
+            ])
+            ->values();
+
+
+
 
         // 5. Se obtienen los ultimos 30 logs del usuario.
         $systemLogs = DB::table('system_logs')
@@ -110,6 +141,32 @@ class AnalyticsController extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(30)
             ->get();
+
+        // 2) get all expense operations with their contact & account
+        $ops = Operation::with(['contact', 'account'])
+            ->where('type', 'EXPENSE')
+            ->where('user_id', Auth::id())
+            ->get();
+
+        // 3) map each op to [name, usdAmount]
+        $mapped = $ops->map(fn($op) => [
+            'name' => $op->contact->full_name,
+            'usd'  => $op->account->currency === 'USD'
+                ? $op->amount
+                : $op->amount / ($rates[$op->account->currency] ?? 1),
+        ]);
+
+        // 4) group, sum & round
+        $topFiveContacts = $mapped
+            ->groupBy('name')
+            ->map(fn($items, $name) => [
+                'name'  => $name,
+                'total' => round(collect($items)->sum('usd'), 2),
+            ])
+            ->sortByDesc('total')
+            ->take(5)
+            ->values();
+
 
         // Obtener el último dolar bcv y dolar paralelo disponibles
         $dolarBcv = ExchangeRate::where('currency_code', 'VES')
@@ -122,6 +179,12 @@ class AnalyticsController extends Controller
             ->orderBy('effective_date', 'desc')
             ->first();
 
+        // Determine the user's status based on operations and accounts
+        $hasOperations = Operation::where('user_id', Auth::id())->exists();
+        $hasAccounts = Account::where('user_id', Auth::id())->exists();
+
+        $status = ($hasOperations && $hasAccounts) ? 'green' : (!$hasOperations && !$hasAccounts ? 'neutral' : 'yellow');
+
         // 6. Se renderiza el dashboard con la información solicitada.
         return Inertia::render('dashboard', [
             'accounts_totals' => $accountSumsByCurrency,
@@ -132,6 +195,9 @@ class AnalyticsController extends Controller
                 $dolarParalelo,
             ],
             'total_account_amount_in_usd' => $total_accounts_amount_in_usd,
+            'total_savings_amount' => $total_savings_amount,
+            'top_5_contacts_by_expense' => $topFiveContacts,
+            'status' => $status,
         ]);
     }
 }

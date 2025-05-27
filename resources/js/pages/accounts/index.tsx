@@ -19,7 +19,7 @@ type AccountIndexProps = {
 export default function Index({accounts, providers}: AccountIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Contactos" />
+            <Head title="Cuentas" />
             <AccountsTable providers={providers} accounts={accounts} />
         </AppLayout>
     );

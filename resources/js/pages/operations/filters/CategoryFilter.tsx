@@ -16,7 +16,7 @@ export function CategoryFilter({ table, categories }: { table: Table<OperationTa
 
     return (
         <Select value={selectedCategory} onValueChange={handleValueChange}>
-            <SelectTrigger className="min-w-[290px] px-4">
+            <SelectTrigger className="min-w-[200px] px-4">
                 <SelectValue placeholder="Categoría" />
             </SelectTrigger>
 
