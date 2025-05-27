@@ -1,3 +1,4 @@
+![Rubikate Imagen Principal del Dashboard](image.png)
 # Kwik
 
 Kwik es una aplicación que toma tus finanzas y las convierte en descubrimientos accionales.
