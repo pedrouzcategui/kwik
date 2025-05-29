@@ -5,9 +5,7 @@ import RadarChartWithDots from '@/components/analytics/RadarChartWithDots';
 import Top5Contacts from '@/components/analytics/Top5Contacts';
 import TradingViewWidget from '@/components/analytics/TradingViewWidget';
 import DollarTicker from '@/components/animations/DollarTicker';
-import HeartbeatCanvas from '@/components/animations/HeartBeatPulse';
 import DatePickerWithRange from '@/components/DatePickerWithRange';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -51,7 +49,7 @@ export default function Dashboard({
     total_account_amount_in_usd,
     total_savings_amount,
     top_5_contacts_by_expense,
-    status
+    status,
 }: DashboardProps) {
     // Lifting the state up, means that the state lives in the parent component, and then it sends to the children
     const { auth } = usePage().props;
@@ -101,20 +99,20 @@ export default function Dashboard({
                         <CardDescription>Operaciones normalizadas a dólar a tasa oficial</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <span className="text-2xl font-bold text-wrap sm:text-3xl lg:text-4xl xl:text-5xl">
+                        <span className="text-2xl font-bold text-wrap sm:text-3xl lg:text-4xl xl:text-4xl">
                             ${total_account_amount_in_usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                     </CardContent>
                 </Card>
                 {/* This needs to be a component */}
-               <HeartBeatHealthComponent status={status}/> 
+                 <HeartBeatHealthComponent status={status} />
                 <Card>
                     <CardHeader>
                         <CardTitle>Total en Ahorros</CardTitle>
                         <CardDescription>Operaciones normalizadas a dólar a tasa oficial</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <span className="text-3xl font-bold lg:text-5xl">
+                        <span className="text-3xl font-bold lg:text-4xl">
                             ${total_savings_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                     </CardContent>
@@ -129,14 +127,14 @@ export default function Dashboard({
                         title="Total en cuentas por moneda"
                         description="Representa el total de dinero agregado de todas las cuentas, agrupado por moneda"
                     />
-                    
+
                     <RadarChartWithDots
                         name={'Gastos por Categoria'}
                         description={'Gastos y Total de Gastos ordenados por categoria'}
                         data={expenses_grouped_by_categories}
                         dataKey={'name'}
                     />
-                <Top5Contacts top_5_contacts_by_expense={top_5_contacts_by_expense}/>
+                    <Top5Contacts top_5_contacts_by_expense={top_5_contacts_by_expense} />
                 </div>
             </div>
             <div className="grid grid-cols-4 gap-4 pb-4">

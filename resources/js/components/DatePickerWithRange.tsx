@@ -11,7 +11,7 @@ type Props = {
     date: DateRange | undefined;
     onChange: (range: DateRange | undefined) => void;
     className?: string;
-    disabledBeforeDate?: Date | undefined
+    disabledBeforeDate?: Date | undefined;
 };
 
 export default function DatePickerWithRange({ disabledBeforeDate, date, onChange, className }: Props) {
@@ -74,7 +74,7 @@ export default function DatePickerWithRange({ disabledBeforeDate, date, onChange
                         numberOfMonths={2}
                         onDayClick={handleDayClick}
                         defaultMonth={internalDate?.from}
-                        disabled={{before: disabledBeforeDate,  after: new Date()}}
+                        disabled={{ before: disabledBeforeDate, after: new Date() }}
                     />
                 </PopoverContent>
             </Popover>

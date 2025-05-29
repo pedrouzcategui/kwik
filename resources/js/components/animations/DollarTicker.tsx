@@ -22,7 +22,7 @@ export default function AnimatedExchangeTicker({ rates }: AnimatedExchangeTicker
         <div className="bg-card border-border text-muted-foreground animate-fade-in-out mx-auto flex w-full items-center justify-between rounded-lg border px-6 py-2 font-mono text-sm transition-all duration-500">
             <div className="flex gap-2">
                 <span className="text-yellow-400">{current.source}:</span>
-                <span className="font-bold tracking-wider text-white">
+                <span className="font-bold tracking-wider">
                     {new Date(current.effective_date).toLocaleDateString('es-ES', {
                         weekday: 'short',
                         year: 'numeric',

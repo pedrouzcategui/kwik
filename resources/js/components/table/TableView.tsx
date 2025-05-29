@@ -13,7 +13,7 @@ export function TableView<T>({ table, columnsLength }: Props<T>) {
     return (
         <UiTable>
             {/* ── Header groups ─────────────────────────────── */}
-            <TableHeader className="bg-slate-900">
+            <TableHeader className="dark:bg-slate-900">
                 {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow key={headerGroup.id}>
                         {headerGroup.headers.map((header) => (
@@ -56,7 +56,7 @@ function HeaderCell({ header }: { header: Header<any, unknown> }) {
                     ? ({
                           asc: 'Sort ascending',
                           desc: 'Sort descending',
-                      }[header.column.getNextSortingOrder() ?? ''] ?? 'Clear sort')
+                      }[header.column.getNextSortingOrder() ? 'asc' : 'desc'] ?? 'Clear sort')
                     : undefined
             }
         >
