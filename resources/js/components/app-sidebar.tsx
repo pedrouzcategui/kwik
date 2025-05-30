@@ -28,6 +28,11 @@ const mainNavItems: NavItem[] = [
         href: '/operations',
         icon: CircleDollarSign,
     },
+    {
+        title: 'Valores Históricos',
+        href: '/currency-history',
+        icon: DollarSign,
+    },
     // {
     // title: 'Trading View',
     // href: '/trading-view',
@@ -35,13 +40,7 @@ const mainNavItems: NavItem[] = [
     // },
 ];
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Valores Históricos de cambio',
-        href: '/currency-history',
-        icon: DollarSign,
-    },
-];
+const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
     return (

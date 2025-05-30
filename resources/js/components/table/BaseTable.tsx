@@ -20,9 +20,18 @@ export type BaseTableProps<T> = {
     globalFilterPlaceholder?: string;
     renderToolbarRight?: (table: TableInstance<T>) => React.ReactNode;
     dialog?: React.ReactNode;
+    /** If true, hides the toolbar */
+    disableToolbar?: boolean;
 };
 
-export function BaseTable<T>({ data, columns, globalFilterPlaceholder = 'Buscar…', dialog, renderToolbarRight }: BaseTableProps<T>) {
+export function BaseTable<T>({
+    data,
+    columns,
+    globalFilterPlaceholder = 'Buscar…',
+    dialog,
+    renderToolbarRight,
+    disableToolbar = false,
+}: BaseTableProps<T>) {
     /* ── TanStack Table state ─────────────────────────────── */
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = React.useState('');
@@ -42,17 +51,19 @@ export function BaseTable<T>({ data, columns, globalFilterPlaceholder = 'Buscar�
         getPaginationRowModel: getPaginationRowModel(),
         initialState: {
             pagination: { pageIndex: 0, pageSize: 10 },
-            columnVisibility: {'hidden_type': false }, // Hide the column by defaultdd
+            columnVisibility: { hidden_type: false }, // Hide the column by defaultdd
         },
     });
 
     /* ── Composition ──────────────────────────────────────── */
     return (
         <div className="space-y-4 p-8">
-            <TableToolbar globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} placeholder={globalFilterPlaceholder}>
-                <div className='flex gap-2'>{renderToolbarRight?.(table)}</div>
-                {dialog}
-            </TableToolbar>
+            {!disableToolbar && (
+                <TableToolbar globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} placeholder={globalFilterPlaceholder}>
+                    <div className="flex gap-2">{renderToolbarRight?.(table)}</div>
+                    {dialog}
+                </TableToolbar>
+            )}
 
             <TableView table={table} columnsLength={columns.length} />
 

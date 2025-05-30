@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AccountProviderController;
 use App\Http\Controllers\OperationController;
+use App\Http\Controllers\ExchangeRateController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -26,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('operations', OperationController::class);
     Route::resource('categories', CategoryController::class);
     Route::post('/account-providers', [AccountProviderController::class, 'store'])->name('account.providers.store');
+    Route::get('/currency-history', [ExchangeRateController::class, 'index'])->name('currency.history');
 });
 
 require __DIR__ . '/settings.php';
