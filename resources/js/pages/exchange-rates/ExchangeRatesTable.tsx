@@ -1,4 +1,5 @@
 import { BaseTable } from '@/components/table/BaseTable';
+import { Badge } from '@/components/ui/badge';
 import { ExchangeRate } from '@/types/exchange-rate';
 import { createColumnHelper } from '@tanstack/react-table';
 
@@ -11,7 +12,7 @@ const columns = [
     }),
     columnHelper.accessor('currency_code', {
         header: 'Divisa',
-        cell: (info) => info.getValue(),
+        cell: (info) => <Badge variant={'outline'}>{info.getValue()}</Badge>,
     }),
     columnHelper.accessor('rate_to_usd', {
         header: 'Tasa de Cambio',
@@ -21,9 +22,12 @@ const columns = [
         header: 'Fuente',
         cell: (info) => {
             const value = info.getValue();
-            if (value === 'official') return 'Oficial';
-            if (value === 'black_market') return 'Paralelo';
-            return value;
+            let label = null;
+            if (value === 'official') {
+                label = 'Oficial';
+            }
+            if (value === 'black_market') label = 'Paralelo';
+            return <Badge variant={'outline'}>{label}</Badge>;
         },
     }),
 ];
