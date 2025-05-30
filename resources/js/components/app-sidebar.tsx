@@ -46,11 +46,11 @@ export function AppSidebar() {
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
-                <SidebarMenu>
+                <SidebarMenu className="text-center">
                     {/* <SidebarMenuItem>
                         <SidebarMenuButton> */}
                     <Link href="/dashboard" prefetch>
-                        <img src={RubikateLogo} className="mb-4 w-full object-contain" />
+                        <img src={RubikateLogo} className="mx-auto mb-4 w-full max-w-[150px] object-contain text-center" />
                     </Link>
                     {/* </SidebarMenuButton>
                     </SidebarMenuItem> */}
