@@ -8,17 +8,23 @@ const columns = [
     columnHelper.accessor('effective_date', {
         header: 'Fecha',
         cell: (info) => new Date(info.getValue()).toLocaleDateString(),
-        enableGlobalFilter: true,
     }),
     columnHelper.accessor('currency_code', {
         header: 'Divisa',
         cell: (info) => info.getValue(),
-        enableGlobalFilter: true,
     }),
     columnHelper.accessor('rate_to_usd', {
         header: 'Tasa de Cambio',
         cell: (info) => info.getValue(),
-        enableGlobalFilter: true,
+    }),
+    columnHelper.accessor('source_type', {
+        header: 'Fuente',
+        cell: (info) => {
+            const value = info.getValue();
+            if (value === 'official') return 'Oficial';
+            if (value === 'black_market') return 'Paralelo';
+            return value;
+        },
     }),
 ];
 
