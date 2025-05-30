@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AccountProvider extends Model
 {
+    protected $fillable = [
+        'name',
+        'code',
+    ];
+    public $timestamps = false;
     // Usa el trait HasFactory para permitir la generación de instancias del modelo mediante factories
     // Usa el trait HasUuids para que las claves primarias del modelo sean UUIDs en vez de enteros autoincrementales
 
