@@ -3,15 +3,16 @@ import HeartBeatHealthComponent from '@/components/analytics/HeartBeatHealthComp
 import TerminalLog from '@/components/analytics/LogTerminal';
 import RadarChartWithDots from '@/components/analytics/RadarChartWithDots';
 import Top5Contacts from '@/components/analytics/Top5Contacts';
-import TradingViewWidget from '@/components/analytics/TradingViewWidget';
 import DollarTicker from '@/components/animations/DollarTicker';
 import DatePickerWithRange from '@/components/DatePickerWithRange';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Currency } from '@/types/account';
 import { ExchangeRate } from '@/types/exchange-rate';
 import { Head, router, usePage } from '@inertiajs/react';
+import { Link } from 'lucide-react';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
@@ -81,19 +82,17 @@ export default function Dashboard({
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Panel de Analíticas" />
             <div className="items-center justify-between gap-4 pb-2 lg:flex">
-                {/* <Button className="border-1 border-white" variant={'outline'}>
-                    Export CSV <File />{' '}
+                <Button className="border-1 border-white" variant={'outline'}>
+                    Descargar Reporte
                 </Button>
                 <Button className="border-1 border-white" variant={'outline'}>
-                    Share Dashboard <Link />{' '}
-                </Button> */}
-                <div className="grow">
-                    <DollarTicker rates={dollar_rates} />
-                </div>
+                    Compartir Dashboard <Link />{' '}
+                </Button>
+                <DollarTicker rates={dollar_rates} />
                 <DatePickerWithRange disabledBeforeDate={new Date(auth.user.created_at)} date={date} onChange={handleDateChange} />
             </div>
             <div className="grid grid-cols-4 gap-4 pt-2 pb-4 lg:grid-cols-2 xl:grid-cols-4">
-                <Card>
+                <Card className="col-span-4 sm:col-span-1">
                     <CardHeader>
                         <CardTitle>Total Disponible</CardTitle>
                         <CardDescription>Operaciones normalizadas a dólar a tasa oficial</CardDescription>
@@ -139,7 +138,6 @@ export default function Dashboard({
             </div>
             <div className="grid grid-cols-4 gap-4 pb-4">
                 <TerminalLog logs={logs} />
-                <TradingViewWidget />
             </div>
         </AppLayout>
     );

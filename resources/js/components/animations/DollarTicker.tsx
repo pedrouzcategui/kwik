@@ -29,12 +29,11 @@ export default function AnimatedExchangeTicker({ rates }: AnimatedExchangeTicker
                         month: 'short',
                         day: '2-digit',
                     })}{' '}
-                    <span className="text-xs text-gray-400">(Último valor cotizado) </span>
                 </span>
             </div>
 
             <div className="flex items-center gap-2">
-                <span className="text-lg font-bold tracking-wide text-white">VES {parseFloat(current.rate_to_usd).toFixed(2)}</span>
+                <span className="text-lg font-bold tracking-wide dark:text-white">VES {parseFloat(current.rate_to_usd).toFixed(2)}</span>
                 {/* <span className={`flex items-center ${isUp ? 'text-green-500' : 'text-red-500'}`}>
                     {isUp ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
                     <span>{Math.abs(current.diff).toFixed(2)}%</span>
