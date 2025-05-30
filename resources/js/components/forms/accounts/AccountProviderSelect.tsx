@@ -43,7 +43,7 @@ export default function AccountProvidersSelect({ account_providers, selectedAcco
             setData('account_provider_id', newProvider.id);
             setNewAccountProvider(INITIAL_STATE);
             setOpen(false);
-            router.reload({ only: ['accounts', 'account_providers'] });
+            router.reload({ only: ['accounts', 'providers'] });
         } catch (error) {
             const err = error as AxiosError;
             if (err.response?.status === 422) {
@@ -70,7 +70,7 @@ export default function AccountProvidersSelect({ account_providers, selectedAcco
                     <SelectContent>
                         {account_providers.map((provider) => (
                             <SelectItem key={provider.id} value={String(provider.id)}>
-                                {provider.name}
+                                {provider.code} - {provider.name}
                             </SelectItem>
                         ))}
                     </SelectContent>

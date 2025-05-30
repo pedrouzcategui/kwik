@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\AccountProviderController;
 use App\Http\Controllers\OperationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,6 +25,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('accounts', AccountController::class);
     Route::resource('operations', OperationController::class);
     Route::resource('categories', CategoryController::class);
+    Route::post('/account-providers', [AccountProviderController::class, 'store'])->name('account.providers.store');
 });
 
 require __DIR__ . '/settings.php';
