@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Account } from '@/types/account';
 import { Category } from '@/types/category';
@@ -11,7 +11,6 @@ import { useForm } from '@inertiajs/react';
 import { Dispatch, FormEvent, SetStateAction } from 'react';
 import { toast } from 'sonner';
 import CategoriesSelect from './CategoriesSelect';
-
 
 type OperationFormComponentProps = {
     user: {
@@ -84,7 +83,12 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
             </div>
             <div>
                 <Label className="mb-2 block">Tipo de Operacion</Label>
-                <Select name="type" value={data.type} disabled={!!operation} onValueChange={(type) => setData('type', type as OperationTypeStringUnion)}>
+                <Select
+                    name="type"
+                    value={data.type}
+                    disabled={!!operation}
+                    onValueChange={(type) => setData('type', type as OperationTypeStringUnion)}
+                >
                     <SelectTrigger>
                         <SelectValue placeholder="Selecciona tu tipo de operacion" />{' '}
                     </SelectTrigger>
@@ -96,7 +100,7 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
                     </SelectContent>
                 </Select>
             </div>
-            <CategoriesSelect categories={categories} selectedCategoryId={data.category_id} setData={setData}/>
+            <CategoriesSelect categories={categories} selectedCategoryId={data.category_id} setData={setData} />
             <div>
                 <Label className="mb-2 block">Cuenta</Label>
                 <Select value={data.account_id} disabled={!!operation} onValueChange={(account_id) => setData('account_id', account_id)}>
@@ -117,7 +121,13 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
             </div>
             <div>
                 <Label>Monto</Label>
-                <Input name="amount" disabled={!!operation} type="number" value={data.amount} onChange={(e) => setData('amount', parseInt(e.target.value))} />
+                <Input
+                    name="amount"
+                    disabled={!!operation}
+                    type="number"
+                    value={data.amount}
+                    onChange={(e) => setData('amount', parseInt(e.target.value))}
+                />
             </div>
             <div>
                 <Label>Descripcion</Label>
