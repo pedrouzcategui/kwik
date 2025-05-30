@@ -12,7 +12,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Currency } from '@/types/account';
 import { ExchangeRate } from '@/types/exchange-rate';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Link } from 'lucide-react';
+import { File, Link } from 'lucide-react';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
@@ -83,7 +83,7 @@ export default function Dashboard({
             <Head title="Panel de Analíticas" />
             <div className="items-center justify-between gap-4 pb-2 lg:flex">
                 <Button className="border-1 border-white" variant={'outline'}>
-                    Descargar Reporte
+                    <File /> Descargar Reporte
                 </Button>
                 <Button className="border-1 border-white" variant={'outline'}>
                     Compartir Dashboard <Link />{' '}
