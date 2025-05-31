@@ -22,9 +22,8 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { PencilIcon, Trash2Icon } from 'lucide-react';
 import React from 'react';
 import { toast } from 'sonner';
-import { ContactFilter } from './filters/ContactFilter';
 import { CategoryFilter } from './filters/CategoryFilter';
-import { ExportCsvButton } from '@/components/table/ExportCSVButton';
+import { ContactFilter } from './filters/ContactFilter';
 import { OperationTypeFilter } from './filters/OperationTypeFilter';
 
 const columnHelper = createColumnHelper<OperationTableColumns>();
@@ -40,7 +39,6 @@ interface OperationsTableProps {
 }
 
 export default function OperationsTable({ operations, user, categories, contacts }: OperationsTableProps) {
-    router.reload({ only: ['accounts'] }); // Reload the accounts to ensure the latest data is available
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
     const [selectedOperation, setSelectedOperation] = React.useState<OperationTableColumns>();
     const columns = [
@@ -131,7 +129,7 @@ export default function OperationsTable({ operations, user, categories, contacts
                             </AlertDialogTrigger>
 
                             <AlertDialogContent>
-                                <AlertDialogHeader className='text-center'>
+                                <AlertDialogHeader className="text-center">
                                     <AlertDialogTitle className="text-xl">
                                         ¿Estás seguro que quieres eliminar la operación {operation.contact.full_name} - {operation.description}?
                                     </AlertDialogTitle>

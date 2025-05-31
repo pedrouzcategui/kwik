@@ -1,3 +1,4 @@
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,7 +8,7 @@ import { Account } from '@/types/account';
 import { Category } from '@/types/category';
 import { Contact } from '@/types/contact';
 import { OperationTableColumns, OperationTypeStringUnion } from '@/types/operation';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { Dispatch, FormEvent, SetStateAction } from 'react';
 import { toast } from 'sonner';
 import CategoriesSelect from './CategoriesSelect';
@@ -33,7 +34,7 @@ type OperationForm = {
 };
 
 export default function OperationForm({ user, operation, categories, setIsOpen }: OperationFormComponentProps) {
-    const { data, setData, post, put, processing } = useForm<OperationForm>({
+    const { data, setData, post, put, processing, errors } = useForm<OperationForm>({
         contact_id: operation?.contact.id ?? '',
         account_id: operation?.account.id ?? '',
         account_target_id: operation?.target_account_id ?? '',
@@ -55,7 +56,8 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
             post('/operations', {
                 onSuccess: () => {
                     setIsOpen(false);
-                    toast.success('Operacion Creado Exitosamente');
+                    router.reload({ only: ['operations'] });
+                    toast.success('Operacion Creada Exitosamente');
                 },
                 onError: (e) => {
                     console.log(e);
@@ -65,7 +67,7 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="flex max-h-[80vh] flex-col gap-3 overflow-y-auto">
             <div>
                 <Label className="mb-2 block">Contacto</Label>
                 <Select name="contact_id" value={data.contact_id} onValueChange={(contact_id) => setData('contact_id', contact_id)}>
@@ -80,6 +82,7 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
                         ))}
                     </SelectContent>
                 </Select>
+                <InputError message={errors.contact_id} className="mt-2" />
             </div>
             <div>
                 <Label className="mb-2 block">Tipo de Operacion</Label>
@@ -99,8 +102,12 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
                         </SelectGroup>
                     </SelectContent>
                 </Select>
+                <InputError message={errors.type} className="mt-2" />
             </div>
-            <CategoriesSelect categories={categories} selectedCategoryId={data.category_id} setData={setData} />
+            <div>
+                <CategoriesSelect categories={categories} selectedCategoryId={data.category_id} setData={setData} />
+                <InputError message={errors.category_id} className="mt-2" />
+            </div>
             <div>
                 <Label className="mb-2 block">Cuenta</Label>
                 <Select value={data.account_id} disabled={!!operation} onValueChange={(account_id) => setData('account_id', account_id)}>
@@ -118,6 +125,7 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
                         ))}
                     </SelectContent>
                 </Select>
+                <InputError message={errors.account_id} className="mt-2" />
             </div>
             <div>
                 <Label>Monto</Label>
@@ -128,12 +136,14 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
                     value={data.amount}
                     onChange={(e) => setData('amount', parseInt(e.target.value))}
                 />
+                <InputError message={errors.amount} className="mt-2" />
             </div>
             <div>
                 <Label>Descripcion</Label>
                 <Textarea onChange={(e) => setData('description', e.target.value)} name="description">
                     {operation?.description}
                 </Textarea>
+                <InputError message={errors.description} className="mt-2" />
             </div>
             <Button disabled={processing} className="w-full" size={'lg'} type="submit">
                 {operation ? 'Editar' : 'Crear'} Operacion

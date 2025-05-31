@@ -57,7 +57,7 @@ export function BaseTable<T>({
 
     /* ── Composition ──────────────────────────────────────── */
     return (
-        <div className="space-y-4 p-8">
+        <div className="max-w-[80vw] space-y-4 p-8">
             {!disableToolbar && (
                 <TableToolbar globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} placeholder={globalFilterPlaceholder}>
                     <div className="flex gap-2">{renderToolbarRight?.(table)}</div>

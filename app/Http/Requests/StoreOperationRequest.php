@@ -22,13 +22,12 @@ class StoreOperationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'contact_id' => ['required', 'string'],
-            'account_id' => ['required', 'string'],
-            'category_id' => ['required', 'string'],
-            'type' => ['required', 'string'],
-            'amount' => ['required'],
-            'description' => ['string']
-            // TODO: Add optional transfer account
+            'contact_id' => ['required', 'string', 'min:1'],
+            'account_id' => ['required', 'string', 'min:1'],
+            'category_id' => ['required', 'string', 'min:1'],
+            'type' => ['required', 'string', 'min:1'],
+            'amount' => ['required', 'numeric', 'min:0.01'],
+            'description' => ['nullable', 'string'],
         ];
     }
 }
