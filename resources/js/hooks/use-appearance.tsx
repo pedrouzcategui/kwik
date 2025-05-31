@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-export type Appearance = 'light' | 'dark' | 'system' | 'slack' | 'matrix' | 'synthwave' | 'honeymustard';
+export type Appearance = 'light' | 'dark' | 'system' | 'slack' | 'matrix' | 'synthwave' | 'honeymustard' | 'pixie';
 
 const prefersDark = () => {
     if (typeof window === 'undefined') {
@@ -17,7 +17,7 @@ const setCookie = (name: string, value: string, days = 365) => {
     document.cookie = `${name}=${value};path=/;max-age=${maxAge};SameSite=Lax`;
 };
 
-const THEME_CLASSES: Appearance[] = ['light', 'dark', 'slack', 'matrix', 'synthwave', 'honeymustard'];
+const THEME_CLASSES: Appearance[] = ['light', 'dark', 'slack', 'matrix', 'synthwave', 'honeymustard', 'pixie'];
 
 const applyTheme = (appearance: Appearance) => {
     let themeToApply: Appearance = appearance;

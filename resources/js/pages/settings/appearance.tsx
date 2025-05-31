@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
 import AppearanceTabs from '@/components/appearance-tabs';
 import HeadingSmall from '@/components/heading-small';
@@ -8,14 +9,41 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
+const FONT_CLASSES: Record<string, string> = {
+    small: 'text-sm',
+    medium: 'text-base',
+    large: 'text-lg',
+    xl: 'text-xl',
+};
+
+const FONT_SIZE_KEY = 'appearance_font_size';
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Appearance settings',
+        title: 'Configuración del Perfil',
         href: '/settings/appearance',
     },
 ];
-
 export default function Appearance() {
+    const [fontSize, setFontSize] = useState('medium');
+
+    // Load from localStorage on mount
+    useEffect(() => {
+        const stored = localStorage.getItem(FONT_SIZE_KEY);
+        if (stored && FONT_CLASSES[stored]) {
+            setFontSize(stored);
+        }
+    }, []);
+
+    // Update html class and save to localStorage
+    useEffect(() => {
+        Object.values(FONT_CLASSES).forEach((cls) => {
+            document.documentElement.classList.remove(cls);
+        });
+        document.documentElement.classList.add(FONT_CLASSES[fontSize]);
+        localStorage.setItem(FONT_SIZE_KEY, fontSize);
+    }, [fontSize]);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Appearance settings" />
@@ -29,7 +57,7 @@ export default function Appearance() {
                             Tamaño de fuente
                         </label>
                         <div className="mt-1 w-48">
-                            <Select defaultValue="medium" name="font-size">
+                            <Select name="font-size" onValueChange={setFontSize} value={fontSize}>
                                 <SelectTrigger id="font-size" className="w-full">
                                     <SelectValue placeholder="Selecciona tamaño" />
                                 </SelectTrigger>
@@ -40,37 +68,6 @@ export default function Appearance() {
                                     <SelectItem value="xl">Extra grande</SelectItem>
                                 </SelectContent>
                             </Select>
-                        </div>
-                    </div>
-
-                    {/* Dashboard Color Selector */}
-                    <div className="mt-6">
-                        <label className="mb-2 block text-sm font-medium text-gray-700">Color del Dashboard</label>
-                        <div className="grid grid-cols-4 gap-4">
-                            <button
-                                type="button"
-                                className="h-12 w-12 rounded-lg border-2 border-transparent focus:border-black focus:outline-none"
-                                style={{ backgroundColor: '#8b5cf6' }} // purple-500
-                                aria-label="Morado"
-                            />
-                            <button
-                                type="button"
-                                className="h-12 w-12 rounded-lg border-2 border-transparent focus:border-black focus:outline-none"
-                                style={{ backgroundColor: '#22c55e' }} // green-500
-                                aria-label="Verde"
-                            />
-                            <button
-                                type="button"
-                                className="h-12 w-12 rounded-lg border-2 border-transparent focus:border-black focus:outline-none"
-                                style={{ backgroundColor: '#eab308' }} // mustard yellow-500
-                                aria-label="Mostaza"
-                            />
-                            <button
-                                type="button"
-                                className="h-12 w-12 rounded-lg border-2 border-transparent focus:border-black focus:outline-none"
-                                style={{ backgroundColor: '#3b82f6' }} // blue-500
-                                aria-label="Azul"
-                            />
                         </div>
                     </div>
 

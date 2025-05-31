@@ -1,11 +1,10 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { cn } from '@/lib/utils';
-import { TrendingUp } from 'lucide-react';
+import React from 'react';
 import { Bar, BarChart, Cell, XAxis, YAxis } from 'recharts';
 
 const chartConfig = {} satisfies ChartConfig;
-const COLORS = ['#34D399', '#60A5FA', '#F472B6'];
 
 interface BarChartProps<T> {
     title: string;
@@ -14,7 +13,23 @@ interface BarChartProps<T> {
     className?: string;
 }
 
+function getChartColors() {
+    if (typeof window === 'undefined') return ['#8884d8', '#82ca9d', '#ffc658'];
+    const root = getComputedStyle(document.documentElement);
+    return [
+        root.getPropertyValue('--chart-1').trim() || '#8884d8',
+        root.getPropertyValue('--chart-2').trim() || '#82ca9d',
+        root.getPropertyValue('--chart-3').trim() || '#ffc658',
+    ];
+}
+
 export default function BarChartCustom({ title, description, data, className }: BarChartProps<any>) {
+    const [colors, setColors] = React.useState<string[]>(['#8884d8', '#82ca9d', '#ffc658']);
+
+    React.useEffect(() => {
+        setColors(getChartColors());
+    }, []);
+
     return (
         <Card className={cn(className)}>
             <CardHeader>
@@ -23,34 +38,23 @@ export default function BarChartCustom({ title, description, data, className }: 
             </CardHeader>
             <CardContent>
                 {data.length > 0 ? (
-                    <ChartContainer config={chartConfig} className="min-h-[250px] h-full w-full">
+                    <ChartContainer config={chartConfig} className="h-full min-h-[250px] w-full">
                         <BarChart data={data} layout="horizontal">
                             <XAxis type="category" dataKey="currency" />
                             <YAxis type="number" />
                             <ChartTooltip content={<ChartTooltipContent />} />
                             <Bar width={2} dataKey="amount" radius={4}>
                                 {data.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    <Cell key={`cell-${index}`} fill={colors[index % 3]} />
                                 ))}
                             </Bar>
                         </BarChart>
                     </ChartContainer>
                 ) : (
-                    <div className="flex items-center justify-center min-h-[250px] text-muted-foreground">
-                        No hay datos por el momento.
-                    </div>
+                    <div className="text-muted-foreground flex min-h-[250px] items-center justify-center">No hay datos por el momento.</div>
                 )}
             </CardContent>
-            <CardFooter>
-                {/* <div className="flex w-full items-start gap-2 text-sm">*/}
-                    {/* <div className="grid gap-2">*/}
-                        {/* <div className="flex items-center gap-2 leading-none font-medium">*/}
-                            {/* Some Text <TrendingUp className="h-4 w-4" />*/}
-                        {/* </div>*/}
-                        {/* <div className="text-muted-foreground flex items-center gap-2 leading-none">January - June 2024</div>*/}
-                    {/* </div>*/}
-                {/* </div>*/}
-            </CardFooter>
+            <CardFooter>{/* ... */}</CardFooter>
         </Card>
     );
 }

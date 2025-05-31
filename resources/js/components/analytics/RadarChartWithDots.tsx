@@ -2,7 +2,7 @@ import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-
+import React from 'react';
 
 const chartConfig = {
     desktop: {
@@ -18,7 +18,23 @@ type PolygonalChartProps<T> = {
     dataKey: string;
 };
 
+function getChartColors() {
+    if (typeof window === 'undefined') return ['#8884d8', '#82ca9d', '#ffc658'];
+    const root = getComputedStyle(document.documentElement);
+    return [
+        root.getPropertyValue('--chart-1').trim() || '#8884d8',
+        root.getPropertyValue('--chart-2').trim() || '#82ca9d',
+        root.getPropertyValue('--chart-3').trim() || '#ffc658',
+    ];
+}
+
 export default function PolygonalChart({ name, description, data, dataKey }: PolygonalChartProps<any>) {
+    const [colors, setColors] = React.useState<string[]>(['#8884d8', '#82ca9d', '#ffc658']);
+
+    React.useEffect(() => {
+        setColors(getChartColors());
+    }, []);
+
     return (
         <Card className="h-full">
             <CardHeader className="items-center">
@@ -34,7 +50,7 @@ export default function PolygonalChart({ name, description, data, dataKey }: Pol
                             <PolarGrid />
                             <Radar
                                 dataKey="total"
-                                fill="#F472B6"
+                                fill={colors[0]}
                                 fillOpacity={0.6}
                                 dot={{
                                     r: 4,
@@ -44,9 +60,7 @@ export default function PolygonalChart({ name, description, data, dataKey }: Pol
                         </RadarChart>
                     </ChartContainer>
                 ) : (
-                    <div className="flex items-center justify-center min-h-[250px] text-muted-foreground">
-                        No hay datos por el momento.
-                    </div>
+                    <div className="text-muted-foreground flex min-h-[250px] items-center justify-center">No hay datos por el momento.</div>
                 )}
             </CardContent>
             <CardFooter className="flex-col gap-2 text-sm">

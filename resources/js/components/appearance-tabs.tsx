@@ -1,6 +1,6 @@
 import { Appearance, useAppearance } from '@/hooks/use-appearance';
 import { cn } from '@/lib/utils';
-import { GlassesIcon, Heart, LucideIcon, Monitor, Moon, SlackIcon, Sun, Table2Icon } from 'lucide-react';
+import { Building2, GlassesIcon, Heart, LucideIcon, Monitor, Moon, SlackIcon, Sun, Table2Icon } from 'lucide-react';
 import { HTMLAttributes } from 'react';
 
 export default function AppearanceToggleTab({ className = '', ...props }: HTMLAttributes<HTMLDivElement>) {
@@ -13,25 +13,36 @@ export default function AppearanceToggleTab({ className = '', ...props }: HTMLAt
         { value: 'matrix', icon: GlassesIcon, label: 'Matrix' },
         { value: 'synthwave', icon: Table2Icon, label: 'Synthwave' },
         { value: 'honeymustard', icon: Heart, label: 'Honey Mustard' },
+        { value: 'pixie', icon: Building2, label: 'Pixie' },
         { value: 'system', icon: Monitor, label: 'Sistema' },
     ];
 
     return (
-        <div className={cn('inline-flex gap-1 rounded-lg bg-neutral-100 p-1 dark:bg-neutral-800', className)} {...props}>
+        <div className={cn('0 grid grid-cols-3 gap-2 rounded-lg p-2', className)} {...props}>
             {tabs.map(({ value, icon: Icon, label }) => (
-                <button
+                <div
                     key={value}
                     onClick={() => updateAppearance(value)}
                     className={cn(
-                        'flex items-center rounded-md px-3.5 py-1.5 transition-colors',
+                        'min-h-[100px] cursor-pointer rounded-md px-3.5 py-2 transition-colors select-none',
                         appearance === value
-                            ? 'bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100'
+                            ? 'bg-card text-card-foreground shadow-xs dark:bg-neutral-700 dark:text-neutral-100'
                             : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60',
                     )}
+                    tabIndex={0}
+                    role="button"
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            updateAppearance(value);
+                        }
+                    }}
                 >
-                    <Icon className="-ml-1 h-4 w-4" />
-                    <span className="ml-1.5 text-sm">{label}</span>
-                </button>
+                    <div className="flex items-center">
+                        <Icon className="-ml-1 h-4 w-4" />
+                        <span className="ml-1.5 text-sm">{label}</span>
+                    </div>
+                    <div className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">{appearance === value ? 'Activo' : 'Inactivo'}</div>
+                </div>
             ))}
         </div>
     );
