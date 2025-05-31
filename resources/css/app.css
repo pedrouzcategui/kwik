@@ -171,7 +171,7 @@
 .slack {
     --background: #350d36;
     --foreground: #ffffff;
-    --card: #3f0e40;
+    --card: #5b105c;
     --card-foreground: #ffffff;
     --popover: #611f69;
     --popover-foreground: #ffffff;
@@ -180,7 +180,7 @@
     --secondary: #ecb22e;
     --secondary-foreground: #350d36;
     --muted: #f8f8fa;
-    --muted-foreground: #611f69;
+    --muted-foreground: #eb86f7;
     --accent: #e01e5a;
     --accent-foreground: #ffffff;
     --destructive: #e01e5a;
