@@ -1,6 +1,5 @@
 import BarChart from '@/components/analytics/BarChart';
 import HeartBeatHealthComponent from '@/components/analytics/HeartBeatHealthComponent';
-import TerminalLog from '@/components/analytics/LogTerminal';
 import RadarChartWithDots from '@/components/analytics/RadarChartWithDots';
 import Top5Contacts from '@/components/analytics/Top5Contacts';
 import DollarTicker from '@/components/animations/DollarTicker';
@@ -136,9 +135,9 @@ export default function Dashboard({
                     <Top5Contacts top_5_contacts_by_expense={top_5_contacts_by_expense} />
                 </div>
             </div>
-            <div className="grid grid-cols-4 gap-4 pb-4">
+            {/*<div className="grid grid-cols-4 gap-4 pb-4">
                 <TerminalLog logs={logs} />
-            </div>
+            </div>*/}
         </AppLayout>
     );
 }
