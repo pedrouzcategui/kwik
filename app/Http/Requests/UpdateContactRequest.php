@@ -23,9 +23,9 @@ class UpdateContactRequest extends FormRequest
     {
         return [
             // WTF is sometimes?
-            'full_name' => ['sometimes', 'string', 'max:255'],
-            'email'     => ['nullable', 'email'],
-            'phone'     => ['nullable', 'string', 'max:20'],
+            'full_name' => ['required', 'string', 'max:255'],
+            'email'     => ['nullable', 'email:filter'],
+            'phone'     => ['nullable', 'phone:e164', 'max:20'],
             'type' => ['required']
         ];
     }
