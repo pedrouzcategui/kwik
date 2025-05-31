@@ -1,3 +1,4 @@
+import InputError from '@/components/input-error';
 import { Account, AccountProvider, AccountType, Currency } from '@/types/account';
 import { router, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
@@ -36,7 +37,7 @@ type AccountFormComponentProps = {
 };
 
 export default function AccountForm({ account, providers, setIsOpen }: AccountFormComponentProps) {
-    const { data, setData, processing, post, put } = useForm<AccountForm>({
+    const { data, setData, processing, post, put, errors } = useForm<AccountForm>({
         name: account?.name ?? '',
         currency: account?.currency ?? 'USD',
         type: account?.type ?? 'CHECKING',
@@ -67,6 +68,7 @@ export default function AccountForm({ account, providers, setIsOpen }: AccountFo
             <div>
                 <Label className="mb-2 block">Nombre de la cuenta</Label>
                 <Input name="name" type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} />
+                <InputError message={errors.name} />
             </div>
             <div>
                 <Label className="mb-2 block">Moneda</Label>
@@ -100,6 +102,7 @@ export default function AccountForm({ account, providers, setIsOpen }: AccountFo
             </div>
             <div>
                 <AccountProvidersSelect account_providers={providers} selectedAccountProviderId={data.account_provider_id} setData={setData} />
+                <InputError message={errors.account_provider_id} />
             </div>
 
             <Button disabled={processing} className="w-full" size={'lg'} type="submit">
