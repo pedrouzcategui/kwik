@@ -16,9 +16,9 @@ export function TableToolbar({ globalFilter, setGlobalFilter, placeholder, child
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 placeholder={placeholder}
-                className="w-full rounded border p-2 md:w-96"
+                className="rounded border p-2"
             />
-            <div className='flex grow justify-between'>{children}</div>
+            <div className="flex grow justify-between">{children}</div>
         </div>
     );
 }
