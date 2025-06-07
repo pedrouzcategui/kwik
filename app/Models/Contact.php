@@ -9,13 +9,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory; // Trait para usar factor
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[ObservedBy([ContactObserver::class])]
 class Contact extends Model
 {
     // Traits que añaden funcionalidades al modelo:
     use HasFactory, // Permite crear instancias del modelo usando factories (útil para testing y seeding)
-        HasUuids;   // Permite que el modelo use UUIDs como claves primarias
+        HasUuids,
+        SoftDeletes;   // Permite que el modelo use UUIDs como claves primarias
+
 
     protected $fillable = ['full_name', 'email', 'phone', 'type'];
     protected $hidden = ['user_id']; // Oculta el campo user_id en las respuestas serializadas

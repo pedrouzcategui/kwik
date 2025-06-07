@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { CircleDollarSign, ContactIcon, CreditCard, DollarSign, LayoutDashboard } from 'lucide-react';
+import { CircleDollarSign, ContactIcon, CreditCard, DollarSign, LayoutDashboard, Trash2Icon } from 'lucide-react';
 import RubikateLogo from './rubikate-logo.png';
 
 const mainNavItems: NavItem[] = [
@@ -29,9 +29,9 @@ const mainNavItems: NavItem[] = [
         icon: CircleDollarSign,
     },
     {
-        title: 'Valores Históricos',
-        href: '/currency-history',
-        icon: DollarSign,
+        title: 'Papelera',
+        href: '/trash',
+        icon: Trash2Icon,
     },
     // {
     // title: 'Trading View',
@@ -40,7 +40,13 @@ const mainNavItems: NavItem[] = [
     // },
 ];
 
-const footerNavItems: NavItem[] = [];
+const footerNavItems: NavItem[] = [
+    {
+        title: 'Valores Históricos',
+        href: '/currency-history',
+        icon: DollarSign,
+    },
+];
 
 export function AppSidebar() {
     return (

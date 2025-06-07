@@ -7,8 +7,8 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AccountProviderController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\ExchangeRateController;
+use App\Http\Controllers\TrashController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -26,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('accounts', AccountController::class);
     Route::resource('operations', OperationController::class);
     Route::resource('categories', CategoryController::class);
+    Route::get('/trash', [TrashController::class, 'index']);
     Route::post('/account-providers', [AccountProviderController::class, 'store'])->name('account.providers.store');
     Route::get('/currency-history', [ExchangeRateController::class, 'index'])->name('currency.history');
 });

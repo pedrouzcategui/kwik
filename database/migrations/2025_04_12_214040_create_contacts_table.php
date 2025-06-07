@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unique(['user_id', 'email']);
             $table->unique(['user_id', 'phone']);
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }
