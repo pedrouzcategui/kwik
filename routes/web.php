@@ -26,7 +26,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('accounts', AccountController::class);
     Route::resource('operations', OperationController::class);
     Route::resource('categories', CategoryController::class);
-    Route::get('/trash', [TrashController::class, 'index']);
+    Route::get('/trash', [TrashController::class, 'index'])->name('trash.index');
+    Route::delete('/contacts/{contact}/force', [ContactController::class, 'forceDestroy'])->name('contacts.forceDestroy');
     Route::post('/account-providers', [AccountProviderController::class, 'store'])->name('account.providers.store');
     Route::get('/currency-history', [ExchangeRateController::class, 'index'])->name('currency.history');
 });

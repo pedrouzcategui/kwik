@@ -83,8 +83,9 @@ class ContactController extends Controller
     }
 
     /**
-     * Elimina un contacto específico de la base de datos.
+     * Mueve un contacto específico de la base de datos a la papelera.
      */
+
     public function destroy(Request $request, Contact $contact)
     {
         // 🛡️ Verifica que el usuario autenticado sea el dueño del contacto | Esto se puede reemplazar por una policy
@@ -95,5 +96,17 @@ class ContactController extends Controller
         $contact->delete();
         // TODO: Agregar mensaje flash a la sesión
         return to_route('contacts.index')->with('success', 'Contacto eliminado');
+    }
+
+    public function forceDestroy(Request $request, Contact $contact){
+        echo "Hola";
+        die();
+        if ($contact->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Prohibido'], 403);
+        }
+
+        $contact->forceDelete();
+        // TODO: Agregar mensaje flash a la sesión
+        return to_route('trash.index')->with('success', 'Contacto eliminado');
     }
 }

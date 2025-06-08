@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Trash;
+use App\Models\Contact;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,8 +14,9 @@ class TrashController extends Controller
      */
     public function index()
     {
+        $contacts = Contact::onlyTrashed()->get();
        return Inertia::render('trash/index', [
-        // 'contacts' => $contacts,
+         'contacts' => $contacts,
         // 'accounts' => $accounts,
         // 'operations' => $operations
        ]);
