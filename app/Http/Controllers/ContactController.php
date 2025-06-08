@@ -107,7 +107,7 @@ class ContactController extends Controller
 
         $contact->restore();
         // TODO: Agregar mensaje flash a la sesión
-        return to_route('contacts.index')->with('success', 'Contacto Restaurado');
+        return to_route('trash.index')->with('success', 'Contacto Restaurado');
     }
     public function forceDestroy(Request $request, Contact $contact){
 
