@@ -121,6 +121,37 @@ export default function Index({ contacts }: OperationsTablePageProps) {
                                         <CheckIcon />
                                     </Button>
                                 </AlertDialogTrigger>
+
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle className="text-center text-xl">
+                                            ¿Estás seguro que deseas restaurar a {contact.full_name}?
+                                        </AlertDialogTitle>
+                                    </AlertDialogHeader>
+
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            className="bg-success"
+                                            onClick={() =>
+                                                router.put(
+                                                    `/contacts/${contact.id}/restore`,
+                                                    {
+                                                        preserveScroll: true,
+                                                    },
+                                                    {
+                                                        onSuccess: () => {
+                                                            router.reload({ only: ['contacts'] });
+                                                            toast.success('El contacto ha sido restaurado');
+                                                        },
+                                                    },
+                                                )
+                                            }
+                                        >
+                                            Sí, restaurar
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
                             </AlertDialog>
                         </>
                     );

@@ -98,9 +98,19 @@ class ContactController extends Controller
         return to_route('contacts.index')->with('success', 'Contacto eliminado');
     }
 
+    public function restore(Request $request, Contact $contact)
+    {
+        // 🛡️ Verifica que el usuario autenticado sea el dueño del contacto | Esto se puede reemplazar por una policy
+        if ($contact->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Prohibido'], 403);
+        }
+
+        $contact->restore();
+        // TODO: Agregar mensaje flash a la sesión
+        return to_route('contacts.index')->with('success', 'Contacto Restaurado');
+    }
     public function forceDestroy(Request $request, Contact $contact){
-        echo "Hola";
-        die();
+
         if ($contact->user_id !== $request->user()->id) {
             return response()->json(['message' => 'Prohibido'], 403);
         }
