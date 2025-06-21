@@ -26,7 +26,7 @@ export function ExportButton<T>({ table, headers, filename = 'export' }: Props<T
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="">
-                <ExportCsvButton className="mb-4 w-full" table={table} headers={headers} />
+                <ExportCsvButton className="mb-4 w-full" filename={filename} table={table} headers={headers} />
                 <ExportPDFButton table={table} headers={headers} filename={filename} />
             </PopoverContent>
         </Popover>

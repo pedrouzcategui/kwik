@@ -1,4 +1,5 @@
 import { Table } from '@tanstack/react-table';
+import { FileText } from 'lucide-react';
 import { Button } from '../ui/button';
 
 type Props<T> = {
@@ -28,6 +29,7 @@ export default function ExportPDFButton<T>({ table, headers, filename = 'export'
                 window.open(`/export/pdf?${params.toString()}`, '_blank');
             }}
         >
+            <FileText />
             Exportar en PDF
         </Button>
     );

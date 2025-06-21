@@ -1,6 +1,6 @@
 import AccountsTableDialog from '@/components/dialogs/AccountsTableDialog';
 import { BaseTable } from '@/components/table/BaseTable';
-import { ExportCsvButton } from '@/components/table/ExportCSVButton';
+import { ExportButton } from '@/components/table/ExportButton';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -48,7 +48,7 @@ export default function AccountsTable({ accounts, providers }: AccountsTableProp
 
         columnHelper.accessor('type', {
             header: () => <span>Tipo de cuenta</span>,
-            cell: (info) => <Badge variant={'outline'}>{info.getValue() === "CHECKING" ? "CORRIENTE" : "AHORRO"}</Badge>,
+            cell: (info) => <Badge variant={'outline'}>{info.getValue() === 'CHECKING' ? 'CORRIENTE' : 'AHORRO'}</Badge>,
             sortingFn: 'alphanumeric',
             enableGlobalFilter: false,
         }),
@@ -152,7 +152,7 @@ export default function AccountsTable({ accounts, providers }: AccountsTableProp
                 <>
                     <CurrencyTypeFilter table={table} />
                     <AccountTypeFilter table={table} />
-                    <ExportCsvButton table={table} filename="accounts" headers={['name', 'currency', 'type', 'amount']} />
+                    <ExportButton table={table} filename="Cuentas" headers={['name', 'currency', 'type', 'amount']} />
                 </>
             )}
             dialog={
