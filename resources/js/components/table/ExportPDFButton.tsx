@@ -9,27 +9,63 @@ type Props<T> = {
     className?: string;
 };
 
+/**
+ * Return only the columns that are currently visible *and*
+ *   are not in the excluded list (e.g. "actions").
+ *
+ * @param table      TanStack table instance
+ * @param excludeIds Column IDs to omit from the export
+ */
+export function getVisibleData<T>(
+    table: Table<T>,
+    excludeIds: string[] = ['actions'], // 👈 default: hide "actions"
+) {
+    const rows = table.getFilteredRowModel().rows;
+
+    /** keep visible columns except those we want to exclude */
+    const cols = table.getVisibleLeafColumns().filter((col) => !excludeIds.includes(col.id));
+
+    const headerKeys = cols.map((c) => c.id as keyof T);
+
+    const data = rows.map((row) => {
+        const obj: Record<string, unknown> = {};
+        cols.forEach((col) => {
+            obj[col.id] = row.getValue(col.id);
+        });
+        return obj;
+    });
+
+    return { headerKeys, data };
+}
+
 export default function ExportPDFButton<T>({ table, headers, filename = 'export', className }: Props<T>) {
     return (
         <Button
             className={className ?? 'w-full'}
             variant="outline"
             onClick={() => {
-                const rows = table.getFilteredRowModel().rows;
-                if (rows.length === 0) return;
+                const { headerKeys, data } = getVisibleData(table);
 
-                const data = rows.map((row) => row.original);
-
-                const params = new URLSearchParams({
-                    data: JSON.stringify(data),
-                    headers: JSON.stringify(headers),
-                    filename: filename || 'export',
-                });
-
-                window.open(`/export/pdf?${params.toString()}`, '_blank');
+                if (data.length === 0) return; // nothing to export
+                fetch('/export/pdf/initiate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '',
+                    },
+                    body: JSON.stringify({
+                        headers: headerKeys, // e.g. ["name","amount",...]
+                        data, // array with ONLY those keys
+                        filename,
+                    }),
+                    credentials: 'same-origin',
+                })
+                    .then((r) => r.json())
+                    .then(({ token }) => token && window.open(`/export/pdf/download?token=${token}`, '_blank'))
+                    .catch((e) => console.error(e));
             }}
         >
-            <FileText />
+            <FileText className="mr-1" />
             Exportar en PDF
         </Button>
     );

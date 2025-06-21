@@ -32,8 +32,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/contacts/{contact}/restore', [ContactController::class, 'restore'])->name('contacts.forceDestroy')->withTrashed();
     Route::post('/account-providers', [AccountProviderController::class, 'store'])->name('account.providers.store');
     Route::get('/currency-history', [ExchangeRateController::class, 'index'])->name('currency.history');
-    Route::get('/export/pdf', [ExportController::class, 'export']);
 });
+
+Route::post('/export/pdf/initiate', [ExportController::class, 'initiate']);
+Route::get('/export/pdf/download', [ExportController::class, 'download']);
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

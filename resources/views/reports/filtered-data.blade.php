@@ -8,8 +8,6 @@
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { padding: 6px; border: 1px solid #ccc; text-align: left; }
         th { background-color: #f2f2f2; }
-        .page-break { page-break-after: always; }
-        .table-wrapper { page-break-inside: avoid; }
     </style>
 </head>
 <body>
@@ -19,31 +17,24 @@
         <p>Reporte impreso el {{ $date }}</p>
     </div>
 
-    @foreach ($rows->chunk(20) as $chunk)
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        @foreach ($headers as $key)
-                            <th>{{ ucwords(str_replace('_', ' ', $key)) }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($chunk as $row)
-                        <tr>
-                            @foreach ($headers as $key)
-                                <td>{{ $row[$key] ?? '' }}</td>
-                            @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        @if (!$loop->last)
-            <div class="page-break"></div>
-        @endif
-    @endforeach
+    <table>
+        <thead>
+            <tr>
+                @foreach ($headers as $key)
+                    <th>{{ ucwords(str_replace('_', ' ', $key)) }}</th>
+                @endforeach
+            </tr>
+        </thead>
 
+        <tbody>
+            @foreach ($rows as $row)
+                <tr>
+                    @foreach ($headers as $key)
+                        <td>{{ $row[$key] ?? '' }}</td>
+                    @endforeach
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 </body>
 </html>

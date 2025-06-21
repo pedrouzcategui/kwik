@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class ExportController extends Controller
 {
@@ -21,5 +22,36 @@ class ExportController extends Controller
             'filename' => $filename,
             'date' => $date
         ])->stream("{$filename}.pdf");
+    }
+
+    public function initiate(Request $request)
+    {
+        $token = Str::uuid()->toString();
+
+        cache()->put("pdf_export_{$token}", [
+            'data' => $request->input('data'),
+            'headers' => $request->input('headers'),
+            'filename' => $request->input('filename') ?? 'export',
+            'date' => now()->locale('es')->translatedFormat('j \d\e F, Y - g:i A'),
+        ], now()->addMinutes(5)); // valid for 5 min
+
+        return response()->json(['token' => $token]);
+    }
+
+    public function download(Request $request)
+    {
+        $token = $request->query('token');
+        $payload = cache()->pull("pdf_export_{$token}");
+
+        if (!$payload) {
+            abort(404, 'Export data not found or expired');
+        }
+
+        return Pdf::loadView('reports.filtered-data', [
+            'rows' => collect($payload['data']),
+            'headers' => $payload['headers'],
+            'filename' => $payload['filename'],
+            'date' => $payload['date'],
+        ])->stream("{$payload['filename']}.pdf");
     }
 }

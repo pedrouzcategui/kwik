@@ -1,5 +1,6 @@
 import OperationsTableDialog from '@/components/dialogs/OperationsTableDialog';
 import { BaseTable } from '@/components/table/BaseTable';
+import { ExportButton } from '@/components/table/ExportButton';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -172,12 +173,7 @@ export default function OperationsTable({ operations, user, categories, contacts
                     <ContactFilter table={table} contacts={contacts} />
                     <CategoryFilter table={table} categories={categories} />
                     <OperationTypeFilter table={table} />
-                    {/*}
-                    <ExportCsvButton
-                        table={table}
-                        filename='operations'
-                        headers={['account', 'type', 'amount', 'contact', 'category', 'description']}
-                    />*/}
+                    <ExportButton table={table} filename="Operaciones" headers={['account_name', 'amount', 'contact_name', 'description'] as any} />
                 </>
             )}
             dialog={
