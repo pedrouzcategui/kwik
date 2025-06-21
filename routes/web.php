@@ -8,6 +8,7 @@ use App\Http\Controllers\AccountProviderController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\ExchangeRateController;
 use App\Http\Controllers\TrashController;
+use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -31,6 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/contacts/{contact}/restore', [ContactController::class, 'restore'])->name('contacts.forceDestroy')->withTrashed();
     Route::post('/account-providers', [AccountProviderController::class, 'store'])->name('account.providers.store');
     Route::get('/currency-history', [ExchangeRateController::class, 'index'])->name('currency.history');
+    Route::get('/export/pdf', [ExportController::class, 'export']);
 });
 
 require __DIR__ . '/settings.php';

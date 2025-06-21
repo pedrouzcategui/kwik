@@ -1,5 +1,6 @@
 import ContactTableDialog from '@/components/dialogs/ContactTableDialog';
 import { BaseTable } from '@/components/table/BaseTable';
+import { ExportButton } from '@/components/table/ExportButton';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -21,7 +22,6 @@ import { Copy, EyeIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 import React from 'react';
 import { toast } from 'sonner';
 import { ContactTypeFilter } from './ContactTypeFilter';
-import { ExportCsvButton } from '@/components/table/ExportCSVButton';
 
 const columnHelper = createColumnHelper<Contact>();
 
@@ -57,7 +57,7 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
             cell: (info) => {
                 const email = info.getValue();
                 return (
-                    <div className="flex justify-between items-center gap-2">
+                    <div className="flex items-center justify-between gap-2">
                         <span>{email}</span>
                         {email && (
                             <Button
@@ -82,7 +82,7 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
             cell: (info) => {
                 const phone = info.getValue();
                 return (
-                    <div className="flex justify-between items-center gap-2">
+                    <div className="flex items-center justify-between gap-2">
                         <span>{phone}</span>
                         {phone && (
                             <Button
@@ -251,7 +251,7 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
             renderToolbarRight={(table) => (
                 <>
                     <ContactTypeFilter table={table} />
-                    <ExportCsvButton table={table} filename="contacts" headers={['full_name', 'email', 'phone', 'type']} />
+                    <ExportButton table={table} filename="Contactos" headers={['full_name', 'email', 'phone', 'type']} />
                 </>
             )}
             dialog={
