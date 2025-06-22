@@ -85,4 +85,27 @@ class AccountController extends Controller
         $account->delete();
         return to_route('accounts.index')->with('success', 'Cuenta Eliminada');
     }
+
+    public function restore(Request $request, Account $account)
+    {
+        // 🛡️ Verifica que el usuario autenticado sea el dueño del contacto | Esto se puede reemplazar por una policy
+        if ($account->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Prohibido'], 403);
+        }
+
+        $account->restore();
+        // TODO: Agregar mensaje flash a la sesión
+        return to_route('trash.index')->with('success', 'Contacto Restaurado');
+    }
+    public function forceDestroy(Request $request, Account $account)
+    {
+
+        if ($account->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Prohibido'], 403);
+        }
+
+        $account->forceDelete();
+        // TODO: Agregar mensaje flash a la sesión
+        return to_route('trash.index')->with('success', 'Contacto eliminado');
+    }
 }

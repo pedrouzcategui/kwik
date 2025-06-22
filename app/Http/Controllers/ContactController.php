@@ -109,7 +109,8 @@ class ContactController extends Controller
         // TODO: Agregar mensaje flash a la sesión
         return to_route('trash.index')->with('success', 'Contacto Restaurado');
     }
-    public function forceDestroy(Request $request, Contact $contact){
+    public function forceDestroy(Request $request, Contact $contact)
+    {
 
         if ($contact->user_id !== $request->user()->id) {
             return response()->json(['message' => 'Prohibido'], 403);

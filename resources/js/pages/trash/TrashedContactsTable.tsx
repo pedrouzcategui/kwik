@@ -63,7 +63,7 @@ export default function TrashedContactsTable({ contacts }: TrashedContactsTableP
                                                 router.delete(`/contacts/${contact.id}/force`, {
                                                     preserveScroll: true,
                                                     onSuccess: () => {
-                                                        router.reload({ only: ['contacts'] });
+                                                        router.reload({ only: ['contacts', 'operations'] });
                                                         toast.success(`Eliminaste a ${contact.full_name}`);
                                                     },
                                                     onError: (e) => {
@@ -104,7 +104,7 @@ export default function TrashedContactsTable({ contacts }: TrashedContactsTableP
                                                     },
                                                     {
                                                         onSuccess: () => {
-                                                            router.reload({ only: ['contacts'] });
+                                                            router.reload({ only: ['contacts', 'operations'] });
                                                             toast.success('El contacto ha sido restaurado');
                                                         },
                                                     },

@@ -63,7 +63,7 @@ export default function TrashedOperationsTable({ operations }: TrashedOperations
                                                 router.delete(`/operations/${operation.id}/force`, {
                                                     preserveScroll: true,
                                                     onSuccess: () => {
-                                                        router.reload({ only: ['contacts'] });
+                                                        router.reload({ only: ['contacts', 'operations'] });
                                                         toast.success(`Eliminaste a ${operation.id}`);
                                                     },
                                                     onError: (e) => {
@@ -81,7 +81,7 @@ export default function TrashedOperationsTable({ operations }: TrashedOperations
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <Button
-                                        disabled={operation.account.deleted_at === null}
+                                        disabled={operation.account.deleted_at !== null}
                                         size="sm"
                                         className="bg-yellow-500 text-white hover:bg-yellow-600"
                                     >

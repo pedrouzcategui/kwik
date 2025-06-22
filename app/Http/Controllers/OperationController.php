@@ -94,4 +94,27 @@ class OperationController extends Controller
         $operation->delete();
         return to_route('operations.index')->with('success', 'Se ha eliminado la operación');
     }
+
+    public function restore(Request $request, Operation $operation)
+    {
+        // 🛡️ Verifica que el usuario autenticado sea el dueño del contacto | Esto se puede reemplazar por una policy
+        if ($operation->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Prohibido'], 403);
+        }
+
+        $operation->restore();
+        // TODO: Agregar mensaje flash a la sesión
+        return to_route('trash.index')->with('success', 'Operación Restaurada');
+    }
+    public function forceDestroy(Request $request, Operation $operation)
+    {
+
+        if ($operation->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Prohibido'], 403);
+        }
+
+        $operation->forceDelete();
+        // TODO: Agregar mensaje flash a la sesión
+        return to_route('trash.index')->with('success', 'Operación eliminada');
+    }
 }

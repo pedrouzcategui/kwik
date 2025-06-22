@@ -28,8 +28,17 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('operations', OperationController::class);
     Route::resource('categories', CategoryController::class);
     Route::get('/trash', [TrashController::class, 'index'])->name('trash.index');
+
+    // Trash Routes
     Route::delete('/contacts/{contact}/force', [ContactController::class, 'forceDestroy'])->name('contacts.forceDestroy')->withTrashed();
     Route::put('/contacts/{contact}/restore', [ContactController::class, 'restore'])->name('contacts.forceDestroy')->withTrashed();
+
+    Route::delete('/accounts/{account}/force', [AccountController::class, 'forceDestroy'])->name('accounts.forceDestroy')->withTrashed();
+    Route::put('/accounts/{accounts}/restore', [AccountController::class, 'restore'])->name('accounts.forceDestroy')->withTrashed();
+
+    Route::delete('/operations/{operation}/force', [OperationController::class, 'forceDestroy'])->name('accounts.forceDestroy')->withTrashed();
+    Route::put('/operations/{operation}/restore', [OperationController::class, 'restore'])->name('accounts.forceDestroy')->withTrashed();
+
     Route::post('/account-providers', [AccountProviderController::class, 'store'])->name('account.providers.store');
     Route::get('/currency-history', [ExchangeRateController::class, 'index'])->name('currency.history');
 });
