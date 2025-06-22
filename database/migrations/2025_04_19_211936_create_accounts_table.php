@@ -21,7 +21,7 @@ return new class extends Migration
             $table->enum('type', ['CHECKING', 'SAVINGS']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
-            //$table->softDeletes();
+            $table->softDeletes();
         });
     }
 

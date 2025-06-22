@@ -39,6 +39,16 @@ class ContactObserver
      */
     public function deleted(Contact $contact): void
     {
+
+        // ---------- 1. Cascade ----------
+        if ($contact->isForceDeleting()) {
+            // hard-delete children
+            $contact->operations()->withTrashed()->forceDelete();
+        } else {
+            // soft-delete children
+            $contact->operations()->delete();
+        }
+
         SystemLog::create([
             'user_id' => Auth::id(),
             'module' => 'Contact',
@@ -65,6 +75,8 @@ class ContactObserver
      */
     public function forceDeleted(Contact $contact): void
     {
+        $contact->operations()->withTrashed()->forceDelete();
+
         SystemLog::create([
             'user_id' => Auth::id(),
             'module' => 'Contact',

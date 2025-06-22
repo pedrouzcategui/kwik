@@ -19,8 +19,8 @@ type Props<T> = {
 export function ExportButton<T>({ table, headers, filename = 'export' }: Props<T>) {
     return (
         <Popover>
-            <PopoverTrigger>
-                <Button variant="outline" size="sm">
+            <PopoverTrigger asChild>
+                <Button variant={'outline'}>
                     <Download size={16} className="mr-1" />
                     Exportar
                 </Button>

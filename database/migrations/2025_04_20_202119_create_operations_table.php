@@ -22,6 +22,7 @@ return new class extends Migration
             $table->float('amount');
             $table->enum('type', ['INCOME', 'EXPENSE']);
             $table->string('description')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -39,6 +39,16 @@ class AccountObserver
      */
     public function deleted(Account $account): void
     {
+
+        // ---------- 1. Cascade ----------
+        if ($account->isForceDeleting()) {
+            // hard-delete children
+            $account->operations()->withTrashed()->forceDelete();
+        } else {
+            // soft-delete children
+            $account->operations()->delete();
+        }
+
         SystemLog::create([
             'user_id' => Auth::id(),
             'module' => 'Account',

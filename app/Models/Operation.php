@@ -8,15 +8,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 // Asocia el observer OperationObserver a este modelo usando el atributo ObservedBy
 #[ObservedBy([OperationObserver::class])]
 class Operation extends Model
 {
     // Trait para habilitar la fábrica de modelos (factories) en pruebas y seeders
-    use HasFactory;
-    // Trait para que el modelo utilice UUIDs como clave primaria
-    use HasUuids;
+    use HasFactory,
+        // Trait para que el modelo utilice UUIDs como clave primaria
+        HasUuids,
+        // Trait de SoftDeletion
+        SoftDeletes;
 
     // Campos que se pueden asignar masivamente
     protected $fillable = [

@@ -22,4 +22,5 @@ export type Account = {
     amount: number;
     account_provider_id: string;
     account_provider?: AccountProvider;
+    deleted_at?: Date;
 };
