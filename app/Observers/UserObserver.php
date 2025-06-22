@@ -12,14 +12,16 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        Contact::create([
+        $contact = new Contact([
             'id' => $user->id,
             'full_name' => $user->name,
             'email' => $user->email,
             'phone' => $user->phone,
             'type' => 'NATURAL',
             'user_id' => $user->id,
-        ])->save();
+        ]);
+        $contact->user_id = $user->id;
+        $contact->save();
     }
 
     /**

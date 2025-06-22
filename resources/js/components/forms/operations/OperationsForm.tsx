@@ -44,8 +44,6 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
         category_id: operation?.category.id ?? '',
     });
 
-    console.log(categories);
-
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
         if (operation) {
