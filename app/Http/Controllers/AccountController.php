@@ -6,7 +6,10 @@ use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
 use App\Models\Account;
 use App\Models\AccountProvider;
+use App\Models\Category;
+use App\Models\Operation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class AccountController extends Controller
@@ -34,9 +37,27 @@ class AccountController extends Controller
      */
     public function store(StoreAccountRequest $request)
     {
+
         $account = new Account($request->validated());
         $account->user_id = $request->user()->id;
         $account->save();
+
+        if ($request->input('with_initial_operation')) {
+            $amount = $request->input('initial_amount');
+            $operation = new Operation([
+                'user_id' => Auth::id(),
+                'contact_id' => Auth::id(),
+                'account_id' => $account->id,
+                'category_id' => Category::where('name', 'otros ingresos')->get()[0]->id,
+                'amount' => $amount,
+                'type' => 'INCOME',
+                'description' => "Apertura de cuenta con {$account->currency} $amount"
+            ]);
+            $operation->user_id = $request->user()->id;
+
+            $operation->save();
+        }
+
         return to_route('accounts.index');
     }
 

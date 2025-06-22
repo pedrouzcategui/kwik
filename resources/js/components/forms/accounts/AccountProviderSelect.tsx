@@ -65,7 +65,7 @@ export default function AccountProvidersSelect({ account_providers, selectedAcco
                     }}
                 >
                     <SelectTrigger>
-                        <SelectValue placeholder="Selecciona tu proveedor de la cuenta" />
+                        <SelectValue placeholder="Selecciona tu proveedor" />
                     </SelectTrigger>
                     <SelectContent>
                         {account_providers.map((provider) => (

@@ -25,7 +25,9 @@ class StoreAccountRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'currency' => ['required', 'string'],
             'type' => ['required', 'string'],
-            'account_provider_id' => ['required', 'string']
+            'account_provider_id' => ['required', 'string'],
+            'with_initial_operation' => ['sometimes', 'boolean'],
+            'initial_amount' => ['sometimes', 'numeric']
         ];
     }
 }

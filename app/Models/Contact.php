@@ -20,7 +20,7 @@ class Contact extends Model
         SoftDeletes;   // Permite que el modelo use UUIDs como claves primarias
 
 
-    protected $fillable = ['full_name', 'email', 'phone', 'type'];
+    protected $fillable = ['id', 'full_name', 'email', 'phone', 'type'];
     protected $hidden = ['user_id']; // Oculta el campo user_id en las respuestas serializadas
     protected $table = 'contacts';
     protected $primaryKey = 'id';

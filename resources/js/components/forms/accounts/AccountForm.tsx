@@ -1,4 +1,5 @@
 import InputError from '@/components/input-error';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Account, AccountProvider, AccountType, Currency } from '@/types/account';
 import { router, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
@@ -29,6 +30,8 @@ type AccountForm = {
     currency: CurrencyStrings;
     type: AccountTypeStrings;
     account_provider_id: string;
+    with_initial_operation: boolean;
+    initial_amount?: number;
 };
 type AccountFormComponentProps = {
     account?: Account;
@@ -42,6 +45,8 @@ export default function AccountForm({ account, providers, setIsOpen }: AccountFo
         currency: account?.currency ?? 'USD',
         type: account?.type ?? 'CHECKING',
         account_provider_id: account?.account_provider_id.toString() ?? '',
+        initial_amount: 0,
+        with_initial_operation: false,
     });
 
     function handleSubmit(e: FormEvent) {
@@ -104,6 +109,27 @@ export default function AccountForm({ account, providers, setIsOpen }: AccountFo
                 <AccountProvidersSelect account_providers={providers} selectedAccountProviderId={data.account_provider_id} setData={setData} />
                 <InputError message={errors.account_provider_id} />
             </div>
+
+            {account == null && (
+                <div className="flex items-center gap-3">
+                    <Checkbox onCheckedChange={(value: boolean) => setData('with_initial_operation', value)} />
+                    <Label>Crear cuenta con monto Inicial</Label>
+                </div>
+            )}
+
+            {data.with_initial_operation && account == null && (
+                <div>
+                    <Label className="mb-2 block">Monto</Label>
+                    <Input
+                        name="initial_amount"
+                        min={0}
+                        type="number"
+                        value={data.initial_amount}
+                        onChange={(e) => setData('initial_amount', parseFloat(e.target.value))}
+                    />
+                    <InputError message={errors.name} />
+                </div>
+            )}
 
             <Button disabled={processing} className="w-full" size={'lg'} type="submit">
                 {account ? 'Editar' : 'Crear'} Cuenta

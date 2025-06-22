@@ -9,12 +9,12 @@ export default function AnimatedExchangeTicker({ rates }: AnimatedExchangeTicker
     const [index, setIndex] = React.useState(0);
     const current = rates[index];
 
-    React.useEffect(() => {
-        const timer = setInterval(() => {
-            setIndex((prev) => (prev + 1) % rates.length);
-        }, 5000);
-        return () => clearInterval(timer);
-    }, [rates.length]);
+    // React.useEffect(() => {
+    //     const timer = setInterval(() => {
+    //         setIndex((prev) => (prev + 1) % rates.length);
+    //     }, 5000);
+    //     return () => clearInterval(timer);
+    // }, [rates.length]);
 
     if (!rates.length) return null;
 

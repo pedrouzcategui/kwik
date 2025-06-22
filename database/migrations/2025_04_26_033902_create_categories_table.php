@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name')->unique();
-            $table->string('icon')->nullable();
             $table->string('color')->unique();
+            $table->enum('type', ['INCOME', 'EXPENSE']);
             $table->timestamps();
         });
     }
