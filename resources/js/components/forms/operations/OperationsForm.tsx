@@ -39,10 +39,13 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
         account_id: operation?.account.id ?? '',
         account_target_id: operation?.target_account_id ?? '',
         amount: operation?.amount ?? 0,
-        type: (operation?.type as OperationTypeStringUnion) ?? '',
+        type: (operation?.type as OperationTypeStringUnion) ?? null,
         description: operation?.description ?? '',
         category_id: operation?.category.id ?? '',
     });
+
+    console.log(categories);
+
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
         if (operation) {
@@ -105,7 +108,13 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
                 <InputError message={errors.type} className="mt-2" />
             </div>
             <div>
-                <CategoriesSelect categories={categories} selectedCategoryId={data.category_id} setData={setData} />
+                <CategoriesSelect
+                    disabled={data.type == null}
+                    operationType={data.type}
+                    categories={categories}
+                    selectedCategoryId={data.category_id}
+                    setData={setData}
+                />
                 <InputError message={errors.category_id} className="mt-2" />
             </div>
             <div>
