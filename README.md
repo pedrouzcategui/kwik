@@ -1,4 +1,5 @@
 ![Rubikate Imagen Principal del Dashboard](image.png)
+
 # Kwik
 
 Kwik es una aplicación que toma tus finanzas y las convierte en descubrimientos accionales.
@@ -27,7 +28,7 @@ Esta aplicación hecha en Laravel + React (Inertia).
 - En phpmyadmin, crea una base de datos llamada `kwik`.
 - Crea un archivo .env basado en el archivo `.env.example` (debes crear un servicio en https://pydolarve.org/ y usarlo como API_DOLAR_TOKEN)
 - Ejecuta `composer install`
-- Ejecuta `npm install --legacy-peer-deps`
+- Ejecuta `npm install`
 - Ejecuta `php artisan key:generate`
 - Ejecuta `php artisan custom:flush-and-seed`
 - Visita `http://127.0.0.1:8000/`

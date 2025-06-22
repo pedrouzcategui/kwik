@@ -23,11 +23,6 @@ class CategorySeeder extends Seeder
             ['name'  => 'otros ingresos', 'color' => '#4A5568', 'type' => 'INCOME'], // gray
         ];
 
-        foreach ($categories as $attrs) {
-            Category::updateOrCreate(
-                ['name'  => $attrs['name']],   // match on name
-                ['color' => $attrs['color']]   // set/update color
-            );
-        }
+        Category::upsert($categories, ['name'], ['color', 'type']);
     }
 }
