@@ -111,6 +111,7 @@ class AccountController extends Controller
     {
         // 🛡️ Verifica que el usuario autenticado sea el dueño del contacto | Esto se puede reemplazar por una policy
         if ($account->user_id !== $request->user()->id) {
+            dd($account, $request->user()->id);
             return response()->json(['message' => 'Prohibido'], 403);
         }
 
