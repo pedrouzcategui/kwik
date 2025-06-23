@@ -41,6 +41,21 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
     }, [contacts]);
 
     const columns = [
+        columnHelper.accessor('created_at', {
+            header: () => <span>Fecha de Creación</span>,
+            //Puedo usar truncate tambien o text-wrap
+            // cell: (info) => <div className="max-w-[200px] truncate">{info.getValue()}</div>,
+            cell: (info) => (
+                <div className="max-w-[300px] truncate">
+                    {new Date(info.getValue()).toLocaleDateString('es-ES', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                    })}
+                </div>
+            ),
+            sortingFn: 'datetime',
+        }),
         columnHelper.accessor('full_name', {
             header: () => <span>Nombre Completo</span>,
             cell: (info) => (

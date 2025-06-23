@@ -33,6 +33,21 @@ export default function AccountsTable({ accounts, providers }: AccountsTableProp
     const [selectedAccount, setSelectedAccount] = React.useState<Account | undefined>();
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
     const columns = [
+        columnHelper.accessor('created_at', {
+            header: () => <span>Fecha de Creación</span>,
+            //Puedo usar truncate tambien o text-wrap
+            // cell: (info) => <div className="max-w-[200px] truncate">{info.getValue()}</div>,
+            cell: (info) => (
+                <div className="max-w-[300px] truncate">
+                    {new Date(info.getValue()).toLocaleDateString('es-ES', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                    })}
+                </div>
+            ),
+            sortingFn: 'datetime',
+        }),
         columnHelper.accessor('name', {
             header: () => <span>Nombre</span>,
             cell: (info) => info.getValue(),

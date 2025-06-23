@@ -43,6 +43,29 @@ export default function OperationsTable({ operations, user, categories, contacts
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
     const [selectedOperation, setSelectedOperation] = React.useState<OperationTableColumns>();
     const columns = [
+        columnHelper.accessor('created_at', {
+            header: () => <span>Fecha de Creación</span>,
+            //Puedo usar truncate tambien o text-wrap
+            // cell: (info) => <div className="max-w-[200px] truncate">{info.getValue()}</div>,
+            cell: (info) => (
+                <div className="max-w-[300px] truncate">
+                    {new Date(info.getValue()).toLocaleDateString('es-ES', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                    })}
+                </div>
+            ),
+            sortingFn: 'datetime',
+        }),
+        columnHelper.accessor('description', {
+            header: () => <span>Descipcion</span>,
+            //Puedo usar truncate tambien o text-wrap
+            // cell: (info) => <div className="max-w-[200px] truncate">{info.getValue()}</div>,
+            cell: (info) => <div className="max-w-[300px] truncate">{info.getValue()}</div>,
+            sortingFn: 'alphanumeric',
+            enableGlobalFilter: true, // This makes the search filter, search using full names
+        }),
         columnHelper.accessor('account.name', {
             header: () => <span>Nombre de la cuenta</span>,
             cell: (info) => info.getValue(),
@@ -98,13 +121,7 @@ export default function OperationsTable({ operations, user, categories, contacts
             sortingFn: 'alphanumeric',
             enableGlobalFilter: true, // This makes the search filter, search using full names
         }),
-        columnHelper.accessor('description', {
-            header: () => <span>Descipcion</span>,
-            //Puedo usar truncate tambien o text-wrap
-            cell: (info) => <div className="max-w-[200px] truncate">{info.getValue()}</div>,
-            sortingFn: 'alphanumeric',
-            enableGlobalFilter: true, // This makes the search filter, search using full names
-        }),
+
         columnHelper.display({
             id: 'actions',
             header: () => <span>Acciones</span>,
