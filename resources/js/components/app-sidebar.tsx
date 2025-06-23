@@ -3,7 +3,7 @@ import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { CircleDollarSign, ContactIcon, CreditCard, DollarSign, LayoutDashboard, Trash2Icon } from 'lucide-react';
 import RubikateLogo from './rubikate-logo.png';
 
@@ -49,13 +49,16 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage().props;
     return (
         <Sidebar collapsible="icon" variant="inset">
+            <p>Hola {auth.user.name}</p>
             <SidebarHeader>
                 <SidebarMenu className="text-center">
                     {/* <SidebarMenuItem>
                         <SidebarMenuButton> */}
-                    <Link href="/dashboard" prefetch>
+                    {/* <Link href="/dashboard" prefetch> */}
+                    <Link href="/dashboard">
                         <img src={RubikateLogo} className="mx-auto mb-4 w-full max-w-[150px] object-contain text-center" />
                     </Link>
                     {/* </SidebarMenuButton>

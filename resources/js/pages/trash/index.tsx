@@ -22,7 +22,6 @@ type OperationsTablePageProps = {
 };
 
 export default function Index({ contacts, accounts, operations }: OperationsTablePageProps) {
-    console.log(operations);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Papelera" />

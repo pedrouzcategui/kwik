@@ -11,8 +11,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index(props: any) {
-    let contacts: Contact[] = props.contacts;
+type ContactIndexProps = {
+    contacts: Contact[];
+};
+
+export default function Index({ contacts }: ContactIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Contactos" />
