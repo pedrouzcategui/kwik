@@ -156,7 +156,7 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
                                             router.delete(`/contacts/${contact.id}`, {
                                                 preserveScroll: true,
                                                 onSuccess: () => {
-                                                    router.reload({ only: ['contacts', 'operations'] });
+                                                    router.reload();
                                                     toast.success(`Eliminaste a ${contact.full_name}`);
                                                 },
                                             })
