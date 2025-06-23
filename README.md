@@ -31,6 +31,7 @@ Esta aplicación hecha en Laravel + React (Inertia).
 - Ejecuta `npm install`
 - Ejecuta `php artisan key:generate`
 - Ejecuta `php artisan custom:flush-and-seed`
+- Ejecuta `php artisan cache:clear; php artisan route:clear; php artisan config:clear; php artisan view:clear`
 - Visita `http://127.0.0.1:8000/`
 
 Copy the environment file
