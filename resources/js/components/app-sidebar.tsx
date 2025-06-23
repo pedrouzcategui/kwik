@@ -12,31 +12,26 @@ const mainNavItems: NavItem[] = [
         title: 'Analiticas',
         href: '/dashboard',
         icon: LayoutDashboard,
-        props: ['contacts', 'accounts', 'operations'],
     },
     {
         title: 'Contactos',
         href: '/contacts',
         icon: ContactIcon,
-        props: ['contacts'],
     },
     {
         title: 'Cuentas',
         href: '/accounts',
         icon: CreditCard,
-        props: ['accounts'],
     },
     {
         title: 'Operaciones',
         href: '/operations',
         icon: CircleDollarSign,
-        props: ['contacts', 'accounts', 'operations'],
     },
     {
         title: 'Papelera',
         href: '/trash',
         icon: Trash2Icon,
-        props: ['contacts', 'accounts', 'operations'],
     },
     // {
     // title: 'Trading View',

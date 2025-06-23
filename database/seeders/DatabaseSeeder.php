@@ -2,54 +2,69 @@
 
 namespace Database\Seeders;
 
-use App\Models\Contact;
-use App\Models\User;
-use App\Models\Account;
-use App\Models\AccountProvider;
-use App\Models\Category;
-use App\Models\Operation;
+use App\Models\{
+    Account,
+    AccountProvider,
+    Category,
+    Contact,
+    Operation,
+    User
+};
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
+        // ─── Users ────────────────────────────────────────────────────────────────
         $user = User::factory()->create();
+
+        // ─── Providers & Accounts ────────────────────────────────────────────────
         $this->call(AccountProviderSeeder::class);
         $providers = AccountProvider::all();
-        // Create contacts for the user
+
+        $accounts = Account::factory()
+            ->count(10)
+            ->for($user)
+            ->state(fn() => [
+                'account_provider_id' => $providers->random()->id,
+            ])
+            ->create();
+
+        // ─── Contacts ────────────────────────────────────────────────────────────
         $contacts = Contact::factory()
             ->count(10)
             ->for($user)
             ->create();
 
-        // Create accounts with random providers
-        $accounts = Account::factory()
-            ->count(10)
+        // ─── Categories ──────────────────────────────────────────────────────────
+        $this->call(CategorySeeder::class);
+        $categories        = Category::all();
+        $incomeCategories  = $categories->where('type', 'INCOME')->values();
+        $expenseCategories = $categories->where('type', 'EXPENSE')->values();
+
+        // ─── INCOME operations ───────────────────────────────────────────────────
+        Operation::factory()
+            ->count(25)
             ->for($user)
-            ->state(function () use ($providers) {
-                return [
-                    'account_provider_id' => $providers->random()->id,
-                ];
-            })
+            ->state(fn() => [
+                'type'        => 'INCOME',                        // make sure the op itself is income
+                'contact_id'  => $contacts->random()->id,
+                'account_id'  => $accounts->random()->id,
+                'category_id' => $incomeCategories->random()->id, // ← only INCOME cats
+            ])
             ->create();
 
-        $this->call(CategorySeeder::class);
-        $categories = Category::all();
-
+        // ─── EXPENSE operations ──────────────────────────────────────────────────
         Operation::factory()
-            ->count(50)
+            ->count(25)
             ->for($user)
-            ->state(function () use ($contacts, $accounts, $categories) {
-                return [
-                    'contact_id' => $contacts->random()->id,
-                    'account_id' => $accounts->random()->id,
-                    'category_id' => $categories->random()->id
-                ];
-            })
+            ->state(fn() => [
+                'type'        => 'EXPENSE',
+                'contact_id'  => $contacts->random()->id,
+                'account_id'  => $accounts->random()->id,
+                'category_id' => $expenseCategories->random()->id, // ← only EXPENSE cats
+            ])
             ->create();
     }
 }
