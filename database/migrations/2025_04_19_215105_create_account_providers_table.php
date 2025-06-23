@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('account_providers', function (Blueprint $table) {
             $table->id();
-            $table->char('code', 4)->unique();
+            $table->char('code', 16)->unique();
             $table->string('name');
             //$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             // $table->timestamps();

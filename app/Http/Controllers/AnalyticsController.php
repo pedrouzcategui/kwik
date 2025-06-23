@@ -32,9 +32,14 @@ class AnalyticsController extends Controller
         $endDate = \Carbon\Carbon::parse($endDate)->endOfDay()->toDateTimeString();
 
         // 2. Se obtienen las cuentas del usuario y sus totales.
-        $query = DB::table('accounts')
-            ->select('currency', DB::raw('SUM(amount) as amount'))
-            ->where('user_id', '=', Auth::user()->id)
+        // $query = DB::table('accounts')
+        //     ->select('currency', DB::raw('SUM(amount) as amount'))
+        //     ->where('user_id', '=', Auth::user()->id)
+        //     ->groupBy('currency');
+
+        $query = Auth::user()                       // current user
+            ->accounts()                               // hasMany relation on User
+            ->selectRaw('currency, SUM(amount) as amount')
             ->groupBy('currency');
 
         // I might group these conditions

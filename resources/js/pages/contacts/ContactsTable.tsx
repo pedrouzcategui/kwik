@@ -16,7 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { getInitials } from '@/lib/utils';
 import { Contact } from '@/types/contact';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Copy, EyeIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 import React from 'react';
@@ -34,6 +34,8 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
     const [selectedContact, setSelectedContact] = React.useState<Contact | undefined>();
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
+    const { auth } = usePage().props;
+
     React.useEffect(() => {
         setData(contacts);
     }, [contacts]);
@@ -46,7 +48,9 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
                     <Avatar className="h-8 w-8 overflow-hidden rounded-full">
                         <AvatarFallback className="text-accent bg-primary rounded-lg">{getInitials(info.getValue())}</AvatarFallback>
                     </Avatar>
-                    <span>{info.getValue()}</span>
+                    <span>
+                        {info.getValue()} {info.row.original.id == auth.user.id && '(Yo)'}
+                    </span>
                 </div>
             ),
             sortingFn: 'alphanumeric',
@@ -133,7 +137,7 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
 
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button size="sm" variant="destructive">
+                                <Button size="sm" variant="destructive" disabled={contact.id == auth.user.id}>
                                     <Trash2Icon />
                                 </Button>
                             </AlertDialogTrigger>
