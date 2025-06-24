@@ -150,8 +150,8 @@ export default function Dashboard({
                     />
 
                     <RadarChartWithDots
-                        name={'Gastos por Categoria'}
-                        description={'Gastos y Total de Gastos ordenados por categoria'}
+                        name={'Gastos por Categoría'}
+                        description={'Gastos y total de gastos ordenados por categoría'}
                         data={expenses_grouped_by_categories}
                         dataKey={'name'}
                     />
