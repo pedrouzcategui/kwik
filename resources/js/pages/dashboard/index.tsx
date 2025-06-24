@@ -44,7 +44,11 @@ interface DashboardProps {
     };
     top_5_contacts_by_expense: {
         name: string;
-        total: number;
+        total: {
+            USD: number;
+            VES: number;
+            EUR: number;
+        };
     }[];
     status: 'neutral' | 'green' | 'yellow' | 'red';
 }
@@ -151,7 +155,7 @@ export default function Dashboard({
                         data={expenses_grouped_by_categories}
                         dataKey={'name'}
                     />
-                    <Top5Contacts top_5_contacts_by_expense={top_5_contacts_by_expense} />
+                    <Top5Contacts currency={currency} top_5_contacts_by_expense={top_5_contacts_by_expense} />
                 </div>
             </div>
             {/*<div className="grid grid-cols-4 gap-4 pb-4">

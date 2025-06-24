@@ -137,9 +137,6 @@ class AnalyticsController extends Controller
             ])
             ->values();
 
-
-
-
         // 5. Se obtienen los ultimos 30 logs del usuario.
         $systemLogs = DB::table('system_logs')
             ->select('id', 'description', 'module', 'created_at')
@@ -148,12 +145,38 @@ class AnalyticsController extends Controller
             ->get();
 
         // 2) get all expense operations with their contact & account
+        // $ops = Operation::with(['contact', 'account'])
+        //     ->where('type', 'EXPENSE')
+        //     ->where('user_id', Auth::id())
+        //     ->get();
+
+        // // 3) map each op to [name, usdAmount]
+        // $mapped = $ops->map(fn($op) => [
+        //     'name' => $op->contact->full_name,
+        //     'usd'  => $op->account->currency === 'USD'
+        //         ? $op->amount
+        //         : $op->amount / ($rates[$op->account->currency] ?? 1),
+        // ]);
+
+        // // 4) group, sum & round
+        // $topFiveContacts = $mapped
+        //     ->groupBy('name')
+        //     ->map(fn($items, $name) => [
+        //         'name'  => $name,
+        //         'total' => round(collect($items)->sum('usd'), 2),
+        //     ])
+        //     ->sortByDesc('total')
+        //     ->take(5)
+        //     ->values();
+
         $ops = Operation::with(['contact', 'account'])
             ->where('type', 'EXPENSE')
             ->where('user_id', Auth::id())
             ->get();
 
-        // 3) map each op to [name, usdAmount]
+        /* ----------------------------------------------------------------------
+| 1) normalise every operation to USD (exactly as you already did)
+|---------------------------------------------------------------------*/
         $mapped = $ops->map(fn($op) => [
             'name' => $op->contact->full_name,
             'usd'  => $op->account->currency === 'USD'
@@ -161,17 +184,27 @@ class AnalyticsController extends Controller
                 : $op->amount / ($rates[$op->account->currency] ?? 1),
         ]);
 
-        // 4) group, sum & round
+        /* ----------------------------------------------------------------------
+| 2) group by contact and build totals in USD, VES and EUR
+|---------------------------------------------------------------------*/
         $topFiveContacts = $mapped
             ->groupBy('name')
-            ->map(fn($items, $name) => [
-                'name'  => $name,
-                'total' => round(collect($items)->sum('usd'), 2),
-            ])
-            ->sortByDesc('total')
+            ->map(function ($items, $name) use ($rates) {
+                $totalUsd = collect($items)->sum('usd');   // <- base figure
+
+                return [
+                    'name'  => $name,
+                    'total' => [
+                        'USD' => round($totalUsd, 2),
+                        'VES' => round($totalUsd * ($rates['VES'] ?? 1), 2),
+                        'EUR' => round($totalUsd * ($rates['EUR'] ?? 1), 2),
+                    ],
+                ];
+            })
+            // sort by USD so the ranking is stable
+            ->sortByDesc(fn($row) => $row['total']['USD'])
             ->take(5)
             ->values();
-
 
         // Obtener el último dolar bcv y dolar paralelo disponibles
         $dolarBcv = ExchangeRate::where('currency_code', 'VES')
@@ -194,6 +227,7 @@ class AnalyticsController extends Controller
         return Inertia::render('dashboard/index', [
             'accounts_totals' => $accountSumsByCurrency,
             'expenses_grouped_by_categories' => $expensesGroupedByCategories,
+            'top_5_contacts_by_expense' => $topFiveContacts,
             'logs' => $systemLogs,
             'dollar_rates' => [
                 $dolarBcv,
@@ -209,7 +243,6 @@ class AnalyticsController extends Controller
                 'VES' => $total_savings_amount_in_ves,
                 'EUR' => $total_savings_amount_in_eur
             ],
-            'top_5_contacts_by_expense' => $topFiveContacts,
             'status' => $status,
         ]);
     }
