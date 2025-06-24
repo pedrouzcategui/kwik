@@ -59,7 +59,7 @@ export default function OperationsTable({ operations, user, categories, contacts
             sortingFn: 'datetime',
         }),
         columnHelper.accessor('description', {
-            header: () => <span>Descipcion</span>,
+            header: () => <span>Descipción</span>,
             //Puedo usar truncate tambien o text-wrap
             // cell: (info) => <div className="max-w-[200px] truncate">{info.getValue()}</div>,
             cell: (info) => <div className="max-w-[300px] truncate">{info.getValue()}</div>,
@@ -116,7 +116,7 @@ export default function OperationsTable({ operations, user, categories, contacts
         }),
         columnHelper.accessor('category.name', {
             id: 'category_name',
-            header: () => <span>Categoria de la operacion</span>,
+            header: () => <span>Categoria de la operación</span>,
             cell: (info) => <Badge style={{ backgroundColor: info.row.original.category.color }}>{info.getValue()}</Badge>,
             sortingFn: 'alphanumeric',
             enableGlobalFilter: true, // This makes the search filter, search using full names
