@@ -116,7 +116,7 @@ export default function OperationsTable({ operations, user, categories, contacts
         }),
         columnHelper.accessor('category.name', {
             id: 'category_name',
-            header: () => <span>Categoria de la operación</span>,
+            header: () => <span>Categoría de la operación</span>,
             cell: (info) => <Badge style={{ backgroundColor: info.row.original.category.color }}>{info.getValue()}</Badge>,
             sortingFn: 'alphanumeric',
             enableGlobalFilter: true, // This makes the search filter, search using full names
