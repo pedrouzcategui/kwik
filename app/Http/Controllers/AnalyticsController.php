@@ -20,7 +20,6 @@ class AnalyticsController extends Controller
         // 1. Se obtiene el rango de fechas a consultar.
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
-        $currency = $request->query('currency') ?? "VES";
 
         if (empty($startDate) || empty($endDate)) {
             $startDate = now()->subWeek()->toDateString();
@@ -221,7 +220,19 @@ class AnalyticsController extends Controller
         $hasOperations = Operation::where('user_id', Auth::id())->exists();
         $hasAccounts = Account::where('user_id', Auth::id())->exists();
 
-        $status = ($hasOperations && $hasAccounts) ? 'green' : (!$hasOperations && !$hasAccounts ? 'neutral' : 'yellow');
+        if ($total_accounts_amount_in_usd < 0) {
+            // 1️⃣ negative balance → red
+            $status = 'red';
+        } elseif ($total_accounts_amount_in_usd <= $request->user()->alert_threshold_amount) {
+            // 2️⃣ below alert threshold → yellow
+            $status = 'yellow';
+        } elseif ($hasOperations && $hasAccounts) {
+            // 3️⃣ has both ops & accounts → green
+            $status = 'green';
+        } else {
+            // 4️⃣ anything else (usually no ops & no accounts) → gray/neutral
+            $status = 'neutral';
+        }
 
         // 6. Se renderiza el dashboard con la información solicitada.
         return Inertia::render('dashboard/index', [

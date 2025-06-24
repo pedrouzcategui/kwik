@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\UserThresholdAlertController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -14,6 +15,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('settings/password', [PasswordController::class, 'edit'])->name('password.edit');
     Route::put('settings/password', [PasswordController::class, 'update'])->name('password.update');
+
+    Route::get('settings/alert', [UserThresholdAlertController::class, 'index'])->name('alert.index');
+    Route::patch('settings/alert', [UserThresholdAlertController::class, 'update'])->name('alert.update');
 
     Route::get('settings/appearance', function () {
         return Inertia::render('settings/appearance');

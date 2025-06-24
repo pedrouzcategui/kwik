@@ -3,6 +3,7 @@ import type { Config } from 'ziggy-js';
 
 export interface Auth {
     user: User;
+    status: any;
 }
 
 export interface BreadcrumbItem {
@@ -27,6 +28,7 @@ export interface SharedData {
     quote: { message: string; author: string };
     auth: Auth;
     ziggy: Config & { location: string };
+    route: any;
     [key: string]: unknown;
 }
 
@@ -38,5 +40,6 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
+    alert_threshold_amount: number;
     [key: string]: unknown; // This allows for additional properties...
 }

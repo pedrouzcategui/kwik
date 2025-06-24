@@ -33,7 +33,7 @@ const HeartBeatHealthComponent: React.FC<HeartBeatHealthComponentProps> = ({ sta
                             status === 'green'
                                 ? 'border-success/30'
                                 : status === 'yellow'
-                                  ? 'border-warning/30'
+                                  ? 'border-yellow-600'
                                   : status === 'red'
                                     ? 'border-danger/30'
                                     : 'border-gray-600/30'
