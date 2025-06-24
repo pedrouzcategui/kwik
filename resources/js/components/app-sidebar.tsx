@@ -9,7 +9,7 @@ import RubikateLogo from './rubikate-logo.png';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Analiticas',
+        title: 'Analíticas',
         href: '/dashboard',
         icon: LayoutDashboard,
     },
