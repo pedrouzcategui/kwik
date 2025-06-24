@@ -14,21 +14,34 @@ class TrashController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();        // the authenticated user
 
-        $contacts = Contact::onlyTrashed()->get();
-        $accounts = Account::onlyTrashed()->get();
-        $operations = Operation::onlyTrashed()->with([
-            'account' => fn($q) => $q->withTrashed(),
-            'contact' => fn($q) => $q->withTrashed()
-        ])->get();
+        $contacts = $user->contacts()    // HasMany builder → already filtered by user_id
+            ->onlyTrashed()              // keep just the soft-deleted ones
+            ->get();
+
+        $accounts = $user->accounts()
+            ->onlyTrashed()
+            ->get();
+
+        $operations = $user->operations()
+            ->onlyTrashed()
+            ->with([
+                // include the related (possibly-trashed) account & contact
+                'account' => fn($q) => $q->withTrashed(),
+                'contact' => fn($q) => $q->withTrashed(),
+            ])
+            ->get();
+
         return Inertia::render('trash/index', [
-            'contacts' => $contacts,
-            'accounts' => $accounts,
-            'operations' => $operations
+            'contacts'   => $contacts,
+            'accounts'   => $accounts,
+            'operations' => $operations,
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
