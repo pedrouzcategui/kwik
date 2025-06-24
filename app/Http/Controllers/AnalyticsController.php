@@ -223,7 +223,7 @@ class AnalyticsController extends Controller
         if ($total_accounts_amount_in_usd < 0) {
             // 1️⃣ negative balance → red
             $status = 'red';
-        } elseif ($total_accounts_amount_in_usd <= $request->user()->alert_threshold_amount) {
+        } elseif (($hasOperations && $hasAccounts) && ($total_accounts_amount_in_usd <= $request->user()->alert_threshold_amount)) {
             // 2️⃣ below alert threshold → yellow
             $status = 'yellow';
         } elseif ($hasOperations && $hasAccounts) {
