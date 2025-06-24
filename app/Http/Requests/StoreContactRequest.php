@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreContactRequest extends FormRequest
 {
@@ -21,11 +22,31 @@ class StoreContactRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = $this->user()->id;   // current user
+
         return [
             'full_name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email:filter'],
-            'phone' => ['nullable', 'phone:e164', 'max:20'],
-            'type' => ['required']
+
+            'email' => [
+                'required',
+                'email:rfc',
+                'max:255',
+                Rule::unique('contacts')
+                    ->where(fn($q) => $q->where('user_id', $userId)),
+            ],
+
+            'phone' => [
+                'nullable',
+                'string',
+                'max:25',
+                Rule::unique('contacts')
+                    ->where(fn($q) => $q->where('user_id', $userId)),
+            ],
+
+            'type' => [
+                'required',
+                Rule::in(['NATURAL', 'GOVERNMENT', 'BUSINESS', 'NON-PROFIT', 'INSTITUTIONAL']),
+            ],
         ];
     }
 }
