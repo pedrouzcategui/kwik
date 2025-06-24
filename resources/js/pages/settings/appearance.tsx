@@ -70,13 +70,6 @@ export default function Appearance() {
                             </Select>
                         </div>
                     </div>
-
-                    {/* Custom Layout Link */}
-                    <div className="mt-6">
-                        <a href="/settings/appearance/custom-layout" className="font-medium text-indigo-600 hover:underline">
-                            Customizar Layout del Panel de Administración
-                        </a>
-                    </div>
                 </div>
             </SettingsLayout>
         </AppLayout>
