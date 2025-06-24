@@ -28,7 +28,7 @@ class PyDolarVeApiService
 
         $sources = [
             'bcv' => 'official',
-            'enparalelovzla' => 'black_market',
+            //   'enparalelovzla' => 'black_market',
         ];
 
         foreach ($sources as $monitorKey => $sourceType) {
