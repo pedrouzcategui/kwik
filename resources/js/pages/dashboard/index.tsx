@@ -4,7 +4,6 @@ import RadarChartWithDots from '@/components/analytics/RadarChartWithDots';
 import Top5Contacts from '@/components/analytics/Top5Contacts';
 import DollarTicker from '@/components/animations/DollarTicker';
 import DatePickerWithRange from '@/components/DatePickerWithRange';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Currency } from '@/types/account';
@@ -12,6 +11,9 @@ import { ExchangeRate } from '@/types/exchange-rate';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
+import { CurrencySwitcher } from './CurrencySwitcher';
+import TotalAvailableCard from './TotalAvailableCard';
+import TotalSavingsCard from './TotalSavingsCard';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,8 +32,16 @@ interface DashboardProps {
     }[];
     logs: Log[];
     dollar_rates: ExchangeRate[];
-    total_account_amount_in_usd: number;
-    total_savings_amount: number;
+    total_available_amount: {
+        USD: number;
+        VES: number;
+        EUR: number;
+    };
+    total_savings_amount: {
+        USD: number;
+        VES: number;
+        EUR: number;
+    };
     top_5_contacts_by_expense: {
         name: string;
         total: number;
@@ -44,13 +54,14 @@ export default function Dashboard({
     expenses_grouped_by_categories,
     logs,
     dollar_rates,
-    total_account_amount_in_usd,
+    total_available_amount,
     total_savings_amount,
     top_5_contacts_by_expense,
     status,
 }: DashboardProps) {
     // Lifting the state up, means that the state lives in the parent component, and then it sends to the children
     const { auth } = usePage().props;
+    const [currency, setCurrency] = useState<`${Currency}`>('VES');
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(auth.user.created_at),
         to: new Date(),
@@ -58,13 +69,13 @@ export default function Dashboard({
 
     const handleDateChange = (newDate: DateRange | undefined) => {
         setDate(newDate);
-
         if (newDate?.from && newDate?.to) {
             router.get(
                 route('dashboard'),
                 {
                     end_date: newDate.to.toISOString().split('T')[0],
                     start_date: newDate.from.toISOString().split('T')[0],
+                    currency,
                 },
                 {
                     preserveScroll: true,
@@ -73,6 +84,24 @@ export default function Dashboard({
                 },
             );
         }
+    };
+
+    const handleCurrencyChange = (value: string) => {
+        if (value === '') return;
+        setCurrency(value as Currency);
+        // router.get(
+        //     route('dashboard'),
+        //     {
+        //         end_date: date?.to,
+        //         start_date: date?.from,
+        //         currency: value,
+        //     },
+        //     {
+        //         preserveScroll: true,
+        //         preserveState: true,
+        //         replace: true,
+        //     },
+        // );
     };
 
     return (
@@ -85,11 +114,13 @@ export default function Dashboard({
                 <Button className="border-1 border-white" variant={'outline'}>
                     Compartir Dashboard <Link />{' '}
                 </Button> */}
+                <CurrencySwitcher currency={currency} handleChange={handleCurrencyChange} />
                 <DollarTicker rates={dollar_rates} />
                 <DatePickerWithRange disabledBeforeDate={new Date(auth.user.created_at)} date={date} onChange={handleDateChange} />
             </div>
             <div className="grid grid-cols-4 gap-4 pt-2 pb-4 lg:grid-cols-2 xl:grid-cols-4">
-                <Card className="col-span-4 sm:col-span-1">
+                <TotalAvailableCard currency={currency} total_amount={total_available_amount[currency]} />
+                {/* <Card className="col-span-4 sm:col-span-1">
                     <CardHeader>
                         <CardTitle>Total Disponible</CardTitle>
                         <CardDescription>Operaciones normalizadas a dólar a tasa oficial</CardDescription>
@@ -99,20 +130,10 @@ export default function Dashboard({
                             ${total_account_amount_in_usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                     </CardContent>
-                </Card>
+                </Card> */}
                 {/* This needs to be a component */}
                  <HeartBeatHealthComponent status={status} />
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Total en Ahorros</CardTitle>
-                        <CardDescription>Operaciones normalizadas a dólar a tasa oficial</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <span className="text-3xl font-bold lg:text-4xl">
-                            ${total_savings_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </span>
-                    </CardContent>
-                </Card>
+                <TotalSavingsCard total_amount={total_savings_amount[currency]} currency={currency} />
                 {/* END: This needs to be a component */}
             </div>
             <div>

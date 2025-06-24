@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Models\ExchangeRate;
 use App\Models\Operation;
-use App\Models\User;
 
 class AnalyticsController extends Controller
 {
@@ -21,6 +20,7 @@ class AnalyticsController extends Controller
         // 1. Se obtiene el rango de fechas a consultar.
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
+        $currency = $request->query('currency') ?? "VES";
 
         if (empty($startDate) || empty($endDate)) {
             $startDate = now()->subWeek()->toDateString();
@@ -31,13 +31,7 @@ class AnalyticsController extends Controller
         $startDate = \Carbon\Carbon::parse($startDate)->startOfDay()->toDateTimeString();
         $endDate = \Carbon\Carbon::parse($endDate)->endOfDay()->toDateTimeString();
 
-        // 2. Se obtienen las cuentas del usuario y sus totales.
-        // $query = DB::table('accounts')
-        //     ->select('currency', DB::raw('SUM(amount) as amount'))
-        //     ->where('user_id', '=', Auth::user()->id)
-        //     ->groupBy('currency');
-
-        $query = Auth::user()                       // current user
+        $query = $request->user()                      // current user
             ->accounts()                               // hasMany relation on User
             ->selectRaw('currency, SUM(amount) as amount')
             ->groupBy('currency');
@@ -49,8 +43,10 @@ class AnalyticsController extends Controller
 
         $accountSumsByCurrency = $query->get();
 
-        // Get total account balance in USD
-        $accounts = Auth::user()
+        // Get total account balance in Requested Currency
+
+        // Get all accounts
+        $accounts = $request->user()
             ->accounts()
             ->select('amount', 'currency')
             ->get();
@@ -70,6 +66,9 @@ class AnalyticsController extends Controller
 
             return $total + $convertedAmount;
         }, 0), 2);
+
+        $total_accounts_amount_in_ves = $total_accounts_amount_in_usd * $rates['VES'];
+        $total_accounts_amount_in_eur = $total_accounts_amount_in_usd * $rates['EUR'];
 
         // 3. Se obtiene el total por cuenta y tipo de operación.
         $totalsByCurrencyAndType = DB::table('operations')
@@ -92,7 +91,7 @@ class AnalyticsController extends Controller
         $rates = ExchangeRate::where('source_type', 'official')
             ->pluck('rate_to_usd', 'currency_code');
 
-        $total_savings_amount = Account::where('user_id', Auth::id())
+        $total_savings_amount_in_usd = Account::where('user_id', Auth::id())
             ->where('type', 'SAVINGS')
             ->get()
             ->reduce(function ($sum, Account $acct) use ($rates) {
@@ -103,7 +102,8 @@ class AnalyticsController extends Controller
                 return $sum + $usd;
             }, 0);
 
-        $total_savings_amount = round($total_savings_amount, 2);
+        $total_savings_amount_in_ves = $total_savings_amount_in_usd * $rates['VES'];
+        $total_savings_amount_in_eur = $total_savings_amount_in_usd * $rates['EUR'];
 
 
         // 4. Se obtiene el total de gastos por categoría.
@@ -191,7 +191,7 @@ class AnalyticsController extends Controller
         $status = ($hasOperations && $hasAccounts) ? 'green' : (!$hasOperations && !$hasAccounts ? 'neutral' : 'yellow');
 
         // 6. Se renderiza el dashboard con la información solicitada.
-        return Inertia::render('dashboard', [
+        return Inertia::render('dashboard/index', [
             'accounts_totals' => $accountSumsByCurrency,
             'expenses_grouped_by_categories' => $expensesGroupedByCategories,
             'logs' => $systemLogs,
@@ -199,8 +199,16 @@ class AnalyticsController extends Controller
                 $dolarBcv,
                 $dolarParalelo,
             ],
-            'total_account_amount_in_usd' => $total_accounts_amount_in_usd,
-            'total_savings_amount' => $total_savings_amount,
+            'total_available_amount' => [
+                'USD' => $total_accounts_amount_in_usd,
+                'VES' => $total_accounts_amount_in_ves,
+                'EUR' => $total_accounts_amount_in_eur
+            ],
+            'total_savings_amount' => [
+                'USD' => $total_savings_amount_in_usd,
+                'VES' => $total_savings_amount_in_ves,
+                'EUR' => $total_savings_amount_in_eur
+            ],
             'top_5_contacts_by_expense' => $topFiveContacts,
             'status' => $status,
         ]);
