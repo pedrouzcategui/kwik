@@ -16,7 +16,7 @@ class OperationController extends Controller
      */
     public function index(Request $request)
     {
-        $operations = $request->user()->operations()->with(['contact', 'account', 'category'])->orderBy('created_at', 'desc')->get();
+        $operations = $request->user()->operations()->with(['contact', 'account', 'category'])->latest()->get();
         $user = $request->user()->load(['contacts', 'accounts']);
         $categories = Category::all();
         $contacts = $request->user()->contacts;

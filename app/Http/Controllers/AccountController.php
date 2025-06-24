@@ -19,7 +19,7 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        $accounts = $request->user()->accounts()->with('account_provider')->get();
+        $accounts = $request->user()->accounts()->with('account_provider')->latest()->get();
         $providers = AccountProvider::all();
         return Inertia::render('accounts/index', [
             'accounts' => $accounts,

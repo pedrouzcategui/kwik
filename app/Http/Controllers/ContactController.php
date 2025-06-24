@@ -15,7 +15,7 @@ class ContactController extends Controller
      */
     public function index(Request $request)
     {
-        $contacts = $request->user()->contacts;
+        $contacts = $request->user()->contacts()->latest()->get();
         return Inertia::render('contacts/index', [
             'contacts' => $contacts
         ]);
