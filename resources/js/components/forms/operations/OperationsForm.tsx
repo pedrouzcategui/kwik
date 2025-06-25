@@ -53,7 +53,7 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
             put(`/operations/${operation.id}`, {
                 onSuccess: () => {
                     setIsOpen(false);
-                    toast.success('Operacion Actualizada Exitosamente');
+                    toast.success('¡Operación editada exitosamente!');
                 },
             });
         } else {
@@ -61,7 +61,7 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
                 onSuccess: () => {
                     setIsOpen(false);
                     router.reload({ only: ['operations'] });
-                    toast.success('Operacion Creada Exitosamente');
+                    toast.success('¡Operación creada exitosamente!');
                 },
                 onError: (e) => {
                     console.log(e);
