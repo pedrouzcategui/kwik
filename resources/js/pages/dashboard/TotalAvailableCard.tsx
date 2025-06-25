@@ -11,7 +11,7 @@ export default function TotalAvailableCard({ total_amount, currency }: TotalAvai
     return (
         <Card className="col-span-4 sm:col-span-1">
             <CardHeader>
-                <CardTitle>Total Disponible</CardTitle>
+                <CardTitle>Valor total equivalente de cuentas</CardTitle>
                 <CardDescription>Operaciones normalizadas a dólar a tasa oficial</CardDescription>
             </CardHeader>
             <CardContent>

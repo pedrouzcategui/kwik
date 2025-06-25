@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Models\ExchangeRate;
 use App\Models\Operation;
+use Carbon\Carbon;
 
 class AnalyticsController extends Controller
 {
@@ -27,8 +28,8 @@ class AnalyticsController extends Controller
         }
 
         // Asegura que $endDate sea EOD (23:59:59)
-        $startDate = \Carbon\Carbon::parse($startDate)->startOfDay()->toDateTimeString();
-        $endDate = \Carbon\Carbon::parse($endDate)->endOfDay()->toDateTimeString();
+        $startDate = Carbon::parse($startDate)->startOfDay()->toDateTimeString();
+        $endDate = Carbon::parse($endDate)->endOfDay()->toDateTimeString();
 
         $query = $request->user()                      // current user
             ->accounts()                               // hasMany relation on User
@@ -42,8 +43,6 @@ class AnalyticsController extends Controller
 
         $accountSumsByCurrency = $query->get();
 
-        // Get total account balance in Requested Currency
-
         // Get all accounts
         $accounts = $request->user()
             ->accounts()
@@ -52,6 +51,7 @@ class AnalyticsController extends Controller
 
         $rates = ExchangeRate::where('source_type', 'official')
             ->select('currency_code', 'rate_to_usd')
+            ->latest()
             ->get()
             ->unique('currency_code')
             ->pluck('rate_to_usd', 'currency_code');
@@ -66,8 +66,33 @@ class AnalyticsController extends Controller
             return $total + $convertedAmount;
         }, 0), 2);
 
-        $total_accounts_amount_in_ves = $total_accounts_amount_in_usd * $rates['VES'];
-        $total_accounts_amount_in_eur = $total_accounts_amount_in_usd * $rates['EUR'];
+
+        // $total_accounts_amount_in_ves = $total_accounts_amount_in_usd * $rates['VES'];
+        $total_accounts_amount_in_ves = round($accounts->reduce(function ($total, $account) use ($rates) {
+            $currency = $account->currency ?? 'VES';
+            $ves_rates = [
+                "EUR" => $rates['VES'] / $rates['EUR'],
+                "USD" => (float) $rates['VES'],
+            ];
+            // Convert to USD
+            $convertedAmount = $currency === 'VES' ? $account->amount : $account->amount * $ves_rates[$currency];
+
+            return $total + $convertedAmount;
+        }, 0), 2);
+
+
+        // $total_accounts_amount_in_eur = $total_accounts_amount_in_usd * $rates['EUR'];
+        $total_accounts_amount_in_eur = round($accounts->reduce(function ($total, $account) use ($rates) {
+            $currency = $account->currency ?? 'EUR';
+            $eur_rates = [
+                "USD" => $rates['EUR'],
+                "VES" => 1 / ($rates['VES'] / $rates['EUR']),
+            ];
+            // Convert to USD
+            $convertedAmount = $currency === 'EUR' ? $account->amount : $account->amount * $eur_rates[$currency];
+            return $total + $convertedAmount;
+        }, 0), 2);
+
 
         // 3. Se obtiene el total por cuenta y tipo de operación.
         $totalsByCurrencyAndType = DB::table('operations')

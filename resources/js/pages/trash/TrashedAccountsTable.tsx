@@ -104,9 +104,9 @@ export default function TrashedAccountsTable({ accounts }: TrashedAccountsTableP
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
                                         <AlertDialogTitle className="text-center text-xl">
-                                            ¿Estás seguro que quieres eliminar a {account.name} por completo?
+                                            ¿Estás seguro que quieres eliminar la cuenta {account.name} por completo?
                                         </AlertDialogTitle>
-                                        <span>Esto eliminará todas sus operaciones relacionadas.</span>
+                                        <span className="text-center">Esto eliminará todas sus operaciones relacionadas.</span>
                                     </AlertDialogHeader>
 
                                     <AlertDialogFooter>
