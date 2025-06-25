@@ -51,6 +51,7 @@ export default function AccountForm({ account, providers, setIsOpen }: AccountFo
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
+        console.log(data);
         if (account) {
             put(`/accounts/${account.id}`, {
                 onSuccess: () => {
@@ -119,15 +120,17 @@ export default function AccountForm({ account, providers, setIsOpen }: AccountFo
 
             {data.with_initial_operation && account == null && (
                 <div>
-                    <Label className="mb-2 block">Monto</Label>
+                    <Label className="mb-2 block" htmlFor="initial_amount">
+                        Monto
+                    </Label>
                     <Input
                         name="initial_amount"
-                        min={0}
+                        // min={0}
                         type="number"
                         value={data.initial_amount}
                         onChange={(e) => setData('initial_amount', parseFloat(e.target.value))}
                     />
-                    <InputError message={errors.name} />
+                    <InputError message={errors.initial_amount} />
                 </div>
             )}
 

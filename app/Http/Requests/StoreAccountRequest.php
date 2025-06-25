@@ -26,8 +26,17 @@ class StoreAccountRequest extends FormRequest
             'currency' => ['required', 'string'],
             'type' => ['required', 'string'],
             'account_provider_id' => ['required', 'string'],
-            'with_initial_operation' => ['sometimes', 'boolean'],
-            'initial_amount' => ['sometimes', 'numeric']
+            'with_initial_operation' => ['boolean'],
+            'initial_amount' => ['required_if:with_initial_operation,true', 'numeric']
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name' => "El nombre de la cuenta es requerido.",
+            'account_provider_id' => "El proveedor de la cuenta es requerido.",
+            'initial_amount.required_if' => "El monto inicial es requerido si 'Crear cuenta con monto inicial' está seleccionado."
         ];
     }
 }
