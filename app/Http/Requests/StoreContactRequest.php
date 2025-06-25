@@ -28,7 +28,7 @@ class StoreContactRequest extends FormRequest
             'full_name' => ['required', 'string', 'max:255'],
 
             'email' => [
-                'required',
+                'required_without:phone',
                 'email:rfc',
                 'max:255',
                 Rule::unique('contacts')
@@ -36,7 +36,7 @@ class StoreContactRequest extends FormRequest
             ],
 
             'phone' => [
-                'nullable',
+                'required_without:email',
                 'string',
                 'max:25',
                 Rule::unique('contacts')
@@ -47,6 +47,19 @@ class StoreContactRequest extends FormRequest
                 'required',
                 Rule::in(['NATURAL', 'GOVERNMENT', 'BUSINESS', 'NON-PROFIT', 'INSTITUTIONAL']),
             ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'full_name.required' => "El campo nombre completo es requerido.",
+            'email.required_without' => "El campo email es requerido cuando el campo de teléfono está vacío.",
+            'email.rfc' => "El campo email debe ser un correo válido.",
+            'phone.required_without' => "El campo teléfono es requerido cuando el campo email está vacío.",
+            'email.unique' => "Ya existe un contacto con este email.",
+            'phone.unique' => "Ya existe un contacto con este número de teléfono.",
+            'phone.max' => "El número de teléfono no puede ser mayor a 25 caracteres."
         ];
     }
 }

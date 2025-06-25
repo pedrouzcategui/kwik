@@ -29,4 +29,11 @@ class ProfileUpdateRequest extends FormRequest
             ],
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'email.unique' => "Este email ya existe, intenta con otro email."
+        ];
+    }
 }

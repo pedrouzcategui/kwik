@@ -23,13 +23,14 @@ type ContactFormComponentProps = {
 export default function ContactForm({ contact, setIsOpen }: ContactFormComponentProps) {
     const { data, setData, post, put, processing, errors } = useForm<ContactForm>({
         full_name: contact?.full_name ?? '',
-        email: contact?.email ?? '',
-        phone: contact?.phone ?? '',
+        email: contact?.email,
+        phone: contact?.phone,
         type: contact?.type ?? 'NATURAL',
     });
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
+        console.log(data);
 
         if (contact) {
             put(`/contacts/${contact.id}`, {

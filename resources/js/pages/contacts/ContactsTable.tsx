@@ -160,11 +160,9 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
                             <AlertDialogContent>
                                 <AlertDialogHeader>
                                     <AlertDialogTitle className="text-center text-xl">
-                                        ¿Estás seguro que quieres eliminar a {contact.full_name}?
+                                        ¿Quieres mover a {contact.full_name} a la papelera?
                                     </AlertDialogTitle>
-                                    <span>
-                                        Esto eliminará todas sus operaciones relacionadas, y es posible que tus cuentas cambien drásticamente.
-                                    </span>
+                                    <span>¡No te preocupes! Podrás restaurar estos datos en caso de que los necesites.</span>
                                 </AlertDialogHeader>
 
                                 <AlertDialogFooter>
@@ -181,7 +179,7 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
                                             })
                                         }
                                     >
-                                        Sí, eliminar
+                                        Si, mover a la papelera
                                     </AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
