@@ -28,4 +28,12 @@ class UpdateAccountRequest extends FormRequest
             'account_provider_id' => ['required', 'string']
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'name' => "El nombre de la cuenta es requerido.",
+            'account_provider_id' => "El proveedor de la cuenta es requerido.",
+        ];
+    }
 }

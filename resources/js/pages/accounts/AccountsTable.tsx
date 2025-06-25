@@ -128,9 +128,11 @@ export default function AccountsTable({ accounts, providers }: AccountsTableProp
                             <AlertDialogContent>
                                 <AlertDialogHeader>
                                     <AlertDialogTitle className="text-center text-xl">
-                                        ¿Estás seguro que quieres eliminar la cuenta {account.name}?
+                                        ¿Quieres mover la cuenta {account.name} a la papelera?
                                     </AlertDialogTitle>
-                                    <span>Esto eliminará todas las operaciones asociadas a esta cuenta.</span>
+                                    <span>
+                                        ¡No te preocupes! Podrás recuperar esta cuenta y todas las operaciones asociadas a ella en la papelera.
+                                    </span>
                                 </AlertDialogHeader>
 
                                 <AlertDialogFooter>
@@ -141,13 +143,13 @@ export default function AccountsTable({ accounts, providers }: AccountsTableProp
                                             router.delete(`/accounts/${account.id}`, {
                                                 preserveScroll: true,
                                                 onSuccess: () => {
-                                                    toast.success(`La cuenta ${account.name} ha sido eliminada exitosamente.`);
+                                                    toast.success(`La cuenta ${account.name} ha sido movida a la papelera.`);
                                                     router.reload({ only: ['accounts'] });
                                                 },
                                             })
                                         }
                                     >
-                                        Sí, eliminar
+                                        Sí, mover a la papelera
                                     </AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>

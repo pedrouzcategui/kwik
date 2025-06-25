@@ -42,7 +42,7 @@ type AccountFormComponentProps = {
 export default function AccountForm({ account, providers, setIsOpen }: AccountFormComponentProps) {
     const { data, setData, processing, post, put, errors } = useForm<AccountForm>({
         name: account?.name ?? '',
-        currency: account?.currency ?? 'USD',
+        currency: account?.currency ?? 'VES',
         type: account?.type ?? 'CHECKING',
         account_provider_id: account?.account_provider_id.toString() ?? '',
         initial_amount: 0,
@@ -88,9 +88,9 @@ export default function AccountForm({ account, providers, setIsOpen }: AccountFo
                         <SelectValue placeholder="Selecciona tu moneda" />
                     </SelectTrigger>
                     <SelectContent>
+                        <SelectItem value="VES">VES</SelectItem>
                         <SelectItem value="USD">USD</SelectItem>
                         <SelectItem value="EUR">EUR</SelectItem>
-                        <SelectItem value="VES">VES</SelectItem>
                     </SelectContent>
                 </Select>
             </div>

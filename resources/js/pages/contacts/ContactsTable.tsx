@@ -162,7 +162,9 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
                                     <AlertDialogTitle className="text-center text-xl">
                                         ¿Quieres mover a {contact.full_name} a la papelera?
                                     </AlertDialogTitle>
-                                    <span>¡No te preocupes! Podrás restaurar estos datos en caso de que los necesites.</span>
+                                    <span>
+                                        ¡No te preocupes! Podrás recuperar este contacto y todas las operaciones asociadas al mismo en la papelera.
+                                    </span>
                                 </AlertDialogHeader>
 
                                 <AlertDialogFooter>
@@ -174,7 +176,7 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
                                                 preserveScroll: true,
                                                 onSuccess: () => {
                                                     router.reload();
-                                                    toast.success(`Eliminaste a ${contact.full_name}`);
+                                                    toast.success(`El contacto ${contact.full_name} ha sido movido a la papelera.`);
                                                 },
                                             })
                                         }
