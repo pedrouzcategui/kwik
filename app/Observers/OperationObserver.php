@@ -63,17 +63,23 @@ class OperationObserver
      */
     public function deleted(Operation $operation): void
     {
-        if ($operation->type == 'INCOME') {
-            $operation->account->amount -= $operation->amount;
-        } else if ($operation->type == 'EXPENSE') {
-            $operation->account->amount += $operation->amount;
+        // fetch the parent even if it’s soft-deleted
+        $account = $operation->account()->withTrashed()->first();
+
+        if (! $account) {
+            return;   // safety net – should never happen
         }
-        $operation->account->save();
+
+        if ($operation->type === 'INCOME') {
+            $account->decrement('amount', $operation->amount);   // atomic SQL
+        } else { // EXPENSE
+            $account->increment('amount', $operation->amount);
+        }
 
         SystemLog::create([
-            'user_id' => Auth::id(),
-            'module' => 'Operation',
-            'action' => 'Delete',
+            'user_id'     => Auth::id(),
+            'module'      => 'Operation',
+            'action'      => 'Delete',
             'description' => "Deleted operation with ID: {$operation->id}",
         ]);
     }

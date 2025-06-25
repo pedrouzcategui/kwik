@@ -1,4 +1,4 @@
-import { Account, AccountProvider, AccountType } from './account';
+import { Account, AccountProvider, AccountType, Currency } from './account';
 import { Category } from './category';
 import { Contact } from './contact';
 import { OperationType } from './operation';
@@ -14,6 +14,7 @@ export type TrashedAccount = {
     name: string;
     amount: number;
     type: AccountType;
+    currency: Currency;
     account_provider?: AccountProvider;
     deleted_at: string;
 };

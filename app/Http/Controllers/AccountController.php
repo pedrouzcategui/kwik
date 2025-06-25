@@ -104,6 +104,7 @@ class AccountController extends Controller
         }
 
         $account->delete();
+
         return to_route('accounts.index')->with('success', 'Cuenta Eliminada');
     }
 

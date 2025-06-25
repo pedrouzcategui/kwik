@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { currencyMap } from '@/lib/utils';
 import { TrashedOperation } from '@/types/trash';
 import { router } from '@inertiajs/react';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -44,6 +45,35 @@ export default function TrashedOperationsTable({ operations }: TrashedOperations
                 header: 'Nombre de la cuenta',
                 cell: (info) => <span>{info.getValue()}</span>,
             }),
+            columnHelper.accessor(
+                /* 1️⃣  Return a *signed* number  */
+                (row) => (row.type === 'EXPENSE' ? -Number(row.amount) : Number(row.amount)),
+                {
+                    id: 'amount', // stable key for filters/sorts
+
+                    header: () => <span>Monto</span>,
+
+                    /* 2️⃣  Presentational badge — keeps the sign for the user */
+                    cell: ({ row }) => {
+                        const { amount, type, account } = row.original;
+                        const symbol = currencyMap[account.currency];
+                        const signed = type === 'EXPENSE' ? '-' : '+';
+
+                        return (
+                            <Badge variant={type === 'INCOME' ? 'success' : 'destructive'}>
+                                <b>{signed}</b> {symbol}
+                                {amount}
+                            </Badge>
+                        );
+                    },
+
+                    sortingFn: 'basic',
+
+                    sortDescFirst: true, // first click → ▼
+
+                    enableGlobalFilter: true,
+                },
+            ),
 
             columnHelper.accessor('contact.full_name', {
                 header: () => <span>Contacto</span>,
