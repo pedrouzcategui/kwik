@@ -148,10 +148,8 @@ export default function OperationsTable({ operations, user, categories, contacts
 
                             <AlertDialogContent>
                                 <AlertDialogHeader className="text-center">
-                                    <AlertDialogTitle className="text-xl">
-                                        ¿Estás seguro que quieres eliminar la operación {operation.contact.full_name} - {operation.description}?
-                                    </AlertDialogTitle>
-                                    <span>No hay vuelta atrás.</span>
+                                    <AlertDialogTitle className="text-xl">¿Quieres mover la operación a la papelera?</AlertDialogTitle>
+                                    <span>¡No te preocupes! Podrás recuperar esta operación en la papelera.</span>
                                 </AlertDialogHeader>
 
                                 <AlertDialogFooter>
@@ -162,13 +160,13 @@ export default function OperationsTable({ operations, user, categories, contacts
                                             router.delete(`/operations/${operation.id}`, {
                                                 preserveScroll: true,
                                                 onSuccess: () => {
-                                                    toast.success(`La cuenta ${operation.id} ha sido eliminada exitosamente.`);
-                                                    router.reload({ only: ['accounts'] });
+                                                    toast.success(`La operación ${operation.id} ha sido movida a la papelera.`);
+                                                    router.reload({ only: ['operations', 'accounts'] });
                                                 },
                                             })
                                         }
                                     >
-                                        Sí, eliminar
+                                        Sí, mover a la papelera
                                     </AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
