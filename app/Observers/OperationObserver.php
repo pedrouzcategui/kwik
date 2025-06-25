@@ -63,6 +63,10 @@ class OperationObserver
      */
     public function deleted(Operation $operation): void
     {
+
+        if ($operation->isForceDeleting()) {
+            return;
+        }
         // fetch the parent even if it’s soft-deleted
         $account = $operation->account()->withTrashed()->first();
 
@@ -89,6 +93,13 @@ class OperationObserver
      */
     public function restored(Operation $operation): void
     {
+        $account = $operation->account;     // already "trash-aware" if you added ->withTrashed()
+        if ($operation->type === 'INCOME') {
+            $account->increment('amount', $operation->amount);
+        } else { // EXPENSE
+            $account->decrement('amount', $operation->amount);
+        }
+
         SystemLog::create([
             'user_id' => Auth::id(),
             'module' => 'Operation',
