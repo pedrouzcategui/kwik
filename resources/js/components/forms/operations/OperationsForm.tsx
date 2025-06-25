@@ -9,7 +9,7 @@ import { Category } from '@/types/category';
 import { Contact } from '@/types/contact';
 import { OperationTableColumns, OperationTypeStringUnion } from '@/types/operation';
 import { router, useForm } from '@inertiajs/react';
-import { Dispatch, FormEvent, SetStateAction } from 'react';
+import { Dispatch, FormEvent, SetStateAction, useMemo } from 'react';
 import { toast } from 'sonner';
 import CategoriesSelect from './CategoriesSelect';
 
@@ -28,7 +28,7 @@ type OperationForm = {
     category_id: string;
     account_id: string;
     account_target_id?: string;
-    amount: number;
+    amount?: number;
     type: OperationTypeStringUnion;
     description?: string;
 };
@@ -38,14 +38,17 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
         contact_id: operation?.contact.id ?? '',
         account_id: operation?.account.id ?? '',
         account_target_id: operation?.target_account_id ?? '',
-        amount: operation?.amount ?? 0,
+        amount: operation?.amount,
         type: (operation?.type as OperationTypeStringUnion) ?? null,
         description: operation?.description ?? '',
         category_id: operation?.category.id ?? '',
     });
 
+    const selectedAccount = useMemo(() => user.accounts.find((a) => a.id === data.account_id), [user.accounts, data.account_id]);
+
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
+        console.log(data);
         if (operation) {
             put(`/operations/${operation.id}`, {
                 onSuccess: () => {
@@ -86,7 +89,7 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
                 <InputError message={errors.contact_id} className="mt-2" />
             </div>
             <div>
-                <Label className="mb-2 block">Tipo de Operacion</Label>
+                <Label className="mb-2 block">Tipo de Operación</Label>
                 <Select
                     name="type"
                     value={data.type}
@@ -140,20 +143,25 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
                     name="amount"
                     disabled={!!operation}
                     type="number"
+                    min={0}
+                    // ⚠️ only cap the value when the op is an EXPENSE
+                    // max={data.type === 'EXPENSE' && selectedAccount ? selectedAccount.amount : undefined}
                     value={data.amount}
-                    onChange={(e) => setData('amount', parseInt(e.target.value))}
+                    onChange={(e) => {
+                        setData('amount', parseInt(e.target.value, 10));
+                    }}
                 />
                 <InputError message={errors.amount} className="mt-2" />
             </div>
             <div>
-                <Label>Descripcion</Label>
+                <Label>Descripción</Label>
                 <Textarea onChange={(e) => setData('description', e.target.value)} name="description">
                     {operation?.description}
                 </Textarea>
                 <InputError message={errors.description} className="mt-2" />
             </div>
             <Button disabled={processing} className="w-full" size={'lg'} type="submit">
-                {operation ? 'Editar' : 'Crear'} Operacion
+                {operation ? 'Editar' : 'Crear'} Operación
             </Button>
         </form>
     );

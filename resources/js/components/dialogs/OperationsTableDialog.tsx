@@ -39,7 +39,7 @@ export default function OperationsTableDialog({
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle className="mb-4">{selectedOperation ? 'Editar' : 'Crear'} Operacion</DialogTitle>
+                    <DialogTitle className="mb-4">{selectedOperation ? 'Editar' : 'Crear'} Operación</DialogTitle>
                     <OperationForm
                         user={{
                             contacts,
