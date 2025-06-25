@@ -10,276 +10,167 @@ use Inertia\Inertia;
 use App\Models\ExchangeRate;
 use App\Models\Operation;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class AnalyticsController extends Controller
 {
-    /**
-     * Tabla de Analíticas
-     */
     public function index(Request $request)
     {
-        // 1. Se obtiene el rango de fechas a consultar.
-        $startDate = $request->query('start_date');
-        $endDate = $request->query('end_date');
+        /* ------------------------------------------------------------------ */
+        /* 1) Rango de fechas                                                 */
+        /* ------------------------------------------------------------------ */
+        [$start, $end] = $this->resolveDateRange($request);
 
-        if (empty($startDate) || empty($endDate)) {
-            $startDate = now()->subWeek()->toDateString();
-            $endDate = now()->toDateString();
-        }
+        /* ------------------------------------------------------------------ */
+        /* 2) Tipos de cambio oficiales (cache 60 s)                          */
+        /* ------------------------------------------------------------------ */
+        $rates = Cache::remember('fx:official', 60, function () {
+            return ExchangeRate::where('source_type', 'official')
+                ->latest('effective_date')
+                ->get()
+                ->unique('currency_code')
+                ->pluck('rate_to_usd', 'currency_code')
+                ->toArray();            // -> { 'USD' => 1, 'VES' => 106.47, … }
+        });
 
-        // Asegura que $endDate sea EOD (23:59:59)
-        $startDate = Carbon::parse($startDate)->startOfDay()->toDateTimeString();
-        $endDate = Carbon::parse($endDate)->endOfDay()->toDateTimeString();
+        /* Helpers de conversión */
+        $toUsd   = fn(float $amt, string $cur) => $cur === 'USD'
+            ? $amt
+            : $amt / ($rates[$cur] ?? 1);
 
-        $query = $request->user()                      // current user
-            ->accounts()                               // hasMany relation on User
-            ->selectRaw('currency, SUM(amount) as amount')
-            ->groupBy('currency');
+        $fromUsd = fn(float $usd) => [
+            'USD' => round($usd, 2),
+            'VES' => round($usd * ($rates['VES'] ?? 1), 2),
+            'EUR' => round($usd * ($rates['EUR'] ?? 1), 2),
+        ];
 
-        // I might group these conditions
-        if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate]);
-        }
-
-        $accountSumsByCurrency = $query->get();
-
-        // Get all accounts
+        /* ------------------------------------------------------------------ */
+        /* 3) Cuentas (todas de una vez)                                      */
+        /* ------------------------------------------------------------------ */
         $accounts = $request->user()
             ->accounts()
-            ->select('amount', 'currency')
-            ->get();
+            ->when($start && $end, fn($q) => $q->whereBetween('created_at', [$start, $end]))
+            ->get(['id', 'type', 'currency', 'amount']);
 
-        $rates = ExchangeRate::where('source_type', 'official')
-            ->select('currency_code', 'rate_to_usd')
-            ->latest()
-            ->get()
-            ->unique('currency_code')
-            ->pluck('rate_to_usd', 'currency_code');
-
-        $total_accounts_amount_in_usd = round($accounts->reduce(function ($total, $account) use ($rates) {
-            $currency = $account->currency ?? 'USD';
-            $rate = $rates[$currency] ?? 1;
-
-            // Convert to USD
-            $convertedAmount = $currency === 'USD' ? $account->amount : $account->amount / $rate;
-
-            return $total + $convertedAmount;
-        }, 0), 2);
-
-
-        // $total_accounts_amount_in_ves = $total_accounts_amount_in_usd * $rates['VES'];
-        $total_accounts_amount_in_ves = round($accounts->reduce(function ($total, $account) use ($rates) {
-            $currency = $account->currency ?? 'VES';
-            $ves_rates = [
-                "EUR" => $rates['VES'] / $rates['EUR'],
-                "USD" => (float) $rates['VES'],
-            ];
-            // Convert to USD
-            $convertedAmount = $currency === 'VES' ? $account->amount : $account->amount * $ves_rates[$currency];
-
-            return $total + $convertedAmount;
-        }, 0), 2);
-
-
-        // $total_accounts_amount_in_eur = $total_accounts_amount_in_usd * $rates['EUR'];
-        $total_accounts_amount_in_eur = round($accounts->reduce(function ($total, $account) use ($rates) {
-            $currency = $account->currency ?? 'EUR';
-            $eur_rates = [
-                "USD" => $rates['EUR'],
-                "VES" => 1 / ($rates['VES'] / $rates['EUR']),
-            ];
-            // Convert to USD
-            $convertedAmount = $currency === 'EUR' ? $account->amount : $account->amount * $eur_rates[$currency];
-            return $total + $convertedAmount;
-        }, 0), 2);
-
-
-        // 3. Se obtiene el total por cuenta y tipo de operación.
-        $totalsByCurrencyAndType = DB::table('operations')
-            ->join('accounts', 'operations.account_id', '=', 'accounts.id')
-            ->select(
-                'accounts.currency',
-                'operations.type',
-                DB::raw('SUM(operations.amount) as total')
-            )
-            ->where('operations.user_id', '=', Auth::user()->id)
-            ->groupBy('accounts.currency', 'operations.type');
-
-        if ($startDate && $endDate) {
-            $totalsByCurrencyAndType->whereBetween('operations.created_at', [$startDate, $endDate]);
-        }
-
-        $totalsByCurrencyAndType = $totalsByCurrencyAndType->get();
-
-        // Calculate total savings amount
-        $rates = ExchangeRate::where('source_type', 'official')
-            ->pluck('rate_to_usd', 'currency_code');
-
-        $total_savings_amount_in_usd = Account::where('user_id', Auth::id())
-            ->where('type', 'SAVINGS')
-            ->get()
-            ->reduce(function ($sum, Account $acct) use ($rates) {
-                $rate = $rates[$acct->currency] ?? 1;
-                $usd  = $acct->currency === 'USD'
-                    ? $acct->amount
-                    : $acct->amount / $rate;
-                return $sum + $usd;
-            }, 0);
-
-        $total_savings_amount_in_ves = $total_savings_amount_in_usd * $rates['VES'];
-        $total_savings_amount_in_eur = $total_savings_amount_in_usd * $rates['EUR'];
-
-
-        // 4. Se obtiene el total de gastos por categoría.
-        $rates = ExchangeRate::where('source_type', 'official')
-            ->pluck('rate_to_usd', 'currency_code');
-
-        $rows = Operation::with(['category', 'account'])
-            ->where('type', 'EXPENSE')
-            ->where('user_id', Auth::id())
-            ->when(
-                $startDate && $endDate,
-                fn($q) =>
-                $q->whereBetween('created_at', [$startDate, $endDate])
-            )
-            ->get();
-
-        // Map each operation into a USD-amount + category name
-        $mapped = $rows->map(fn($op) => [
-            'name' => $op->category->name,
-            'usd'  => $op->account->currency === 'USD'
-                ? $op->amount
-                : $op->amount / ($rates[$op->account->currency] ?? 1),
-        ]);
-
-        // Group by category name, sum and round
-        $expensesGroupedByCategories = $mapped
-            ->groupBy('name')
-            ->map(fn($items, $name) => [
-                'name'  => $name,
-                'total' => round(collect($items)->sum('usd'), 2),
+        /* Totales por divisa                                                  */
+        $accountSumsByCurrency = $accounts
+            ->groupBy('currency')
+            ->map(fn($rows, $cur) => [
+                'currency' => $cur,
+                'amount'   => round($rows->sum('amount'), 2),
             ])
             ->values();
 
-        // 5. Se obtienen los ultimos 30 logs del usuario.
-        $systemLogs = DB::table('system_logs')
-            ->select('id', 'description', 'module', 'created_at')
-            ->orderBy('created_at', 'desc')
-            ->limit(30)
+        /* Totales globales (todas las cuentas)                                */
+        $totalAvailableUsd = $accounts->sum(fn($a) => $toUsd($a->amount, $a->currency));
+        $totalAvailable    = $fromUsd($totalAvailableUsd);
+
+        /* Totales sólo de cuentas de ahorro                                   */
+        $savings           = $accounts->where('type', 'SAVINGS');
+        $totalSavingsUsd   = $savings->sum(fn($a) => $toUsd($a->amount, $a->currency));
+        $totalSavings      = $fromUsd($totalSavingsUsd);
+        /* ------------------------------------------------------------------ */
+        /* 4) Operaciones (gastos)                                             */
+        /* ------------------------------------------------------------------ */
+        $expenses = Operation::with(['category:id,name', 'account:id,currency'])
+            ->where('user_id',   $request->user()->id)
+            ->where('type',     'EXPENSE')
+            ->when($start && $end, fn($q) => $q->whereBetween('created_at', [$start, $end]))
             ->get();
 
-        // 2) get all expense operations with their contact & account
-        // $ops = Operation::with(['contact', 'account'])
-        //     ->where('type', 'EXPENSE')
-        //     ->where('user_id', Auth::id())
-        //     ->get();
+        /* 4.a) Gastos por categoría                                           */
+        $expensesGroupedByCategories = $expenses
+            ->groupBy(fn($op) => $op->category->name)
+            ->map(fn($grp, $name) => [
+                'name'  => $name,
+                'total' => round(
+                    $grp->sum(fn($op) => $toUsd($op->amount, $op->account->currency)),
+                    2
+                ),
+            ])
+            ->values();
 
-        // // 3) map each op to [name, usdAmount]
-        // $mapped = $ops->map(fn($op) => [
-        //     'name' => $op->contact->full_name,
-        //     'usd'  => $op->account->currency === 'USD'
-        //         ? $op->amount
-        //         : $op->amount / ($rates[$op->account->currency] ?? 1),
-        // ]);
-
-        // // 4) group, sum & round
-        // $topFiveContacts = $mapped
-        //     ->groupBy('name')
-        //     ->map(fn($items, $name) => [
-        //         'name'  => $name,
-        //         'total' => round(collect($items)->sum('usd'), 2),
-        //     ])
-        //     ->sortByDesc('total')
-        //     ->take(5)
-        //     ->values();
-
-        $ops = Operation::with(['contact', 'account'])
-            ->where('type', 'EXPENSE')
-            ->where('user_id', Auth::id())
-            ->get();
-
-        /* ----------------------------------------------------------------------
-| 1) normalise every operation to USD (exactly as you already did)
-|---------------------------------------------------------------------*/
-        $mapped = $ops->map(fn($op) => [
-            'name' => $op->contact->full_name,
-            'usd'  => $op->account->currency === 'USD'
-                ? $op->amount
-                : $op->amount / ($rates[$op->account->currency] ?? 1),
-        ]);
-
-        /* ----------------------------------------------------------------------
-| 2) group by contact and build totals in USD, VES and EUR
-|---------------------------------------------------------------------*/
-        $topFiveContacts = $mapped
-            ->groupBy('name')
-            ->map(function ($items, $name) use ($rates) {
-                $totalUsd = collect($items)->sum('usd');   // <- base figure
-
-                return [
-                    'name'  => $name,
-                    'total' => [
-                        'USD' => round($totalUsd, 2),
-                        'VES' => round($totalUsd * ($rates['VES'] ?? 1), 2),
-                        'EUR' => round($totalUsd * ($rates['EUR'] ?? 1), 2),
-                    ],
-                ];
-            })
-            // sort by USD so the ranking is stable
+        /* 4.b) Top-5 contactos                                                */
+        $topFiveContacts = $expenses
+            ->groupBy(fn($op) => $op->contact->full_name)
+            ->map(fn($grp, $name) => [
+                'name'  => $name,
+                'total' => $fromUsd(
+                    $grp->sum(fn($op) => $toUsd($op->amount, $op->account->currency))
+                ),
+            ])
             ->sortByDesc(fn($row) => $row['total']['USD'])
             ->take(5)
             ->values();
 
-        // Obtener el último dolar bcv y dolar paralelo disponibles
+        /* ------------------------------------------------------------------ */
+        /* 5) Logs + tasas VES (BCV / paralelo)                                */
+        /* ------------------------------------------------------------------ */
+        $systemLogs = DB::table('system_logs')
+            ->select('id', 'description', 'module', 'created_at')
+            ->latest()
+            ->limit(30)
+            ->get();
+
         $dolarBcv = ExchangeRate::where('currency_code', 'VES')
             ->where('source_type', 'official')
-            ->orderBy('effective_date', 'desc')
+            ->latest('effective_date')
             ->first();
 
         $dolarParalelo = ExchangeRate::where('currency_code', 'VES')
             ->where('source_type', 'black_market')
-            ->orderBy('effective_date', 'desc')
+            ->latest('effective_date')
             ->first();
 
-        // Determine the user's status based on operations and accounts
-        $hasOperations = Operation::where('user_id', Auth::id())->exists();
-        $hasAccounts = Account::where('user_id', Auth::id())->exists();
+        /* ------------------------------------------------------------------ */
+        /* 6) Semáforo de estado                                               */
+        /* ------------------------------------------------------------------ */
+        $hasOps      = $expenses->isNotEmpty();  // ya las cargamos arriba
+        $hasAccounts = $accounts->isNotEmpty();
 
-        if ($total_accounts_amount_in_usd < 0) {
-            // 1️⃣ negative balance → red
+        $status = 'neutral';
+        if ($totalAvailableUsd < 0) {
             $status = 'red';
-        } elseif (($hasOperations && $hasAccounts) && ($total_accounts_amount_in_usd <= $request->user()->alert_threshold_amount)) {
-            // 2️⃣ below alert threshold → yellow
+        } elseif (
+            $hasOps && $hasAccounts &&
+            $totalAvailableUsd <= $request->user()->alert_threshold_amount
+        ) {
             $status = 'yellow';
-        } elseif ($hasOperations && $hasAccounts) {
-            // 3️⃣ has both ops & accounts → green
+        } elseif ($hasOps && $hasAccounts) {
             $status = 'green';
-        } else {
-            // 4️⃣ anything else (usually no ops & no accounts) → gray/neutral
-            $status = 'neutral';
         }
 
-        // 6. Se renderiza el dashboard con la información solicitada.
+        /* ------------------------------------------------------------------ */
+        /* 7) Render                                                           */
+        /* ------------------------------------------------------------------ */
         return Inertia::render('dashboard/index', [
-            'accounts_totals' => $accountSumsByCurrency,
+            'accounts_totals'              => $accountSumsByCurrency,
             'expenses_grouped_by_categories' => $expensesGroupedByCategories,
-            'top_5_contacts_by_expense' => $topFiveContacts,
-            'logs' => $systemLogs,
-            'dollar_rates' => [
-                $dolarBcv,
-                $dolarParalelo,
-            ],
-            'total_available_amount' => [
-                'USD' => $total_accounts_amount_in_usd,
-                'VES' => $total_accounts_amount_in_ves,
-                'EUR' => $total_accounts_amount_in_eur
-            ],
-            'total_savings_amount' => [
-                'USD' => $total_savings_amount_in_usd,
-                'VES' => $total_savings_amount_in_ves,
-                'EUR' => $total_savings_amount_in_eur
-            ],
-            'status' => $status,
+            'top_5_contacts_by_expense'    => $topFiveContacts,
+            'logs'                         => $systemLogs,
+            'dollar_rates'                 => [$dolarBcv, $dolarParalelo],
+            'total_available_amount'       => $totalAvailable,
+            'total_savings_amount'         => $totalSavings,
+            'status'                       => $status,
         ]);
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Extra: helper privado para resolver rango de fechas                    */
+    /* ---------------------------------------------------------------------- */
+    private function resolveDateRange(Request $req): array
+    {
+        $start = $req->query('start_date');
+        $end   = $req->query('end_date');
+
+        if (!$start || !$end) {
+            $start = now()->subWeek();
+            $end   = now();
+        }
+
+        return [
+            Carbon::parse($start)->startOfDay(),
+            Carbon::parse($end)->endOfDay(),
+        ];
     }
 }
