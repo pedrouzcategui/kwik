@@ -1,15 +1,21 @@
-import { Account } from './account';
+import { Account, AccountProvider, AccountType } from './account';
+import { Category } from './category';
 import { Contact } from './contact';
 import { OperationType } from './operation';
 
 export type TrashedContact = {
     id: string;
     full_name: string;
+    deleted_at: string;
 };
 
 export type TrashedAccount = {
     id: string;
     name: string;
+    amount: number;
+    type: AccountType;
+    account_provider?: AccountProvider;
+    deleted_at: string;
 };
 
 export type TrashedOperation = {
@@ -17,6 +23,8 @@ export type TrashedOperation = {
     amount: number;
     account: Account;
     contact: Contact;
+    category: Category;
     type: OperationType;
     description: string;
+    deleted_at: string;
 };

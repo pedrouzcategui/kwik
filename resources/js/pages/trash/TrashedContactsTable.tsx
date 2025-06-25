@@ -27,8 +27,20 @@ export default function TrashedContactsTable({ contacts }: TrashedContactsTableP
     const contactColumns = React.useMemo(
         () => [
             // An “accessor” column for your name field
+            columnHelper.accessor('deleted_at', {
+                header: 'Fecha de Eliminación',
+                cell: (info) => (
+                    <span>
+                        {new Date(info.getValue()).toLocaleDateString('es-ES', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                        })}
+                    </span>
+                ),
+            }),
             columnHelper.accessor('full_name', {
-                header: 'Name',
+                header: 'Nombre del contacto',
                 cell: (info) => <span>{info.getValue()}</span>,
             }),
 
@@ -41,7 +53,7 @@ export default function TrashedContactsTable({ contacts }: TrashedContactsTableP
                     return (
                         <>
                             <AlertDialog>
-                                <AlertDialogTrigger asChild>
+                                <AlertDialogTrigger asChild className="mr-2">
                                     <Button size="sm" variant="destructive">
                                         <BombIcon />
                                     </Button>
@@ -52,7 +64,7 @@ export default function TrashedContactsTable({ contacts }: TrashedContactsTableP
                                         <AlertDialogTitle className="text-center text-xl">
                                             ¿Estás seguro que quieres eliminar a {contact.full_name} por completo?
                                         </AlertDialogTitle>
-                                        <span>Esto eliminará todas sus operaciones relacionadas.</span>
+                                        <span className="text-center">Esto eliminará todas sus operaciones relacionadas.</span>
                                     </AlertDialogHeader>
 
                                     <AlertDialogFooter>
@@ -80,7 +92,7 @@ export default function TrashedContactsTable({ contacts }: TrashedContactsTableP
 
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button size="sm" className="bg-yellow-500 text-white hover:bg-yellow-600">
+                                    <Button size="sm" variant={'outline'}>
                                         <CheckIcon />
                                     </Button>
                                 </AlertDialogTrigger>
@@ -88,7 +100,7 @@ export default function TrashedContactsTable({ contacts }: TrashedContactsTableP
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
                                         <AlertDialogTitle className="text-center text-xl">
-                                            ¿Estás seguro que deseas restaurar a {contact.full_name}?
+                                            ¿Quieres restaurar el contacto {contact.full_name}?
                                         </AlertDialogTitle>
                                     </AlertDialogHeader>
 

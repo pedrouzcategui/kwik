@@ -106,6 +106,11 @@ class ContactController extends Controller
         }
 
         $contact->restore();
+
+        $contact->operations()      // <- the relation
+            ->onlyTrashed()     // limit to rows that are currently “in the trash”
+            ->restore();
+
         // TODO: Agregar mensaje flash a la sesión
         return to_route('trash.index')->with('success', 'Contacto Restaurado');
     }

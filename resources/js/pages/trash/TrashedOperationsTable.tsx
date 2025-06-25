@@ -9,6 +9,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { TrashedOperation } from '@/types/trash';
 import { router } from '@inertiajs/react';
@@ -26,10 +27,47 @@ interface TrashedOperationsTableProps {
 export default function TrashedOperationsTable({ operations }: TrashedOperationsTableProps) {
     const operationsColumns = React.useMemo(
         () => [
+            columnHelper.accessor('deleted_at', {
+                header: 'Fecha de Eliminación',
+                cell: (info) => (
+                    <span>
+                        {new Date(info.getValue()).toLocaleDateString('es-ES', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                        })}
+                    </span>
+                ),
+            }),
             // An “accessor” column for your name field
             columnHelper.accessor('account.name', {
-                header: 'Name',
+                header: 'Nombre de la cuenta',
                 cell: (info) => <span>{info.getValue()}</span>,
+            }),
+
+            columnHelper.accessor('contact.full_name', {
+                header: () => <span>Contacto</span>,
+                id: 'contact_name',
+                cell: (info) => info.getValue(),
+                sortingFn: 'alphanumeric',
+                enableGlobalFilter: true, // This makes the search filter, search using full names
+            }),
+
+            columnHelper.accessor('category.name', {
+                id: 'category_name',
+                header: () => <span>Categoría de la operación</span>,
+                cell: (info) => <Badge style={{ backgroundColor: info.row.original.category.color }}>{info.getValue()}</Badge>,
+                sortingFn: 'alphanumeric',
+                enableGlobalFilter: true, // This makes the search filter, search using full names
+            }),
+
+            columnHelper.accessor('description', {
+                header: () => <span>Descripción</span>,
+                //Puedo usar truncate tambien o text-wrap
+                // cell: (info) => <div className="max-w-[200px] truncate">{info.getValue()}</div>,
+                cell: (info) => <div className="max-w-[300px] truncate">{info.getValue()}</div>,
+                sortingFn: 'alphanumeric',
+                enableGlobalFilter: true, // This makes the search filter, search using full names
             }),
 
             // Another display column for actions
@@ -41,7 +79,7 @@ export default function TrashedOperationsTable({ operations }: TrashedOperations
                     return (
                         <>
                             <AlertDialog>
-                                <AlertDialogTrigger asChild>
+                                <AlertDialogTrigger asChild className="mr-2">
                                     <Button size="sm" variant="destructive">
                                         <BombIcon />
                                     </Button>
@@ -80,11 +118,7 @@ export default function TrashedOperationsTable({ operations }: TrashedOperations
 
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button
-                                        disabled={operation.account.deleted_at !== null}
-                                        size="sm"
-                                        className="bg-yellow-500 text-white hover:bg-yellow-600"
-                                    >
+                                    <Button disabled={operation.account.deleted_at !== null} size="sm" variant={'outline'}>
                                         <CheckIcon />
                                     </Button>
                                 </AlertDialogTrigger>

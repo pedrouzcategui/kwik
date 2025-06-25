@@ -23,6 +23,7 @@ class TrashController extends Controller
             ->get();
 
         $accounts = $user->accounts()
+            ->with('account_provider')
             ->onlyTrashed()
             ->get();
 
@@ -32,6 +33,7 @@ class TrashController extends Controller
                 // include the related (possibly-trashed) account & contact
                 'account' => fn($q) => $q->withTrashed(),
                 'contact' => fn($q) => $q->withTrashed(),
+                'category'
             ])
             ->get();
 

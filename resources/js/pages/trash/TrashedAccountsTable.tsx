@@ -9,6 +9,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { TrashedAccount } from '@/types/trash';
 import { router } from '@inertiajs/react';
@@ -26,10 +27,63 @@ interface TrashedAccountsTableProps {
 export default function TrashedAccountsTable({ accounts }: TrashedAccountsTableProps) {
     const accountColumns = React.useMemo(
         () => [
+            columnHelper.accessor('deleted_at', {
+                header: 'Fecha de Eliminación',
+                cell: (info) => (
+                    <span>
+                        {new Date(info.getValue()).toLocaleDateString('es-ES', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                        })}
+                    </span>
+                ),
+            }),
             // An “accessor” column for your name field
             columnHelper.accessor('name', {
                 header: 'Name',
                 cell: (info) => <span>{info.getValue()}</span>,
+            }),
+
+            columnHelper.accessor('type', {
+                header: () => <span>Tipo de cuenta</span>,
+                cell: (info) => <Badge variant={'outline'}>{info.getValue() === 'CHECKING' ? 'CORRIENTE' : 'AHORRO'}</Badge>,
+                sortingFn: 'alphanumeric',
+                enableGlobalFilter: false,
+            }),
+
+            columnHelper.accessor('amount', {
+                header: () => <span>Monto Disponible</span>,
+                cell: (info) => {
+                    const row = info.row.original;
+                    const currencyMap = {
+                        USD: '$',
+                        EUR: '€',
+                        VES: 'Bs.',
+                        VEF: 'Bs.',
+                    };
+                    const symbol = currencyMap[row.currency] ?? '';
+
+                    const formattedAmount = new Intl.NumberFormat('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    }).format(row.amount);
+
+                    return (
+                        <span>
+                            {symbol} {formattedAmount}
+                        </span>
+                    );
+                },
+                sortingFn: 'alphanumeric',
+                enableGlobalFilter: false,
+            }),
+
+            columnHelper.accessor('account_provider.name', {
+                header: () => <span>Proveedor de cuenta</span>,
+                cell: (info) => <Badge variant={'outline'}>{info.getValue()}</Badge>,
+                sortingFn: 'alphanumeric',
+                enableGlobalFilter: false,
             }),
 
             // Another display column for actions
@@ -41,7 +95,7 @@ export default function TrashedAccountsTable({ accounts }: TrashedAccountsTableP
                     return (
                         <>
                             <AlertDialog>
-                                <AlertDialogTrigger asChild>
+                                <AlertDialogTrigger asChild className="mr-2">
                                     <Button size="sm" variant="destructive">
                                         <BombIcon />
                                     </Button>
@@ -80,7 +134,7 @@ export default function TrashedAccountsTable({ accounts }: TrashedAccountsTableP
 
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button size="sm" className="bg-yellow-500 text-white hover:bg-yellow-600">
+                                    <Button size="sm" variant={'outline'}>
                                         <CheckIcon />
                                     </Button>
                                 </AlertDialogTrigger>
