@@ -129,7 +129,10 @@ class AnalyticsController extends Controller
         $hasAccounts = $accounts->isNotEmpty();
 
         $status = 'neutral';
-        if ($totalAvailableUsd < 0) {
+        if (
+            $hasOps && $hasAccounts &&
+            $totalAvailableUsd <= $request->user()->danger_threshold_amount
+        ) {
             $status = 'red';
         } elseif (
             $hasOps && $hasAccounts &&

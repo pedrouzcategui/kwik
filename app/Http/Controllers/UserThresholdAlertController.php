@@ -16,10 +16,12 @@ class UserThresholdAlertController extends Controller
 
     public function update(UpdateUserThresholdAlertAmount $request)
     {
-        $threshold_amount = $request->input('alert_threshold_amount');
+        $alert_threshold_amount = $request->input('alert_threshold_amount');
+        $danger_threshold_amount = $request->input('danger_threshold_amount');
 
         $user = User::find($request->user()->id);
-        $user->alert_threshold_amount = $threshold_amount;
+        $user->alert_threshold_amount = $alert_threshold_amount;
+        $user->danger_threshold_amount = $danger_threshold_amount;
         $user->save();
 
         return to_route('alert.index')->with('success', 'El monto de alerta ha sido actualizado exitosamente');

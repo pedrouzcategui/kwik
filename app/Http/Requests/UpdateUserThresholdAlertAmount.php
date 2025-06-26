@@ -22,14 +22,31 @@ class UpdateUserThresholdAlertAmount extends FormRequest
     public function rules(): array
     {
         return [
-            'alert_threshold_amount' => ['required', 'numeric', 'min:1']
+            // must be < the alert amount
+            'danger_threshold_amount' => [
+                'required',
+                'numeric',
+                'min:1',
+                'lt:alert_threshold_amount',
+            ],
+
+            // must be > the danger amount
+            'alert_threshold_amount'  => [
+                'required',
+                'numeric',
+                'min:1',
+                'gt:danger_threshold_amount',
+            ],
         ];
     }
 
     public function messages()
     {
         return [
-            'alert_threshold_amount.min' => "El monto mínimo de alerta debe ser 1"
+            'alert_threshold_amount.min' => "El monto mínimo de alerta debe ser 1",
+            'danger_threshold_amount.min' => "El monto mínimo de alerta debe ser 1",
+            'alert_threshold_amount.gt' => "El monto de alerta debe ser mayor al monto de peligro.",
+            'danger_threshold_amount.lt' => "El monto de peligro debe ser menor al monto de alerta."
         ];
     }
 }

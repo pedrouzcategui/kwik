@@ -6,6 +6,7 @@ import { ChangeEvent, FormEventHandler } from 'react';
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,6 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 type AlertThresholdForm = {
     alert_threshold_amount: number;
+    danger_threshold_amount: number;
 };
 
 export default function Alert({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
@@ -29,6 +31,7 @@ export default function Alert({ mustVerifyEmail, status }: { mustVerifyEmail: bo
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<AlertThresholdForm>>({
         alert_threshold_amount: auth.user.alert_threshold_amount ?? 0,
+        danger_threshold_amount: auth.user.danger_threshold_amount ?? 0,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -36,6 +39,7 @@ export default function Alert({ mustVerifyEmail, status }: { mustVerifyEmail: bo
 
         patch(route('alert.update'), {
             preserveScroll: true,
+            only: ['user'],
             onSuccess: () => {
                 toast.success('El monto ha sido actualizado exitosamente');
             },
@@ -44,10 +48,10 @@ export default function Alert({ mustVerifyEmail, status }: { mustVerifyEmail: bo
 
     const handleAlertAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.value == '') {
-            setData('alert_threshold_amount', 0);
+            setData(e.target.name as keyof AlertThresholdForm, 0);
             return;
         }
-        setData('alert_threshold_amount', parseFloat(e.target.value));
+        setData(e.target.name as keyof AlertThresholdForm, parseFloat(e.target.value));
     };
 
     return (
@@ -63,7 +67,9 @@ export default function Alert({ mustVerifyEmail, status }: { mustVerifyEmail: bo
 
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="alert_amount">Actualiza tu monto de alerta deseado</Label>
+                            <Label htmlFor="alert_amount">
+                                Actualiza tu monto de <Badge className="mx-2 bg-yellow-400 text-yellow-900">alerta</Badge> deseado
+                            </Label>
                             <Input
                                 id="number"
                                 step={0.01}
@@ -71,12 +77,30 @@ export default function Alert({ mustVerifyEmail, status }: { mustVerifyEmail: bo
                                 className="mt-1 block w-full"
                                 value={data.alert_threshold_amount}
                                 onChange={handleAlertAmountChange}
-                                name="alert_amount"
+                                name="alert_threshold_amount"
                                 required
                                 placeholder="E.g: $500"
                             />
 
                             <InputError className="mt-2" message={errors.alert_threshold_amount} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="danger_amount">
+                                Actualiza tu monto de alerta de <Badge className="mx-2 bg-red-400 text-red-900">peligro</Badge> deseado
+                            </Label>
+                            <Input
+                                id="number"
+                                step={0.01}
+                                min={10}
+                                className="mt-1 block w-full"
+                                value={data.danger_threshold_amount}
+                                onChange={handleAlertAmountChange}
+                                name="danger_threshold_amount"
+                                required
+                                placeholder="E.g: $500"
+                            />
+
+                            <InputError className="mt-2" message={errors.danger_threshold_amount} />
                         </div>
 
                         <div className="flex items-center gap-4">

@@ -35,7 +35,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'alert_threshold_amount'
+        'alert_threshold_amount',
+        'danger_threshold_amount'
     ];
 
     /**
