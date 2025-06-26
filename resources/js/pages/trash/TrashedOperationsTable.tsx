@@ -135,7 +135,7 @@ export default function TrashedOperationsTable({ operations }: TrashedOperations
                                                         toast.success(`Eliminaste a ${operation.id}`);
                                                     },
                                                     onError: (e) => {
-                                                        console.log(e);
+                                                        toast.error(`No se pudo eliminar la operación. ${e.negative_balance}`);
                                                     },
                                                 })
                                             }

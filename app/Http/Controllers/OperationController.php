@@ -8,6 +8,7 @@ use App\Models\Operation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Category;
+use Illuminate\Validation\ValidationException;
 
 class OperationController extends Controller
 {
@@ -111,6 +112,21 @@ class OperationController extends Controller
 
         if ($operation->user_id !== $request->user()->id) {
             return response()->json(['message' => 'Prohibido'], 403);
+        }
+
+        $account = $operation->account()->withTrashed()->first();
+        // What will the balance be *after* this row is gone?
+        $newBalance = $operation->type === 'INCOME'
+            ? $account->amount - $operation->amount
+            : $account->amount + $operation->amount;
+
+        // Stop everything if it would go negative
+        if ($newBalance < 0 && $account->operations()->count() > 1) {
+            // You can also throw a ValidationException to bubble a nice error up
+            // return to_route('trash.index')->withMess('error', 'El saldo de la cuenta no puede ser negativo. Intenta eliminando gastos primero.');
+            throw ValidationException::withMessages([
+                'negative_balance' => 'El saldo de la cuenta no puede ser negativo. Intenta eliminando gastos primero.',
+            ]);
         }
 
         $operation->forceDelete();
