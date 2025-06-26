@@ -40,8 +40,15 @@ class AccountObserver
     public function deleted(Account $account): void
     {
 
-
-        $account->operations()->delete();
+        if ($account->isForceDeleting()) {
+            // hard-delete everything
+            $account->operations()->withTrashed()->forceDelete();
+        } else {
+            // SOFT delete one by one -> observers fire
+            $account->operations   // already a Collection if the relation was eager-loaded
+                ->each
+                ->delete();    // fires OperationObserver::deleted
+        }
 
         SystemLog::create([
             'user_id' => Auth::id(),

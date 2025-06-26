@@ -120,7 +120,9 @@ class AccountController extends Controller
 
         $account->operations()      // <- the relation
             ->onlyTrashed()     // limit to rows that are currently “in the trash”
-            ->restore();        // bulk-restore query (no loops needed)
+            ->get()
+            ->each->restore();        // bulk-restore query (no loops needed)
+
         // TODO: Agregar mensaje flash a la sesión
         return to_route('trash.index')->with('success', 'Contacto Restaurado');
     }

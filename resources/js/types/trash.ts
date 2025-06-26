@@ -1,6 +1,5 @@
 import { Account, AccountProvider, AccountType, Currency } from './account';
 import { Category } from './category';
-import { Contact } from './contact';
 import { OperationType } from './operation';
 
 export type TrashedContact = {
@@ -23,7 +22,7 @@ export type TrashedOperation = {
     id: string;
     amount: number;
     account: Account;
-    contact: Contact;
+    contact: TrashedContact;
     category: Category;
     type: OperationType;
     description: string;

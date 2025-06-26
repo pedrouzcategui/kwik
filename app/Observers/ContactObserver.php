@@ -40,15 +40,15 @@ class ContactObserver
     public function deleted(Contact $contact): void
     {
 
-        // ---------- 1. Cascade ----------
         if ($contact->isForceDeleting()) {
-            // hard-delete children
+            // hard-delete everything
             $contact->operations()->withTrashed()->forceDelete();
         } else {
-            // soft-delete children
-            $contact->operations()->delete();
+            // SOFT delete one by one -> observers fire
+            $contact->operations   // already a Collection if the relation was eager-loaded
+                ->each
+                ->delete();    // fires OperationObserver::deleted
         }
-
         SystemLog::create([
             'user_id' => Auth::id(),
             'module' => 'Contact',

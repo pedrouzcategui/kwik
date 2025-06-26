@@ -148,7 +148,11 @@ export default function TrashedOperationsTable({ operations }: TrashedOperations
 
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button disabled={operation.account.deleted_at !== null} size="sm" variant={'outline'}>
+                                    <Button
+                                        disabled={operation.account.deleted_at !== null || operation.contact.deleted_at !== null}
+                                        size="sm"
+                                        variant={'outline'}
+                                    >
                                         <CheckIcon />
                                     </Button>
                                 </AlertDialogTrigger>
