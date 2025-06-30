@@ -14,7 +14,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { getInitials } from '@/lib/utils';
+import { contactTypeMap, getInitials } from '@/lib/utils';
 import { Contact } from '@/types/contact';
 import { router, usePage } from '@inertiajs/react';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -77,7 +77,7 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
                 const email = info.getValue();
                 return (
                     <div className="flex items-center justify-between gap-2">
-                        <span>{email}</span>
+                        {email ? <span>{email}</span> : <span className="text-sm text-gray-400 italic">- Sin Email -</span>}
                         {email && (
                             <Button
                                 size="sm"
@@ -102,7 +102,7 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
                 const phone = info.getValue();
                 return (
                     <div className="flex items-center justify-between gap-2">
-                        <span>{phone}</span>
+                        {phone ? <span>{phone}</span> : <span className="text-sm text-gray-400 italic">- Sin Teléfono -</span>}
                         {phone && (
                             <Button
                                 size="sm"
@@ -125,7 +125,7 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
             header: () => <span>Tipo</span>,
             cell: (info) => (
                 <div className="flex gap-2">
-                    <Badge variant={'outline'}>{info.getValue()}</Badge>
+                    <Badge variant={'outline'}>{contactTypeMap[info.getValue()]}</Badge>
                 </div>
             ),
             sortingFn: 'alphanumeric',

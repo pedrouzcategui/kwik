@@ -1,5 +1,6 @@
 // ContactTypeFilter.tsx
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { contactTypeMap, contactTypes } from '@/lib/utils';
 import { Contact } from '@/types/contact';
 import type { Table } from '@tanstack/react-table';
 
@@ -8,8 +9,6 @@ export function ContactTypeFilter({ table }: { table: Table<Contact> }) {
 
     // Use "all" as the sentinel when NO filter is active
     const value = (col?.getFilterValue() as string | undefined) ?? 'all';
-
-    const contactTypes = ['Natural', 'Gobierno', 'Negocio', 'Org. Sin Fines De Lucro', 'Institucional'];
 
     return (
         <Select value={value} onValueChange={(v) => col?.setFilterValue(v === 'all' ? undefined : v)}>
@@ -21,7 +20,7 @@ export function ContactTypeFilter({ table }: { table: Table<Contact> }) {
                 <SelectItem value="all">Todos</SelectItem>
                 {contactTypes.map((type) => (
                     <SelectItem key={type} value={type.toUpperCase()}>
-                        {type}
+                        {contactTypeMap[type]}
                     </SelectItem>
                 ))}
             </SelectContent>

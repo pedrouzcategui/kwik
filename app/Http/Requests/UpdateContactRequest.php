@@ -41,7 +41,7 @@ class UpdateContactRequest extends FormRequest
             'full_name' => ['required', 'string', 'max:255'],
 
             'email' => [
-                // 'nullable',                // allow null / unchanged
+                'nullable',                // allow null / unchanged
                 'required_without:phone',  // must exist if phone is blank
                 'email:rfc',
                 'max:255',
@@ -51,7 +51,7 @@ class UpdateContactRequest extends FormRequest
             ],
 
             'phone' => [
-                // 'nullable',
+                'nullable',
                 'required_without:email',
                 'string',
                 'max:25',
