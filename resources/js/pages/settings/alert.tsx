@@ -39,7 +39,7 @@ export default function Alert({ mustVerifyEmail, status }: { mustVerifyEmail: bo
 
         patch(route('alert.update'), {
             preserveScroll: true,
-            only: ['user'],
+            only: ['user', 'auth'],
             onSuccess: () => {
                 toast.success('El monto ha sido actualizado exitosamente');
             },

@@ -1,4 +1,5 @@
 import { Table } from '@tanstack/react-table';
+import axios from 'axios';
 import { FileText } from 'lucide-react';
 import { Button } from '../ui/button';
 
@@ -47,22 +48,34 @@ export default function ExportPDFButton<T>({ table, headers, filename = 'export'
                 const { headerKeys, data } = getVisibleData(table);
 
                 if (data.length === 0) return; // nothing to export
-                fetch('/export/pdf/initiate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '',
-                    },
-                    body: JSON.stringify({
-                        headers: headerKeys, // e.g. ["name","amount",...]
-                        data, // array with ONLY those keys
+                // fetch('/export/pdf/initiate', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //         'X-CSRF-TOKEN': document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '',
+                //     },
+                //     body: JSON.stringify({
+                //         headers: headerKeys, // e.g. ["name","amount",...]
+                //         data, // array with ONLY those keys
+                //         filename,
+                //     }),
+                //     credentials: 'same-origin',
+                // })
+                //     .then((r) => r.json())
+                //     .then(({ token }) => token && window.open(`/export/pdf/download?token=${token}`, '_blank'))
+                //     .catch((e) => console.error(e));
+                axios
+                    .post('/export/pdf/initiate', {
+                        headers: headerKeys, // e.g. ['name', 'amount', …]
+                        data, // rows trimmed to those keys
                         filename,
-                    }),
-                    credentials: 'same-origin',
-                })
-                    .then((r) => r.json())
-                    .then(({ token }) => token && window.open(`/export/pdf/download?token=${token}`, '_blank'))
-                    .catch((e) => console.error(e));
+                    })
+                    .then(({ data: { token } }) => {
+                        if (token) {
+                            window.open(`/export/pdf/download?token=${token}`, '_blank');
+                        }
+                    })
+                    .catch(console.error);
             }}
         >
             <FileText className="mr-1" />
