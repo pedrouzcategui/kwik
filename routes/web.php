@@ -18,7 +18,7 @@ Route::get('/', function () {
         if (Auth::user()->role == 'admin') {
             return redirect()->route('admin.users');
         } else {
-            return redirect()->route('user');
+            return redirect()->route('dashboard');
         }
     }
     return redirect()->route('login');

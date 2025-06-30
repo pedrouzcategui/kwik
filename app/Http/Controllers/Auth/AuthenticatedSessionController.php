@@ -36,6 +36,9 @@ class AuthenticatedSessionController extends Controller
         // Se crea un token para la API, si no existe uno.
         // $request->user()->createToken('api-token');
         // return redirect()->intended(route('dashboard', absolute: false));
+        if($request->user()->role == 'admin') {
+            return to_route('admin.users');
+        }
         return to_route('dashboard');
     }
 
