@@ -160,11 +160,9 @@ export default function ContactsTable({ contacts }: ContactTableProps) {
                             <AlertDialogContent>
                                 <AlertDialogHeader>
                                     <AlertDialogTitle className="text-center text-xl">
-                                        ¿Quieres mover a {contact.full_name} a la papelera?
+                                        ¿Quieres eliminar a {contact.full_name} de tus contactos?
                                     </AlertDialogTitle>
-                                    <span>
-                                        ¡No te preocupes! Podrás recuperar este contacto y todas las operaciones asociadas al mismo en la papelera.
-                                    </span>
+                                    <span>Podrás ver que lo eliminaste en la papelera, pero no podrás re-establecer este contacto.</span>
                                 </AlertDialogHeader>
 
                                 <AlertDialogFooter>

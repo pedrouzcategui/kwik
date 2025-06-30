@@ -62,7 +62,7 @@ export default function OperationsTable({ operations, user, categories, contacts
             header: () => <span>Descripción</span>,
             //Puedo usar truncate tambien o text-wrap
             // cell: (info) => <div className="max-w-[200px] truncate">{info.getValue()}</div>,
-            cell: (info) => <div className="max-w-[300px] truncate">{info.getValue() ?? "Sin Descripción"}</div>,
+            cell: (info) => <div className="max-w-[300px] truncate">{info.getValue() ?? 'Sin Descripción'}</div>,
             sortingFn: 'alphanumeric',
             enableGlobalFilter: true, // This makes the search filter, search using full names
         }),
@@ -148,8 +148,8 @@ export default function OperationsTable({ operations, user, categories, contacts
 
                             <AlertDialogContent>
                                 <AlertDialogHeader className="text-center">
-                                    <AlertDialogTitle className="text-xl">¿Quieres mover la operación a la papelera?</AlertDialogTitle>
-                                    <span>¡No te preocupes! Podrás recuperar esta operación en la papelera.</span>
+                                    <AlertDialogTitle className="text-xl">¿Quieres eliminar la operación?</AlertDialogTitle>
+                                    <span>Podrás ver que la eliminaste en la papelera, pero no podrás re-establecer esta operación.</span>
                                 </AlertDialogHeader>
 
                                 <AlertDialogFooter>

@@ -127,12 +127,9 @@ export default function AccountsTable({ accounts, providers }: AccountsTableProp
 
                             <AlertDialogContent>
                                 <AlertDialogHeader>
-                                    <AlertDialogTitle className="text-center text-xl">
-                                        ¿Quieres mover la cuenta {account.name} a la papelera?
-                                    </AlertDialogTitle>
-                                    <span>
-                                        ¡No te preocupes! Podrás recuperar esta cuenta y todas las operaciones asociadas a ella en la papelera.
-                                    </span>
+                                    <AlertDialogTitle className="text-center text-xl">¿Quieres eliminar la cuenta "{account.name}"?</AlertDialogTitle>
+
+                                    <span>Podrás ver que la eliminaste en la papelera, pero no podrás re-establecer esta cuenta.</span>
                                 </AlertDialogHeader>
 
                                 <AlertDialogFooter>
