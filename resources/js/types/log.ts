@@ -1,5 +1,6 @@
-interface Log {
-    created_at: string;
-    description: string;
+export interface Log {
     module: string;
+    action: string;
+    description: string;
+    created_at: string;
 }

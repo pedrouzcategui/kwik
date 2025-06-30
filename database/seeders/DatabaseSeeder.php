@@ -11,6 +11,7 @@ use App\Models\{
     User
 };
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,6 +19,13 @@ class DatabaseSeeder extends Seeder
     {
         // ─── Users ────────────────────────────────────────────────────────────────
         $user = User::factory()->create();
+
+        $admin = User::create([
+            'name' => "Administrador",
+            'email' => "administrador@rubikate.com",
+            'password' => Hash::make('18pZ9kMU"M(Z'),
+            'role' => 'admin'
+        ]);
 
         // ─── Providers & Accounts ────────────────────────────────────────────────
         $this->call(AccountProviderSeeder::class);

@@ -5,15 +5,21 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AccountProviderController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\ExchangeRateController;
 use App\Http\Controllers\TrashController;
 use App\Http\Controllers\ExportController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (auth()->check()) {
-        return redirect()->route('dashboard');
+        if (Auth::user()->role == 'admin') {
+            return redirect()->route('admin.users');
+        } else {
+            return redirect()->route('user');
+        }
     }
     return redirect()->route('login');
 })->name('home');
@@ -23,6 +29,8 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     // Este controlador resource SOLO tiene el método index, los demás métodos no funcionarán
     Route::get('dashboard', [AnalyticsController::class, 'index'])->name('dashboard');
+    Route::get('admin/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::get('admin/logs', [AdminController::class, 'logs'])->name('admin.logs');
     Route::resource('contacts', ContactController::class);
     Route::resource('accounts', AccountController::class);
     Route::resource('operations', OperationController::class);

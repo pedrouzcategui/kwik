@@ -42,5 +42,6 @@ export interface User {
     updated_at: string;
     alert_threshold_amount: number;
     danger_threshold_amount: number;
+    role: string;
     [key: string]: unknown; // This allows for additional properties...
 }
