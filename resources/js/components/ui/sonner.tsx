@@ -10,7 +10,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       toastOptions={{
         classNames: {
-          success: '!bg-success text-success'
+          success: '!bg-success text-success',
+          error: '!bg-red-900 text-white'
         }
       }}
       style={

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ExportController extends Controller
@@ -20,7 +21,7 @@ class ExportController extends Controller
             'rows' => collect($data),
             'headers' => $headers,
             'filename' => $filename,
-            'date' => $date
+            'date' => $date,
         ])->stream("{$filename}.pdf");
     }
 
@@ -47,11 +48,14 @@ class ExportController extends Controller
             abort(404, 'Export data not found or expired');
         }
 
+        $user = Auth::user()->name;
+
         return Pdf::loadView('reports.filtered-data', [
             'rows' => collect($payload['data']),
             'headers' => $payload['headers'],
             'filename' => $payload['filename'],
             'date' => $payload['date'],
+            'username' => $user
         ])->stream("{$payload['filename']}.pdf");
     }
 }

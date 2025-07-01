@@ -16,8 +16,8 @@ class Category extends Model
     // Define los atributos que se pueden asignar masivamente
     protected $fillable = [
         'name',
-        'icon',
-        'color'
+        'color',
+        'type'
     ];
 
     // Define la relación uno a muchos con el modelo Operation

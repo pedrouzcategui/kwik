@@ -34,7 +34,7 @@ type OperationForm = {
 };
 
 export default function OperationForm({ user, operation, categories, setIsOpen }: OperationFormComponentProps) {
-    const { data, setData, post, put, processing, errors } = useForm<OperationForm>({
+    const { data, setData, post, put, processing, errors, reset } = useForm<OperationForm>({
         contact_id: operation?.contact.id ?? '',
         account_id: operation?.account.id ?? '',
         account_target_id: operation?.target_account_id ?? '',
@@ -48,7 +48,6 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
-        console.log(data);
         if (operation) {
             put(`/operations/${operation.id}`, {
                 onSuccess: () => {
@@ -115,6 +114,7 @@ export default function OperationForm({ user, operation, categories, setIsOpen }
                     categories={categories}
                     selectedCategoryId={data.category_id}
                     setData={setData}
+                    reset={reset}
                 />
                 <InputError message={errors.category_id} className="mt-2" />
             </div>

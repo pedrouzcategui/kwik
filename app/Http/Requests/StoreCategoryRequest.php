@@ -24,6 +24,17 @@ class StoreCategoryRequest extends FormRequest
         return [
             'name'  => ['required', 'unique:categories,name', 'string', 'max:40'],
             'color'  => ['required', 'unique:categories,color', 'max:7'],
+            'type'  => ['required'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => "El campo nombre es requerido.",
+            'name.unique' => "Este nombre ya existe con otra categoría. Elige otro nombre",
+            'color.unique' => "El color ya es usado por otra categoría. Por favor, usa otro color.",
+            'type.required' => "El tipo de operación para la categoría es requerido.",
         ];
     }
 }

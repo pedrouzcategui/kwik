@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Category } from '@/types/category';
-import { OperationType } from '@/types/operation';
+import { ValidationErrorPayload } from '@/types/error';
+import { OperationType, OperationTypeStringUnion } from '@/types/operation';
 import { router } from '@inertiajs/react';
 import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
@@ -17,11 +18,15 @@ type CategorySelectProps = {
     selectedCategoryId: string;
     setData: (x: string, y: any) => any;
     disabled: boolean;
+    reset: (...field: any[]) => any;
 };
 
-export default function CategoriesSelect({ disabled, operationType, categories, selectedCategoryId, setData }: CategorySelectProps) {
+export default function CategoriesSelect({ disabled, operationType, categories, selectedCategoryId, setData, reset }: CategorySelectProps) {
     const [newCategoryName, setNewCategoryName] = useState('');
     const [newCategoryColor, setNewCategoryColor] = useState('#FF0000');
+
+    const [categoryType, setCategoryType] = useState<OperationTypeStringUnion>('INCOME');
+
     const [open, setOpen] = useState(false);
 
     const handleSelectCategory = (id: string) => {
@@ -29,15 +34,19 @@ export default function CategoriesSelect({ disabled, operationType, categories, 
     };
 
     const handleCreateCategory = async () => {
-        if (!newCategoryName.trim()) return;
+        if (!newCategoryName.trim()) {
+            toast.error('Ingresa el nombre de la categoría');
+            return;
+        }
 
         try {
             const response = await axios.post('/categories', {
                 name: newCategoryName,
                 color: newCategoryColor,
+                type: categoryType,
             });
-
             const newCategory: Category = response.data;
+            reset();
             toast.success(`La categoria ${newCategory.name} ha sido creada`);
             setData('category_id', newCategory.id);
             setNewCategoryName('');
@@ -47,8 +56,13 @@ export default function CategoriesSelect({ disabled, operationType, categories, 
         } catch (error) {
             // how the fuck this works
             const err = error as AxiosError;
-            if (err.response?.status === 422) {
-                console.log('Validation errors:', err.response.data);
+            if (axios.isAxiosError<ValidationErrorPayload>(error) && error.response) {
+                if (error.response.status === 422) {
+                    const { message, errors } = error.response.data; // strongly typed 🎉
+                    console.log('Validation failed:', message, errors);
+                    toast.error(message);
+                    return; // or however you bubble it up
+                }
             } else {
                 console.error('Unexpected error:', error);
             }
@@ -88,20 +102,29 @@ export default function CategoriesSelect({ disabled, operationType, categories, 
                             <DialogTitle>Crear nueva categoría</DialogTitle>
                         </DialogHeader>
                         <div className="flex flex-col gap-4 py-2">
-                            <Input
-                                value={newCategoryName}
-                                onChange={(e) => setNewCategoryName(e.target.value)}
-                                placeholder="Nombre de la categoría"
+                            <Label>Nombre de la nueva categoría</Label>
+                            <Input value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} placeholder="E.g: Pago por eventos" />
+                        </div>
+                        <Label>Selecciona el tipo de operación asociada a esta categoría</Label>
+                        <Select name="type" value={categoryType} onValueChange={(type) => setCategoryType(type as OperationTypeStringUnion)}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecciona tu tipo de operacion" />{' '}
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectItem value="INCOME">Ingreso</SelectItem>
+                                    <SelectItem value="EXPENSE">Gasto</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <div className="flex items-center gap-2">
+                            <Label>Color:</Label>
+                            <input
+                                type="color"
+                                value={newCategoryColor}
+                                onChange={(e) => setNewCategoryColor(e.target.value)}
+                                className="h-10 w-10 rounded border"
                             />
-                            <div className="flex items-center gap-2">
-                                <Label>Color:</Label>
-                                <input
-                                    type="color"
-                                    value={newCategoryColor}
-                                    onChange={(e) => setNewCategoryColor(e.target.value)}
-                                    className="h-10 w-10 rounded border"
-                                />
-                            </div>
                         </div>
                         <DialogFooter>
                             <Button type="button" onClick={handleCreateCategory}>
