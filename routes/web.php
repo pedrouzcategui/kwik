@@ -10,6 +10,8 @@ use App\Http\Controllers\OperationController;
 use App\Http\Controllers\ExchangeRateController;
 use App\Http\Controllers\TrashController;
 use App\Http\Controllers\ExportController;
+use App\Http\Middleware\HandleAllowAdmin;
+use App\Http\Middleware\HandleUserRole;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -29,8 +31,10 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     // Este controlador resource SOLO tiene el método index, los demás métodos no funcionarán
     Route::get('dashboard', [AnalyticsController::class, 'index'])->name('dashboard');
-    Route::get('admin/users', [AdminController::class, 'users'])->name('admin.users');
-    Route::get('admin/logs', [AdminController::class, 'logs'])->name('admin.logs');
+
+    Route::get('admin/users', [AdminController::class, 'users'])->name('admin.users')->middleware(HandleAllowAdmin::class);
+    Route::get('admin/logs', [AdminController::class, 'logs'])->name('admin.logs')->middleware(HandleAllowAdmin::class);;
+
     Route::resource('contacts', ContactController::class);
     Route::resource('accounts', AccountController::class);
     Route::resource('operations', OperationController::class);

@@ -39,6 +39,16 @@ export default function ContactsTable({ logs }: LogsTableProps) {
             ),
             sortingFn: 'datetime',
         }),
+        columnHelper.accessor('user_id', {
+            header: () => <span>ID Usuario</span>,
+            cell: (info) => (
+                <div className="flex items-center gap-2">
+                    <Badge variant={'outline'}>{info.getValue()}</Badge>
+                </div>
+            ),
+            sortingFn: 'alphanumeric',
+            enableGlobalFilter: true,
+        }),
         columnHelper.accessor('module', {
             header: () => <span>Módulo</span>,
             cell: (info) => (

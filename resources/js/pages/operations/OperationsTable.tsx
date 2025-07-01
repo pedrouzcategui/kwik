@@ -62,13 +62,17 @@ export default function OperationsTable({ operations, user, categories, contacts
             header: () => <span>Descripción</span>,
             //Puedo usar truncate tambien o text-wrap
             // cell: (info) => <div className="max-w-[200px] truncate">{info.getValue()}</div>,
-            cell: (info) => <div className="max-w-[300px] truncate">{info.getValue() ?? 'Sin Descripción'}</div>,
+            cell: (info) => (
+                <div className="max-w-[300px] truncate">
+                    {info.getValue() ? <span>{info.getValue()}</span> : <span className="italic">- Sin Descripción -</span>}
+                </div>
+            ),
             sortingFn: 'alphanumeric',
             enableGlobalFilter: true, // This makes the search filter, search using full names
         }),
         columnHelper.accessor('account.name', {
             header: () => <span>Nombre de la cuenta</span>,
-            cell: (info) => info.getValue(),
+            cell: (info) => <Badge variant={'outline'}>{info.getValue()}</Badge>,
             sortingFn: 'alphanumeric',
             enableGlobalFilter: true, // This makes the search filter, search using full names
         }),

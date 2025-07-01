@@ -32,6 +32,13 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
+export const ROLE_LABELS = {
+    user: 'Usuario',
+    admin: 'Administrador',
+} as const;
+
+export type Role = keyof typeof ROLE_LABELS; // 'user' | 'admin'
+
 export interface User {
     id: string;
     name: string;
@@ -42,6 +49,6 @@ export interface User {
     updated_at: string;
     alert_threshold_amount: number;
     danger_threshold_amount: number;
-    role: string;
+    role: Role;
     [key: string]: unknown; // This allows for additional properties...
 }

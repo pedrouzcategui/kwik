@@ -18,7 +18,9 @@ class AdminController extends Controller
     }
     public function logs(Request $request)
     {
-        $logs = SystemLog::all();
+        $logs = SystemLog::with('user')   // eager-load the relation
+            ->whereNotNull('user_id')   // same as "user_id != null"
+            ->get();
         return Inertia::render('admin/logs/index', [
             'logs' => $logs
         ]);

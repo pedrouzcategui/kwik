@@ -17,6 +17,11 @@ interface UsersTableProps {
     users: User[];
 }
 
+export const ROLE_LABELS = {
+    user: 'Usuario',
+    admin: 'Administrador',
+} as const;
+
 export default function ContactsTable({ users }: UsersTableProps) {
     const [data, setData] = React.useState<User[]>(users);
     // const [selectedContact, setSelectedContact] = React.useState<User | undefined>();
@@ -85,10 +90,10 @@ export default function ContactsTable({ users }: UsersTableProps) {
             enableGlobalFilter: true,
         }),
         columnHelper.accessor('role', {
-            header: () => <span>Tipo</span>,
+            header: () => <span>Rol</span>,
             cell: (info) => (
                 <div className="flex gap-2">
-                    <Badge variant={'outline'}>{info.getValue()}</Badge>
+                    <Badge variant={'outline'}>{ROLE_LABELS[info.getValue()]}</Badge>
                 </div>
             ),
             sortingFn: 'alphanumeric',
